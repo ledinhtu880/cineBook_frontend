@@ -1,0 +1,40 @@
+.container {
+	@apply flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4;
+
+	h1 {
+		@apply text-2xl font-bold mb-4 text-gray-800;
+	}
+
+	form {
+		@apply bg-white p-8 rounded-lg shadow-md w-full max-w-md;
+	}
+
+	div {
+		@apply mb-4;
+	}
+
+	label {
+		@apply block text-gray-700 text-sm font-bold mb-2;
+	}
+
+	.input {
+		@apply shadow appearance-none border rounded w-full p-96 text-gray-700 leading-tight;
+
+		&:focus {
+			@apply outline-none ring-2 ring-blue-500;
+		}
+	}
+
+	button {
+		@apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full;
+
+		&:focus {
+			@apply outline-none ring-2 ring-blue-500 ring-offset-2;
+		}
+	}
+}
+
+// Thêm style riêng cho button đăng xuất
+button[type="button"] {
+	@apply bg-red-500 hover:bg-red-700 mt-4;
+}
