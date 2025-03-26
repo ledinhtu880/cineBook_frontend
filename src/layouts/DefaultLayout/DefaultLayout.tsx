@@ -1,9 +1,8 @@
 import clsx from "clsx";
-import Header from "./../components/Header";
-import { ReactNode } from "react";
+import Header from "@layouts/components/Header";
 
 interface DefaultLayoutProps {
-	children: ReactNode;
+	children: React.ReactNode;
 }
 
 function DefaultLayout({ children }: DefaultLayoutProps) {

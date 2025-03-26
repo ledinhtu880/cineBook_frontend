@@ -1,5 +1,8 @@
+import * as hooks from "@hooks/index";
+
 const Home = () => {
-	return <div>Xin chao tat ca moi nguo</div>;
+	hooks.useDocumentTitle("Trang chủ");
+	return <div>Trang chủ</div>;
 };
 
 export default Home;

@@ -1,0 +1,32 @@
+.header {
+	@apply bg-[var(--primary)];
+}
+
+.wrapper {
+	@apply container mx-auto px-4;
+}
+
+.nav {
+	@apply flex justify-between items-center py-2;
+}
+
+.leftSection,
+.rightSection {
+	@apply flex space-x-6;
+}
+
+.link {
+	@apply text-white;
+}
+
+.moreMenu {
+	@apply relative;
+
+	span {
+		@apply cursor-pointer hover:text-blue-300;
+	}
+}
+
+.button {
+	@apply text-white px-0 text-xl;
+}
