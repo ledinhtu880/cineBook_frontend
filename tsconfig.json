@@ -23,7 +23,8 @@
 			"@pages/*": ["./src/pages/*"],
 			"@utils/*": ["./src/utils/*"],
 			"@config/*": ["./src/config/*"],
-			"@hooks/*": ["./src/hooks/*"]
+			"@hooks/*": ["./src/hooks/*"],
+			"@types/*": ["./src/types/*"]
 		},
 		"types": ["node"]
 	},
