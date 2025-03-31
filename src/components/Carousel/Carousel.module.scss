@@ -3,6 +3,12 @@
 }
 .carousel-wrapper {
 	@apply relative overflow-hidden;
+
+	&:hover {
+		.carousel-control {
+			@apply flex;
+		}
+	}
 }
 
 .carousel-track {
@@ -17,29 +23,9 @@
 	@apply flex flex-col justify-center;
 }
 
-.carousel-item {
-	@apply relative w-[275px] flex-shrink-0;
-
-	.carousel-image {
-		@apply object-cover w-full rounded-lg;
-	}
-
-	.carousel-badge {
-		@apply absolute bottom-[6px] right-[6px];
-
-		span {
-			@apply inline-flex items-center justify-center w-[38px] h-7 bg-[--primary] rounded text-sm text-center text-white font-bold not-italic;
-		}
-	}
-}
-
-.carousel-title {
-	@apply w-[220px] text-lg font-medium mb-2 truncate;
-}
-
 .carousel-control {
-	@apply absolute top-1/2 -translate-y-1/2 
-           w-10 h-10 flex items-center justify-center 
+	@apply hidden absolute top-1/2 -translate-y-1/2 
+           w-10 h-10 items-center justify-center 
            bg-black/50 text-white rounded-full z-10
            transition-all hover:bg-black/70
            disabled:opacity-50 disabled:cursor-not-allowed;
@@ -51,4 +37,40 @@
 	&.next {
 		@apply right-0;
 	}
+}
+
+.carousel-item {
+	@apply relative w-[275px] flex-shrink-0;
+
+	&:hover {
+		@apply cursor-pointer;
+
+		.carousel-overlay {
+			@apply flex;
+		}
+	}
+}
+
+.carousel-image {
+	@apply object-cover w-full rounded-lg;
+}
+
+.carousel-badge {
+	@apply absolute bottom-[10px] right-[10px];
+
+	span {
+		@apply inline-flex items-center justify-center w-[38px] h-7 bg-[--primary] rounded text-sm text-center text-white font-bold not-italic;
+	}
+}
+
+.carousel-overlay {
+	@apply hidden absolute inset-0 bg-black/40 rounded-lg flex-col items-center justify-center gap-3;
+
+	.carousel-btn {
+		@apply w-[120px] text-white hover:border-[--primary-hover];
+	}
+}
+
+.carousel-title {
+	@apply max-w-[220px] w-fit text-lg font-medium my-2 truncate p-0 inline;
 }

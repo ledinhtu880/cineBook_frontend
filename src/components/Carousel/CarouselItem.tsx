@@ -1,16 +1,18 @@
 import clsx from "clsx";
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
 import { Link } from "react-router-dom";
 
+import Button from "@/components/Button";
 import styles from "./Carousel.module.scss";
 import { MovieProps } from "@/types/index";
 import Image from "@/components/Image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCirclePlay, faTicket } from "@fortawesome/free-solid-svg-icons";
+import Tooltip from "@mui/material/Tooltip";
 
 const CarouselItem = ({ item }: { item: MovieProps }) => {
 	return (
 		<div className={clsx(styles["carousel-item-wrapper"])}>
-			<div key={item.id} className={clsx(styles["carousel-item"])}>
+			<div className={clsx(styles["carousel-item"])}>
 				<Image
 					src={item.poster_url}
 					alt={item.title}
@@ -19,18 +21,48 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 				<div className={clsx(styles["carousel-badge"])}>
 					<span>{item.age_rating}</span>
 				</div>
-			</div>
-			<h3>
-				<Tippy content={item.title} placement="bottom">
-					<Link
-						to="#"
-						className={clsx(styles["carousel-title"])}
-						title={item.title}
+				<div className={clsx(styles["carousel-overlay"])}>
+					<Button
+						size="small"
+						className={clsx(styles["carousel-btn"])}
+						primary
+						leftIcon={<FontAwesomeIcon icon={faTicket} />}
 					>
-						{item.title}
-					</Link>
-				</Tippy>
-			</h3>
+						Mua vé
+					</Button>
+					<Button
+						size="small"
+						className={clsx(styles["carousel-btn"])}
+						outline
+						leftIcon={<FontAwesomeIcon icon={faCirclePlay} />}
+					>
+						Trailer
+					</Button>
+				</div>
+			</div>
+			<Tooltip
+				title={item.title}
+				placement="bottom"
+				arrow
+				sx={{ fontSize: "30" }}
+				slotProps={{
+					tooltip: {
+						sx: {
+							color: "#fff",
+							backgroundColor: "#333",
+						},
+					},
+					arrow: {
+						sx: {
+							color: "#333",
+						},
+					},
+				}}
+			>
+				<Link to="#" className={clsx(styles["carousel-title"])}>
+					{item.title}
+				</Link>
+			</Tooltip>
 		</div>
 	);
 };

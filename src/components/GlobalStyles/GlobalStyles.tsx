@@ -1,5 +1,4 @@
 import "./GlobalStyles.scss";
-
 interface GlobalStylesProps {
 	children: React.ReactNode;
 }

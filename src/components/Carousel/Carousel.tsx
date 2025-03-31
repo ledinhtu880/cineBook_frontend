@@ -66,14 +66,9 @@ const Carousel: React.FC<CarouselProps> = ({ title }) => {
 						</button>
 
 						<div className={clsx(styles["carousel-track"])}>
-							<div
-								className={clsx(styles["carousel-list"])}
-								style={{
-									transform: `translateX(-${currentIndex * 25}%)`,
-								}}
-							>
+							<div className={clsx(styles["carousel-list"])}>
 								{movies.map((movie) => (
-									<CarouselItem item={movie} />
+									<CarouselItem item={movie} key={movie.id} />
 								))}
 							</div>
 						</div>

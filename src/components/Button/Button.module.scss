@@ -1,8 +1,12 @@
+.wrapper {
+	@apply flex items-center justify-center gap-2;
+}
+
 .primary {
-	@apply text-white bg-[--primary];
+	@apply text-white bg-[--primary] hover:bg-[--primary-hover];
 }
 .outline {
-	@apply shadow-md rounded-xl text-[--primary] border-[currentColor] border hover:bg-[--primary-hover] hover:text-white;
+	@apply shadow-md text-[--primary] border-[currentColor] border hover:bg-[--primary-hover] hover:text-white;
 }
 
 .rounded {
@@ -11,6 +15,10 @@
 
 .text {
 	@apply bg-transparent;
+}
+
+.no-padding {
+	@apply p-0;
 }
 
 .small {

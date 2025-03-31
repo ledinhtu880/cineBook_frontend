@@ -11,7 +11,7 @@ interface ButtonProps {
 	text?: boolean;
 	rounded?: boolean;
 	disabled?: boolean;
-	size?: "small" | "medium" | "large";
+	size?: "no-padding" | "small" | "medium" | "large";
 	children: ReactNode;
 	className?: string;
 	leftIcon?: ReactNode;
