@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useEffect, useCallback } from "react";
+import { useState, useLayoutEffect, useCallback } from "react";
 import clsx from "clsx";
 
 import config from "@config/index";
@@ -26,10 +26,6 @@ const Header = () => {
 			setIsLoggedIn(true);
 		}
 	}, []);
-
-	useEffect(() => {
-		console.log(errors);
-	}, [errors]);
 
 	const handleLogin = useCallback(
 		async (e: React.FormEvent) => {
