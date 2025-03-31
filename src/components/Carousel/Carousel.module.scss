@@ -10,18 +10,31 @@
 }
 
 .carousel-list {
-	@apply flex transition-transform duration-500 ease-in-out;
+	@apply flex transition-transform duration-500 ease-in-out gap-10;
+}
+
+.carousel-item-wrapper {
+	@apply flex flex-col justify-center;
 }
 
 .carousel-item {
-	@apply w-1/4 flex-shrink-0;
+	@apply relative w-[275px] flex-shrink-0;
 
 	.carousel-image {
-		@apply object-cover;
+		@apply object-cover w-full rounded-lg;
 	}
-	.carousel-title {
-		@apply text-lg font-semibold mb-2;
+
+	.carousel-badge {
+		@apply absolute bottom-[6px] right-[6px];
+
+		span {
+			@apply inline-flex items-center justify-center w-[38px] h-7 bg-[--primary] rounded text-sm text-center text-white font-bold not-italic;
+		}
 	}
+}
+
+.carousel-title {
+	@apply w-[220px] text-lg font-medium mb-2 truncate;
 }
 
 .carousel-control {
