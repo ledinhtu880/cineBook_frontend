@@ -9,6 +9,7 @@ import * as hooks from "@hooks/index";
 import styles from "./Home.module.scss";
 import Image from "@/components/Image";
 import Carousel from "@/components/Carousel";
+import movieService from "@/services/movieService";
 
 const Home = () => {
 	hooks.useDocumentTitle("Trang chủ");
@@ -37,9 +38,20 @@ const Home = () => {
 				</button>
 			</div>
 			{/* Start: End */}
-			{/* Start: Now-showing */}
-			<Carousel title="Phim đang chiếu" />
-			{/* End: Now-showing */}
+
+			{/* Start: Now Showing */}
+			<Carousel
+				title="Phim đang chiếu"
+				fetchData={movieService.getNowShowingMovies}
+			/>
+			{/* End: Now Showing */}
+
+			{/* Start: Coming soon */}
+			<Carousel
+				title="Phim sắp chiếu"
+				fetchData={movieService.getComingSoonMovies}
+			/>
+			{/* End: Coming son */}
 		</div>
 	);
 };

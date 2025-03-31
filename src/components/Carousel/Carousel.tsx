@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import clsx from "clsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faChevronLeft,
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import styles from "./Carousel.module.scss";
 import { CarouselProps, MovieProps } from "@/types/index";
 import CarouselItem from "./CarouselItem";
 
-const Carousel: React.FC<CarouselProps> = ({ title }) => {
+const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
 	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
@@ -21,10 +22,8 @@ const Carousel: React.FC<CarouselProps> = ({ title }) => {
 			setIsLoading(true);
 
 			try {
-				const response = await axios.get(
-					"http://localhost:8000/api/movies/now-showing"
-				);
-				setMovies(response.data);
+				const moviesData = await fetchData();
+				setMovies(moviesData);
 			} catch (error) {
 				console.error("Error fetching movies:", error);
 			} finally {
@@ -33,7 +32,7 @@ const Carousel: React.FC<CarouselProps> = ({ title }) => {
 		};
 
 		fetchMovies();
-	}, []);
+	}, [fetchData]);
 
 	const handleNext = () => {
 		if (currentIndex + 4 < movies.length) {
@@ -52,7 +51,9 @@ const Carousel: React.FC<CarouselProps> = ({ title }) => {
 			<h2 className={clsx(styles.title)}>{title}</h2>
 			<div className={clsx(styles["carousel-wrapper"])}>
 				{isLoading ? (
-					<div className={clsx(styles.loading)}>Đang tải...</div>
+					<Box className={clsx(styles.loading)}>
+						<CircularProgress size={50} />
+					</Box>
 				) : movies.length === 0 ? (
 					<div className={clsx(styles.empty)}>Không có phim nào đang chiếu</div>
 				) : (
@@ -66,7 +67,12 @@ const Carousel: React.FC<CarouselProps> = ({ title }) => {
 						</button>
 
 						<div className={clsx(styles["carousel-track"])}>
-							<div className={clsx(styles["carousel-list"])}>
+							<div
+								className={clsx(styles["carousel-list"])}
+								style={{
+									transform: `translateX(calc(-${currentIndex} * (var(--item-width) + var(--item-gap))))`,
+								}}
+							>
 								{movies.map((movie) => (
 									<CarouselItem item={movie} key={movie.id} />
 								))}

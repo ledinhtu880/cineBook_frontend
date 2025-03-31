@@ -20,6 +20,7 @@ export interface ValidationErrors {
 
 export interface CarouselProps {
 	title: string;
+	fetchData: () => Promise<MovieProps[]>; // Function to fetch data
 }
 
 export interface MovieProps {

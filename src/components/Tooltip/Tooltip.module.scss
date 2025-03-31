@@ -1,0 +1,38 @@
+.wrapper {
+	@apply flex items-center justify-center gap-2;
+}
+
+.primary {
+	@apply text-white bg-[--primary] hover:bg-[--primary-hover];
+}
+.outline {
+	@apply shadow-md text-[--primary] border-[currentColor] border hover:bg-[--primary-hover] hover:text-white;
+}
+
+.rounded {
+	@apply text-[--primary] border-[currentColor] border shadow-md rounded-full;
+}
+
+.text {
+	@apply bg-transparent;
+}
+
+.no-padding {
+	@apply p-0;
+}
+
+.small {
+	@apply px-4 py-2;
+}
+
+.medium {
+	@apply px-6 py-3;
+}
+
+.large {
+	@apply px-8 py-4;
+}
+
+.icon {
+	@apply inline-flex items-center;
+}
