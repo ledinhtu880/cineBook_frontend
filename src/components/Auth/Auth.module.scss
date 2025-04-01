@@ -1,0 +1,38 @@
+.form-wrapper {
+	@apply flex flex-col gap-5;
+}
+.form-error {
+	@apply text-sm text-red-500;
+}
+.form-img {
+	@apply my-0 mx-auto w-[190] h-[120] object-cover duration-500 ease-in-out group-hover:opacity-100 scale-100 blur-0 grayscale-0;
+}
+.title {
+	@apply py-2 mx-auto text-lg text-center font-medium capitalize;
+}
+.btn-login {
+	@apply w-full px-5 py-2.5 text-white text-sm text-center font-medium rounded-md bg-primary hover:bg-[--primary-hover]
+	focus:ring-4 focus:outline-none focus:ring-blue-300;
+}
+.btn-forgot {
+	@apply inline-block my-3 font-light  text-sm hover:text-primary cursor-pointer;
+}
+.info {
+	@apply text-center text-sm font-light pt-3 mb-1 border-t-2 border-gray-200;
+}
+.btn-register {
+	@apply w-full text-sm font-medium px-5 py-2.5 rounded-md focus:ring-4;
+}
+
+.circle {
+	@apply rounded-full w-[75px] h-[75px] border-green-400 border-2 bg-white flex items-center justify-center mx-auto;
+
+	i,
+	svg {
+		@apply text-green-400;
+	}
+}
+
+.welcome {
+	@apply text-center text-sm font-light mt-3;
+}

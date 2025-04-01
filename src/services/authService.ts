@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { User } from "@/types";
 const API_URL = import.meta.env.VITE_API_URL;
+import { RegisterFormData } from "@/types/";
 
 interface LoginResponse {
 	status: string;
@@ -22,6 +23,13 @@ const authService = {
 			localStorage.setItem("token", response.data.data.token);
 			localStorage.setItem("user", JSON.stringify(response.data.data.user));
 		}
+
+		return response.data;
+	},
+
+	register: async (formData: RegisterFormData) => {
+		const response = await axios.post(`${API_URL}/auth/register`, formData);
+		console.log(response);
 
 		return response.data;
 	},

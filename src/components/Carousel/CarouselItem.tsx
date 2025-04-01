@@ -2,14 +2,14 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-
-import Button from "@/components/Button";
-import styles from "./Carousel.module.scss";
-import { MovieProps } from "@/types/index";
-import Image from "@/components/Image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlay, faTicket } from "@fortawesome/free-solid-svg-icons";
+
+import styles from "./Carousel.module.scss";
+import Modal from "@/components/Modal";
+import Button from "@/components/Button";
+import { MovieProps } from "@/types/index";
+import Image from "@/components/Image";
 import Tooltip from "@/components/Tooltip";
 
 const style = {
@@ -65,7 +65,10 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 					</Button>
 					<Button
 						size="small"
-						className={clsx(styles["carousel-btn"])}
+						className={clsx(
+							styles["carousel-btn"],
+							styles["carousel-btn-outline"]
+						)}
 						outline
 						leftIcon={<FontAwesomeIcon icon={faCirclePlay} />}
 						onClick={handleOpenTrailer}
@@ -82,7 +85,7 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 
 			{showTrailer && (
 				<Modal
-					open={showTrailer}
+					isOpen={showTrailer}
 					onClose={handleCloseTrailer}
 					aria-labelledby="movie-trailer"
 				>

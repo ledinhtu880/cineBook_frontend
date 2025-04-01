@@ -8,8 +8,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 	type?: string;
 	label?: string;
 	className?: string;
-	id: string;
-	error: string;
+	id?: string;
+	error?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,7 +24,7 @@ const Input: React.FC<InputProps> = ({
 
 	return (
 		<div>
-			{label && <Label htmlFor={id}>{label}</Label>}
+			{label && id && <Label htmlFor={id}>{label}</Label>}{" "}
 			<input className={classes} type={type} {...passProps} id={id} />
 			{error && <span className={clsx(styles["error-message"])}>{error}</span>}
 		</div>

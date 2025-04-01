@@ -3,14 +3,14 @@
 }
 
 .primary {
-	@apply text-white bg-[--primary] hover:bg-[--primary-hover];
+	@apply text-white bg-[--primary] border border-transparent hover:bg-[--primary-hover];
 }
 .outline {
-	@apply shadow-md text-[--primary] border-[currentColor] border hover:bg-[--primary-hover] hover:text-white;
+	@apply text-[--primary] border-[currentColor] border shadow-md  hover:bg-[--primary-hover] hover:text-white;
 }
 
 .rounded {
-	@apply text-[--primary] border-[currentColor] border shadow-md rounded-full;
+	@apply text-[--primary] border-[currentColor] border rounded-full shadow-md;
 }
 
 .text {
@@ -34,5 +34,5 @@
 }
 
 .icon {
-	@apply inline-flex items-center;
+	@apply inline-flex items-center w-[18px];
 }

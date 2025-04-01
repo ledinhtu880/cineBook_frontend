@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import styles from "./Button.module.scss";
 import { Link } from "react-router-dom";
 import { ReactNode, MouseEvent, ElementType } from "react";
 
+import styles from "./Button.module.scss";
 interface ButtonProps {
 	to?: string;
 	href?: string;

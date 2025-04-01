@@ -1,23 +1,23 @@
 import { useState, useLayoutEffect, useCallback } from "react";
 import clsx from "clsx";
 
+import styles from "./Header.module.scss";
 import config from "@config/index";
 import Button from "@/components/Button";
-import Input from "@/components/Input";
-import Modal from "@/components/Modal";
 import authService from "@/services/authService";
-import styles from "./Header.module.scss";
-import { ApiError, ValidationErrors } from "@/types";
+import {
+	LoginModal,
+	RegisterModal,
+	RegisterSuccessModal,
+} from "@/components/Auth/";
 
 const Header = () => {
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
 	const [isLoggedIn, setIsLoggedIn] = useState(
 		localStorage.getItem("user") ? true : false
 	);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-	const [errors, setErrors] = useState<ValidationErrors>({});
+	const [isRegisterSuccessOpen, setIsRegisterSuccessOpen] = useState(false);
 
 	useLayoutEffect(() => {
 		const token = localStorage.getItem("token");
@@ -27,35 +27,9 @@ const Header = () => {
 		}
 	}, []);
 
-	const handleLogin = useCallback(
-		async (e: React.FormEvent) => {
-			e.preventDefault();
-			setErrors({});
-
-			try {
-				await authService.login(email, password);
-				setIsLoggedIn(true);
-				setIsLoginOpen(false);
-			} catch (error) {
-				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					const validationErrors = Object.entries(
-						apiError.response.data.errors
-					).reduce(
-						(acc, [key, messages]) => ({
-							...acc,
-							[key]: Array.isArray(messages) ? messages[0] : messages,
-						}),
-						{} as ValidationErrors
-					);
-					setErrors(validationErrors);
-				} else {
-					setErrors({ general: "Có lỗi xảy ra khi đăng nhập" });
-				}
-			}
-		},
-		[email, password]
-	); // Chỉ tạo lại function khi email hoặc password thay đổi
+	const handleLoginSuccess = useCallback(() => {
+		setIsLoggedIn(true);
+	}, []);
 
 	const handleLogout = useCallback(() => {
 		authService.logout();
@@ -115,49 +89,37 @@ const Header = () => {
 
 			{!isLoggedIn && (
 				<>
-					<Modal
+					<LoginModal
 						isOpen={isLoginOpen}
 						onClose={() => setIsLoginOpen(false)}
-						title="Đăng nhập"
-					>
-						<form
-							className={clsx(styles["form-wrapper"])}
-							onSubmit={handleLogin}
-						>
-							<Input
-								label="Email"
-								id="email"
-								type="email"
-								placeholder="Nhập email"
-								error={errors.email}
-								onChange={(e) => setEmail(e.target.value)}
-							/>
-							<Input
-								label="Mật khẩu"
-								id="password"
-								type="password"
-								placeholder="Nhập mật khẩu"
-								error={errors.password}
-								onChange={(e) => setPassword(e.target.value)}
-							/>
-							<Button className={clsx(styles["btn-login"])}>Đăng nhập</Button>
-						</form>
-					</Modal>
+						onLoginSuccess={handleLoginSuccess}
+						onOpenRegister={() => {
+							setIsLoginOpen(false);
+							setIsRegisterOpen(true);
+						}}
+					/>
 
-					<Modal
+					<RegisterModal
 						isOpen={isRegisterOpen}
 						onClose={() => setIsRegisterOpen(false)}
-						title="Đăng ký"
-					>
-						<form>
-							<input type="text" placeholder="Họ" />
-							<input type="text" placeholder="Tên" />
-							<input type="email" placeholder="Email" />
-							<input type="password" placeholder="Mật khẩu" />
-							<input type="password" placeholder="Xác nhận mật khẩu" />
-							<Button primary>Đăng ký</Button>
-						</form>
-					</Modal>
+						onOpenLogin={() => {
+							setIsLoginOpen(true);
+							setIsRegisterOpen(false);
+						}}
+						onRegisterSuccess={() => {
+							setIsRegisterOpen(false);
+							setIsRegisterSuccessOpen(true);
+						}}
+					/>
+
+					<RegisterSuccessModal
+						isOpen={isRegisterSuccessOpen}
+						onClose={() => setIsRegisterSuccessOpen(false)}
+						onRegisterSuccess={() => {
+							setIsRegisterSuccessOpen(false);
+							setIsLoggedIn(true);
+						}}
+					/>
 				</>
 			)}
 		</header>

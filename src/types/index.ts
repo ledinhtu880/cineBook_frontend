@@ -5,11 +5,19 @@ export interface User {
 	email: string;
 }
 
+export interface LoginFormData {
+	email: string;
+	password: string;
+}
+
 export interface ApiError {
 	response?: {
 		data?: {
-			errors?: Record<string, string[]>;
-			message?: string;
+			status: "error";
+			message: string;
+			errors: {
+				[key: string]: string[]; // Giữ nguyên array nhưng biết chắc chỉ có 1 phần tử
+			};
 		};
 	};
 }
@@ -30,4 +38,12 @@ export interface MovieProps {
 	poster_url: string;
 	trailer_url: string;
 	age_rating: string;
+}
+
+export interface RegisterFormData {
+	first_name: string;
+	last_name: string;
+	email: string;
+	password: string;
+	password_confirmation: string;
 }

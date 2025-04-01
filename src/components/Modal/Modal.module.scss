@@ -1,57 +1,11 @@
-.overlay {
-	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50;
-}
-
-.wrapper {
-	@apply overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full;
-	animation: fadeIn 0.2s ease-in-out;
-}
-
-.modal-dialog {
-	@apply relative p-4 w-full max-w-md max-h-full;
-	animation: slideIn 0.3s ease-out;
-}
-
-.modal-content {
-	@apply relative bg-white rounded-lg shadow-sm;
-}
-
 .modal-header {
-	@apply flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200;
+	@apply flex items-center justify-between pb-4 border-b-2 border-gray-200;
 }
 
 .modal-title {
 	@apply text-xl font-semibold text-[--primary];
 }
 
-.close-btn {
-	@apply p-2 text-gray-400 transition-colors duration-200 rounded-full hover:bg-gray-100 hover:text-gray-600;
-
-	svg {
-		@apply w-5 h-5;
-	}
-}
-
 .modal-body {
-	@apply p-6 space-y-4;
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-@keyframes slideIn {
-	from {
-		transform: translateY(-10%);
-		opacity: 0;
-	}
-	to {
-		transform: translateY(0);
-		opacity: 1;
-	}
+	@apply mt-4;
 }

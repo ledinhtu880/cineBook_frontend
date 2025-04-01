@@ -5,12 +5,24 @@
 @tailwind utilities;
 
 :root {
-	--primary: #3f5277;
-	--primary-hover: #2f3e59;
+	--primary: #144184;
+	--primary-hover: #1b51a3;
+	--secondary: #3e8afa;
+	--yellow: #ffa600;
+	--text-color: #333;
 	--font-family: "Be Vietnam Pro", sans-serif;
 }
 
 body {
 	font-family: var(--font-family);
 	text-rendering: optimizeSpeed;
+	color: #333;
+}
+
+.text-primary {
+	@apply text-[--primary];
+}
+
+.bg-primary {
+	@apply bg-[--primary];
 }

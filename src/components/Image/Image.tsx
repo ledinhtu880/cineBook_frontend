@@ -1,9 +1,10 @@
 import { useState, forwardRef } from "react";
-import styles from "./Image.module.scss";
 import clsx from "clsx";
 
-const DEFAULT_FALLBACK =
-	"https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=";
+import styles from "./Image.module.scss";
+import images from "@/assets/images/";
+
+const DEFAULT_FALLBACK = images.fallbackImage; // Default fallback image
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 	src: string;

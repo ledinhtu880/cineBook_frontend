@@ -15,7 +15,7 @@ const Home = () => {
 	hooks.useDocumentTitle("Trang chủ");
 
 	return (
-		<div className={clsx(styles.wrapper)} style={{ height: "10000px" }}>
+		<div className={clsx(styles.wrapper)}>
 			{/* Start: Slider */}
 			<div className={clsx(styles.slider)}>
 				<button className={clsx(styles.sliderControl, styles.prev)}>

@@ -80,6 +80,10 @@
 	@apply w-[120px] text-white hover:border-[--primary-hover];
 }
 
+.carousel-btn-outline {
+	@apply text-white !important;
+}
+
 .trailerOverlay {
 	@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50;
 }
