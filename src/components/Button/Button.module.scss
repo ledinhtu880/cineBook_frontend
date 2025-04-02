@@ -6,11 +6,11 @@
 	@apply text-white bg-[--primary] border border-transparent hover:bg-[--primary-hover];
 }
 .outline {
-	@apply text-[--primary] border-[currentColor] border shadow-md  hover:bg-[--primary-hover] hover:text-white;
+	@apply border-[currentColor] border shadow-md;
 }
 
 .rounded {
-	@apply text-[--primary] border-[currentColor] border rounded-full shadow-md;
+	@apply border-[currentColor] border rounded-full shadow-md;
 }
 
 .text {

@@ -1,6 +1,21 @@
 .wrapper {
-	@apply fixed top-0 left-0 z-50 flex h-screen w-[290px] 
-			flex-col overflow-y-auto border-r border-gray-200 bg-white 
-			p-5 
+	@apply fixed top-0 left-0 z-50 flex p-5 h-screen w-[290px] 
+			flex-col gap-4 overflow-y-auto border-r border-gray-200 bg-white 
 			transition-all duration-300 lg:static lg:translate-x-0 dark:border-gray-800 dark:bg-black -translate-x-full;
+
+	&.collapse {
+		@apply w-20;
+
+		.logo {
+			@apply w-12 mx-auto;
+		}
+	}
+}
+
+.menu-wrapper {
+	@apply flex flex-col gap-4 overflow-y-auto duration-300 ease-linear;
+}
+
+.logo {
+	@apply w-64 h-auto transition-all duration-300;
 }

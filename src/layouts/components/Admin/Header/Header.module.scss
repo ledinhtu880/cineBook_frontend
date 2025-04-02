@@ -7,6 +7,9 @@
 .header-left {
 	@apply py-5;
 }
+.btn-collapse {
+	@apply flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500;
+}
 .header-right {
 	@apply py-5;
 }

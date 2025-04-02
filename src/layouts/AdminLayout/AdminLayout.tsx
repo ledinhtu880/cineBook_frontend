@@ -1,3 +1,4 @@
+import { useState } from "react";
 import clsx from "clsx";
 
 import styles from "./AdminLayout.module.scss";
@@ -9,11 +10,17 @@ interface AdminLayoutProps {
 }
 
 function AdminLayout({ children }: AdminLayoutProps) {
+	const [isCollapse, setIsCollapse] = useState(false);
+
+	const handleToggleCollapse = () => {
+		setIsCollapse(!isCollapse);
+	};
+
 	return (
 		<div className={clsx(styles.wrapper)}>
-			<Sidebar />
+			<Sidebar isCollapse={isCollapse} />
 			<section className={clsx(styles["section"])}>
-				<Header />
+				<Header onCollapse={handleToggleCollapse} />
 				<main className={clsx(styles["main"])}>{children}</main>
 			</section>
 		</div>

@@ -79,14 +79,12 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	// If not authenticated, show login modal but keep on current page
 	if (!isAuthenticated) {
 		return (
-			<>
-				<LoginModal
-					isOpen={showLoginModal}
-					onClose={handleCloseModal}
-					onLoginSuccess={handleLoginSuccess}
-					isHaveRegister={false}
-				/>
-			</>
+			<LoginModal
+				isOpen={showLoginModal}
+				onClose={handleCloseModal}
+				onLoginSuccess={handleLoginSuccess}
+				isHaveRegister={false}
+			/>
 		);
 	}
 

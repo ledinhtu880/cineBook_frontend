@@ -108,7 +108,7 @@ const LoginModal = ({
 					error={errors.password}
 					onChange={handleChange}
 				/>
-				<Button className={clsx(styles["btn-login"])}>Đăng nhập</Button>
+				<Button className={clsx(styles["btn-primary"])}>Đăng nhập</Button>
 			</form>
 			{isHaveRegister && (
 				<>
@@ -117,9 +117,8 @@ const LoginModal = ({
 					</Button>
 					<p className={clsx(styles["info"])}>Bạn chưa có tài khoản</p>
 					<Button
-						className={clsx(styles["btn-register"])}
+						className={clsx(styles["btn-secondary"])}
 						outline
-						size="small"
 						onClick={onOpenRegister}
 					>
 						Đăng ký

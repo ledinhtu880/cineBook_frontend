@@ -11,8 +11,10 @@ const routes = {
 	admin: "/admin",
 	admin_dashboard: "/admin/dashboard",
 	admin_movies: "/admin/movies",
+	admin_cinemas: "/admin/cinemas",
+	admin_showtimes: "/admin/showtimes",
+	admin_bookings: "/admin/bookings",
 	admin_users: "/admin/users",
-	//#endregion
 };
 
 export default routes;

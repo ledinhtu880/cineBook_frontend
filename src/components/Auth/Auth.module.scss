@@ -10,7 +10,7 @@
 .title {
 	@apply py-2 mx-auto text-lg text-center font-medium capitalize;
 }
-.btn-login {
+.btn-primary {
 	@apply w-full px-5 py-2.5 text-white text-sm text-center font-medium rounded-md bg-primary hover:bg-[--primary-hover]
 	focus:ring-4 focus:outline-none focus:ring-blue-300;
 }
@@ -18,10 +18,10 @@
 	@apply inline-block my-3 font-light  text-sm hover:text-primary cursor-pointer;
 }
 .info {
-	@apply text-center text-sm font-light pt-3 mb-1 border-t-2 border-gray-200;
+	@apply text-center text-sm font-light pt-3 mb-1 border-t-2 border-gray-200 mt-4;
 }
-.btn-register {
-	@apply w-full text-sm font-medium px-5 py-2.5 rounded-md focus:ring-4;
+.btn-secondary {
+	@apply w-full text-[--primary] text-sm font-medium px-5 py-2.5 rounded-md focus:ring-4 hover:bg-primary hover:text-white;
 }
 
 .circle {

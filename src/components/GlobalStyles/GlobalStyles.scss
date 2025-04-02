@@ -8,6 +8,7 @@
 	--primary: #144184;
 	--primary-hover: #1b51a3;
 	--secondary: #3e8afa;
+	--secondary-bg: #e8f0fe;
 	--yellow: #ffa600;
 	--text-color: #333;
 	--font-family: "Be Vietnam Pro", sans-serif;
@@ -25,4 +26,11 @@ body {
 
 .bg-primary {
 	@apply bg-[--primary];
+}
+.no-scrollbar {
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }

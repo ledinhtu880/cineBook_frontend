@@ -128,13 +128,12 @@ const RegisterModal = ({
 					error={errors.password_confirmation}
 					onChange={handleChange}
 				/>
-				<Button className={clsx(styles["btn-login"])}>Đăng ký</Button>
+				<Button className={clsx(styles["btn-primary"])}>Đăng ký</Button>
 			</form>
-			<p className={clsx(styles["info"], "mt-4")}>Bạn đã có tài khoản?</p>
+			<p className={clsx(styles["info"])}>Bạn đã có tài khoản?</p>
 			<Button
-				className={clsx(styles["btn-register"])}
+				className={clsx(styles["btn-secondary"])}
 				outline
-				size="small"
 				onClick={onOpenLogin}
 			>
 				Đăng nhập

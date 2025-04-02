@@ -12,6 +12,13 @@ const publicRoutes = [
 // Đăng nhập mới xem được
 const privateRoutes = [];
 
-const adminRoutes = [{ path: config.routes.admin, component: Admin.Dashboard }];
+const adminRoutes = [
+	{ path: config.routes.admin_dashboard, component: Admin.Dashboard },
+	{ path: config.routes.admin_movies, component: Admin.Movie },
+	{ path: config.routes.admin_cinemas, component: Admin.Cinema },
+	{ path: config.routes.admin_showtimes, component: Admin.Showtime },
+	{ path: config.routes.admin_bookings, component: Admin.Booking },
+	{ path: config.routes.admin_users, component: Admin.User },
+];
 
 export { publicRoutes, privateRoutes, adminRoutes };

@@ -1,0 +1,44 @@
+.menu-wrapper {
+	@apply flex flex-col;
+
+	&.collapse {
+		@apply items-center;
+	}
+}
+.menu-group-title {
+	@apply mb-2 text-xs text-gray-400 font-medium uppercase;
+}
+.more {
+	@apply mb-2 text-xs text-center text-gray-400;
+}
+.menu-group {
+	@apply flex flex-col gap-2;
+}
+
+.menu-item {
+	@apply rounded-lg transition-colors cursor-pointer hover:text-gray-800 hover:bg-gray-100;
+}
+
+.menu-link {
+	@apply flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200;
+
+	&.collapse {
+		@apply justify-center px-2;
+
+		.icon {
+			@apply mr-0;
+		}
+	}
+
+	&:hover {
+		@apply bg-[--primary-bg] text-[--primary];
+	}
+
+	&.active {
+		@apply text-blue-600 bg-[--secondary-bg] font-medium;
+	}
+}
+
+.active-icon {
+	@apply text-blue-600; // Hoặc màu chính của ứng dụng
+}
