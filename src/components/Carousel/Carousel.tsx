@@ -5,8 +5,7 @@ import {
 	faChevronLeft,
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
+import Loading from "@components/Loading";
 
 import styles from "./Carousel.module.scss";
 import { CarouselProps, MovieProps } from "@/types/index";
@@ -51,9 +50,7 @@ const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
 			<h2 className={clsx(styles.title)}>{title}</h2>
 			<div className={clsx(styles["carousel-wrapper"])}>
 				{isLoading ? (
-					<Box className={clsx(styles.loading)}>
-						<CircularProgress size={50} />
-					</Box>
+					<Loading />
 				) : movies.length === 0 ? (
 					<div className={clsx(styles.empty)}>Không có phim nào đang chiếu</div>
 				) : (

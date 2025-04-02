@@ -1,0 +1,9 @@
+.wrapper {
+	@apply flex h-screen;
+}
+.section {
+	@apply flex-1;
+}
+.main {
+	@apply px-6 py-5;
+}

@@ -29,7 +29,7 @@ const RegisterSuccessModal = ({
 	}, [isOpen, onRegisterSuccess]);
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} width={450} >
+		<Modal isOpen={isOpen} onClose={onClose} width={450}>
 			<Image
 				alt="Icon Login"
 				loading="lazy"

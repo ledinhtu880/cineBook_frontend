@@ -14,7 +14,8 @@ interface LoginModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onLoginSuccess: () => void;
-	onOpenRegister: () => void;
+	onOpenRegister?: () => void;
+	isHaveRegister?: boolean;
 }
 
 const LoginModal = ({
@@ -22,6 +23,7 @@ const LoginModal = ({
 	onClose,
 	onLoginSuccess,
 	onOpenRegister,
+	isHaveRegister = true,
 }: LoginModalProps) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -73,13 +75,17 @@ const LoginModal = ({
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
-			<Image
-				alt="Icon Login"
-				loading="lazy"
-				className={clsx(styles["form-img"])}
-				src="https://www.galaxycine.vn/_next/static/media/icon-login.fbbf1b2d.svg"
-			/>
-			<h5 className={styles.title}>Đăng nhập</h5>
+			{isHaveRegister && (
+				<>
+					<Image
+						alt="Icon Login"
+						loading="lazy"
+						className={clsx(styles["form-img"])}
+						src="https://www.galaxycine.vn/_next/static/media/icon-login.fbbf1b2d.svg"
+					/>
+					<h5 className={styles.title}>Đăng nhập</h5>
+				</>
+			)}
 			<form className={clsx(styles["form-wrapper"])} onSubmit={handleSubmit}>
 				{errors.general && (
 					<span className={styles["form-error"]}>{errors.general}</span>
@@ -104,18 +110,22 @@ const LoginModal = ({
 				/>
 				<Button className={clsx(styles["btn-login"])}>Đăng nhập</Button>
 			</form>
-			<Button className={clsx(styles["btn-forgot"])} size="no-padding">
-				Quên mật khẩu
-			</Button>
-			<p className={clsx(styles["info"])}>Bạn chưa có tài khoản</p>
-			<Button
-				className={clsx(styles["btn-register"])}
-				outline
-				size="small"
-				onClick={onOpenRegister}
-			>
-				Đăng ký
-			</Button>
+			{isHaveRegister && (
+				<>
+					<Button className={clsx(styles["btn-forgot"])} size="no-padding">
+						Quên mật khẩu
+					</Button>
+					<p className={clsx(styles["info"])}>Bạn chưa có tài khoản</p>
+					<Button
+						className={clsx(styles["btn-register"])}
+						outline
+						size="small"
+						onClick={onOpenRegister}
+					>
+						Đăng ký
+					</Button>
+				</>
+			)}
 		</Modal>
 	);
 };

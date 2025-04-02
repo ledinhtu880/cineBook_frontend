@@ -1,5 +1,5 @@
 import config from "@config/index";
-import { Home, NowShowing, ComingSoon, Cinema } from "../pages";
+import { Home, NowShowing, ComingSoon, Cinema, Admin } from "../pages";
 
 // Không đăng nhập vẫn xem được
 const publicRoutes = [
@@ -12,4 +12,6 @@ const publicRoutes = [
 // Đăng nhập mới xem được
 const privateRoutes = [];
 
-export { publicRoutes, privateRoutes };
+const adminRoutes = [{ path: config.routes.admin, component: Admin.Dashboard }];
+
+export { publicRoutes, privateRoutes, adminRoutes };

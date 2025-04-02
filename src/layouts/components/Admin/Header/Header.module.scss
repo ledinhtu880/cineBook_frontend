@@ -1,0 +1,12 @@
+.header {
+	@apply sticky top-0 z-50 flex w-full border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:border-b;
+}
+.header-wrapper {
+	@apply flex grow items-center justify-between px-6;
+}
+.header-left {
+	@apply py-5;
+}
+.header-right {
+	@apply py-5;
+}

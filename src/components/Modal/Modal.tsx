@@ -31,12 +31,7 @@ const Modal = ({
 	};
 
 	return (
-		<MuiModal
-			open={isOpen}
-			onClose={onClose}
-			aria-labelledby="modal-title"
-			tabIndex={-1}
-		>
+		<MuiModal open={isOpen} onClose={onClose} aria-labelledby="modal-title">
 			<Box sx={style}>
 				{title && (
 					<div className={clsx(styles["modal-header"])}>
