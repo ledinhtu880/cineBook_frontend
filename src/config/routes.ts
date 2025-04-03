@@ -5,6 +5,7 @@ const routes = {
 	coming_soon: "/phim-sap-chieu",
 	cinema: "/he-thong-rap",
 	forgot_password: "/quen-mat-khau",
+	not_found: "*",
 	//#endregion
 
 	// #region Quản trị viên

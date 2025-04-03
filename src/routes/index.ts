@@ -1,5 +1,12 @@
 import config from "@config/index";
-import { Home, NowShowing, ComingSoon, Cinema, Admin } from "../pages";
+import {
+	Home,
+	NowShowing,
+	ComingSoon,
+	Cinema,
+	Admin,
+	NotFoundPage,
+} from "../pages";
 
 // Không đăng nhập vẫn xem được
 const publicRoutes = [
@@ -7,6 +14,7 @@ const publicRoutes = [
 	{ path: config.routes.now_showing, component: NowShowing },
 	{ path: config.routes.coming_soon, component: ComingSoon },
 	{ path: config.routes.cinema, component: Cinema },
+	{ path: config.routes.not_found, component: NotFoundPage },
 ];
 
 // Đăng nhập mới xem được
