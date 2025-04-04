@@ -7,7 +7,7 @@ import config from "@config/index";
 import Button from "@/components/Button";
 import Image from "@/components/Image";
 import images from "@/assets/images";
-import authService from "@/services/authService";
+import { authService } from "@/services/";
 import {
 	LoginModal,
 	RegisterModal,

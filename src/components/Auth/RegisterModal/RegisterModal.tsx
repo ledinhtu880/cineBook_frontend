@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import Image from "@/components/Image";
 import { ValidationErrors, ApiError, RegisterFormData } from "@/types";
 import { validateRegisterForm } from "@/utils/validation";
-import authService from "@/services/authService";
+import { authService } from "@/services/";
 
 interface RegisterModalProps {
 	isOpen: boolean;

@@ -1,15 +1,29 @@
 .header {
-	@apply sticky top-0 z-50 flex w-full border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:border-b;
+	@apply sticky top-0 z-50 flex w-full h-[76px] border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:border-b;
 }
 .header-wrapper {
 	@apply flex grow items-center justify-between px-6;
 }
-.header-left {
-	@apply py-5;
-}
+
 .btn-collapse {
 	@apply flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500;
 }
+
+.header-left,
 .header-right {
-	@apply py-5;
+	@apply h-full py-4;
+}
+
+.header-right {
+	@apply flex items-center gap-3;
+}
+
+.header-btn {
+	span {
+		@apply text-sm font-medium;
+	}
+}
+
+.header-avatar {
+	@apply w-[44px] h-[44px] object-cover rounded-full;
 }

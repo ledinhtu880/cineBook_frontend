@@ -1,10 +1,3 @@
-export interface User {
-	id: number;
-	first_name: string;
-	last_name: string;
-	email: string;
-}
-
 export interface LoginFormData {
 	email: string;
 	password: string;
@@ -46,4 +39,10 @@ export interface RegisterFormData {
 	email: string;
 	password: string;
 	password_confirmation: string;
+}
+
+export interface Column<T> {
+	key: keyof T;
+	title: string;
+	align?: "left" | "center" | "right";
 }

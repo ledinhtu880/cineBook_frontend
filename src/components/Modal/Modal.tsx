@@ -40,7 +40,7 @@ const Modal = ({
 						</h3>
 					</div>
 				)}
-				<div className={clsx(styles["modal-body"])}>{children}</div>
+				{children}
 			</Box>
 		</MuiModal>
 	);

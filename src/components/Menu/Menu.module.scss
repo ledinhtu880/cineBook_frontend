@@ -35,10 +35,10 @@
 	}
 
 	&.active {
-		@apply text-blue-600 bg-[--secondary-bg] font-medium;
+		@apply text-secondary bg-[--secondary-bg] font-medium;
 	}
 }
 
 .active-icon {
-	@apply text-blue-600; // Hoặc màu chính của ứng dụng
+	@apply text-secondary; // Hoặc màu chính của ứng dụng
 }

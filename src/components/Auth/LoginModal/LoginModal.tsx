@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Image from "@/components/Image";
 import Modal from "@/components/Modal";
-import authService from "@/services/authService";
+import { authService } from "@/services/";
 import { ApiError, ValidationErrors } from "@/types";
 import { validateLoginForm } from "@/utils/validation";
 

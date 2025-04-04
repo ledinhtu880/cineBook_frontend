@@ -56,7 +56,7 @@ const Sidebar = ({ isCollapse }: SidebarProps) => {
 
 	return (
 		<aside className={clsx(styles.wrapper, { [styles.collapse]: isCollapse })}>
-			<Link to={config.routes.admin} tabIndex={-1}>
+			<Link to={config.routes.admin_dashboard} tabIndex={-1}>
 				<Image src={images.logo} alt="Logo" className={clsx(styles["logo"])} />
 			</Link>
 			<div className={clsx(styles["menu-wrapper"], "no-scrollbar")}>

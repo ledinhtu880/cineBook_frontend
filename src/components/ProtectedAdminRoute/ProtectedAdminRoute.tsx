@@ -3,7 +3,7 @@ import { useState, useEffect, ReactElement } from "react";
 
 import { LoginModal } from "@components/Auth/index";
 import Loading from "@components/Loading";
-import authService from "@/services/authService";
+import { authService } from "@/services/";
 
 const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);

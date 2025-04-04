@@ -1,0 +1,70 @@
+.table {
+	@apply min-w-full;
+}
+
+.table-header {
+	@apply border-y border-gray-200 bg-gray-50;
+}
+.table-heading {
+	@apply px-6 py-3 text-xs font-medium text-gray-500;
+}
+
+.table-body {
+	@apply divide-y divide-gray-200;
+}
+.table-data {
+	@apply px-6 py-3 text-sm text-gray-800;
+}
+.actions-wrapper {
+	@apply flex items-center justify-end gap-1 px-6 py-4;
+}
+.actions-btn-edit {
+	@apply hover:text-yellow-500;
+}
+
+.actions-btn-delete {
+	@apply hover:text-red-500;
+}
+
+.modal {
+	@apply shadow-lg rounded-lg overflow-hidden bg-white;
+}
+
+.modal-body {
+	@apply p-3 flex flex-col items-center text-center;
+
+	h3 {
+		@apply text-lg font-semibold;
+	}
+
+	p {
+		@apply text-gray-500 text-sm;
+	}
+}
+
+.warning-message {
+	@apply flex flex-col gap-2 items-center text-gray-700;
+
+	.warning-icon-wrapper {
+		@apply flex items-center justify-center p-2 rounded-full bg-red-100;
+	}
+
+	.warning-icon {
+		@apply text-red-500;
+	}
+}
+
+.modal-footer {
+	@apply flex flex-col gap-3 mt-6 px-6 pb-6;
+
+	.btn-delete {
+		@apply bg-red-500 text-white py-3 w-full rounded-md font-medium;
+
+		&:hover {
+			@apply opacity-90 transition-opacity;
+		}
+	}
+	.btn-cancel {
+		@apply border border-gray-200 text-gray-700 py-3 w-full rounded-md font-medium hover:bg-gray-100;
+	}
+}

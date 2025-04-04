@@ -5,15 +5,12 @@ import {
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-import * as hooks from "@hooks/index";
 import styles from "./Home.module.scss";
 import Image from "@/components/Image";
 import Carousel from "@/components/Carousel";
 import movieService from "@/services/movieService";
 
 const Home = () => {
-	hooks.useDocumentTitle("Trang chủ");
-
 	return (
 		<div className={clsx(styles.wrapper)}>
 			{/* Start: Slider */}

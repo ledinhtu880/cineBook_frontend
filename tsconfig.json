@@ -25,7 +25,8 @@
 			"@config/*": ["./src/config/*"],
 			"@hooks/*": ["./src/hooks/*"],
 			"@types/*": ["./src/types/*"],
-			"@assets/*": ["./src/assets/*"]
+			"@assets/*": ["./src/assets/*"],
+			"@routes/*": ["./src/routes/*"]
 		},
 		"types": ["node"]
 	},

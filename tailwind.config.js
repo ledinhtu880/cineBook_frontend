@@ -6,6 +6,7 @@ export default {
 			colors: {
 				primary: "var(--primary)",
 				"primary-hover": "var(--primary-hover)",
+				secondary: "var(--secondary)",
 			},
 		},
 	},

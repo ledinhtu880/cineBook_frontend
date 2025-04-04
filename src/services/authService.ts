@@ -1,7 +1,13 @@
 import axios from "axios";
-import type { User } from "@/types";
 const API_URL = import.meta.env.VITE_API_URL;
 import { RegisterFormData } from "@/types/";
+
+export interface User {
+	id: number;
+	first_name: string;
+	last_name: string;
+	email: string;
+}
 
 interface LoginResponse {
 	status: string;
@@ -14,22 +20,30 @@ interface LoginResponse {
 
 const authService = {
 	login: async (email: string, password: string) => {
-		const response = await axios.post<LoginResponse>(`${API_URL}/auth/login`, {
-			email,
-			password,
-		});
+		try {
+			const response = await axios.post<LoginResponse>(
+				`${API_URL}/auth/login`,
+				{
+					email,
+					password,
+				}
+			);
 
-		if (response.data.status === "success") {
-			localStorage.setItem("token", response.data.data.token);
-			localStorage.setItem("user", JSON.stringify(response.data.data.user));
+			if (response.data.status === "success") {
+				localStorage.setItem("token", response.data.data.token);
+				localStorage.setItem("user", JSON.stringify(response.data.data.user));
+			}
+
+			return response.data;
+		} catch (error) {
+			// Bắt lỗi network hoặc validation
+			console.error("Login error:", error);
+			throw error;
 		}
-
-		return response.data;
 	},
 
 	register: async (formData: RegisterFormData) => {
 		const response = await axios.post(`${API_URL}/auth/register`, formData);
-		console.log(response);
 
 		return response.data;
 	},
@@ -59,7 +73,7 @@ const authService = {
 	},
 
 	isLoggedIn: () => {
-		return !!localStorage.getItem("token");
+		return !!localStorage.getItem("token") && !!localStorage.getItem("user");
 	},
 };
 

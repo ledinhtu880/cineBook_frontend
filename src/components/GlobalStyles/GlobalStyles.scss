@@ -8,6 +8,7 @@
 	--primary: #144184;
 	--primary-hover: #1b51a3;
 	--secondary: #3e8afa;
+	--secondary-hover: #2b7ef7;
 	--secondary-bg: #e8f0fe;
 	--yellow: #ffa600;
 	--text-color: #333;
@@ -22,6 +23,10 @@ body {
 
 .text-primary {
 	@apply text-[--primary];
+}
+
+.text-secondary {
+	@apply text-[--secondary];
 }
 
 .bg-primary {

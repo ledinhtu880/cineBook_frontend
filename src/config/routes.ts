@@ -15,7 +15,9 @@ const routes = {
 	admin_cinemas: "/admin/cinemas",
 	admin_showtimes: "/admin/showtimes",
 	admin_bookings: "/admin/bookings",
+
 	admin_users: "/admin/users",
+	admin_users_edit: "/admin/users/:id/edit",
 };
 
 export default routes;

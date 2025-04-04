@@ -1,0 +1,11 @@
+.wrapper {
+	@apply flex flex-col gap-4;
+}
+
+.header {
+	@apply flex justify-between items-center;
+}
+
+.title {
+	@apply text-lg font-medium text-gray-800;
+}
