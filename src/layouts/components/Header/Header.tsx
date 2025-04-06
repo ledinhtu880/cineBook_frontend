@@ -16,7 +16,7 @@ import {
 
 const Header = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(
-		localStorage.getItem("user") ? true : false
+		localStorage.getItem("token") ? true : false
 	);
 	const [isLoginOpen, setIsLoginOpen] = useState(false);
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);

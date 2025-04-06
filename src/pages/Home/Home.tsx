@@ -1,18 +1,58 @@
 import clsx from "clsx";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faChevronLeft,
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import { Snackbar, Alert } from "@mui/material";
 
 import styles from "./Home.module.scss";
 import Image from "@/components/Image";
 import Carousel from "@/components/Carousel";
 import movieService from "@/services/movieService";
 
+interface LocationState {
+	message?: string;
+	severity?: "error" | "warning" | "info" | "success";
+}
+
 const Home = () => {
+	const location = useLocation();
+	const [openSnackbar, setOpenSnackbar] = useState(false);
+	const state = location.state as LocationState;
+
+	useEffect(() => {
+		if (state?.message) {
+			setOpenSnackbar(true);
+		}
+	}, [state]);
+
+	const handleSnackbarClose = () => {
+		setOpenSnackbar(false);
+	};
+
 	return (
 		<div className={clsx(styles.wrapper)}>
+			{state?.message && (
+				<Snackbar
+					open={openSnackbar}
+					autoHideDuration={3000}
+					onClose={handleSnackbarClose}
+					anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+				>
+					<Alert
+						onClose={handleSnackbarClose}
+						severity={state.severity || "error"}
+						variant="filled"
+						sx={{ width: "100%" }}
+					>
+						{state.message}
+					</Alert>
+				</Snackbar>
+			)}
+
 			{/* Start: Slider */}
 			<div className={clsx(styles.slider)}>
 				<button className={clsx(styles.sliderControl, styles.prev)}>

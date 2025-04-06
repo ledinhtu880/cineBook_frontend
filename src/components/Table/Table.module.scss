@@ -16,7 +16,7 @@
 	@apply px-6 py-3 text-sm text-gray-800;
 }
 .actions-wrapper {
-	@apply flex items-center justify-end gap-1 px-6 py-4;
+	@apply flex items-center justify-center gap-1 px-6 py-4;
 }
 .actions-btn-edit {
 	@apply hover:text-yellow-500;

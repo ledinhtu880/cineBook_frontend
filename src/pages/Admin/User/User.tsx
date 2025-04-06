@@ -35,7 +35,7 @@ const User = () => {
 	);
 
 	useEffect(() => {
-		const fetchUsers = async () => {
+		(async () => {
 			try {
 				const response = await userService.getUsers();
 				setUsers(response);
@@ -47,9 +47,7 @@ const User = () => {
 			} finally {
 				setLoading(false);
 			}
-		};
-
-		fetchUsers();
+		})();
 	}, []);
 
 	return (

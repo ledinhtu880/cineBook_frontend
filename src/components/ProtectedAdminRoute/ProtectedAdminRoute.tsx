@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useState, useEffect, ReactElement } from "react";
 
 import { LoginModal } from "@components/Auth/index";
@@ -10,7 +10,6 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [showLoginModal, setShowLoginModal] = useState(false);
-	const location = useLocation();
 
 	useEffect(() => {
 		(async () => {
@@ -73,7 +72,7 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	};
 
 	if (loading) {
-		return <Loading />;
+		return <Loading absolute />;
 	}
 
 	// If not authenticated, show login modal but keep on current page
@@ -90,7 +89,16 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 	// If authenticated but not admin, redirect to home
 	if (!isAdmin) {
-		return <Navigate to="/" state={{ from: location }} replace />;
+		return (
+			<Navigate
+				to="/"
+				state={{
+					message: "Bạn không có quyền truy cập vào trang này!",
+					severity: "error",
+				}}
+				replace
+			/>
+		);
 	}
 
 	// If admin, show admin content

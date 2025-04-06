@@ -13,7 +13,7 @@ import Button from "@components/Button";
 import Modal from "@components/Modal";
 import { Column } from "@/types/";
 
-interface TableProps<T extends { id: number; name: string }> {
+interface TableProps<T extends { id: number; name?: string; title?: string }> {
 	columns: Column<T>[];
 	data: T[];
 	editPath?: string;
@@ -21,7 +21,7 @@ interface TableProps<T extends { id: number; name: string }> {
 	pageSize?: number;
 }
 
-const Table = <T extends { id: number; name: string }>({
+const Table = <T extends { id: number; name?: string; title?: string }>({
 	// Thêm constraint
 	columns,
 	data,
@@ -56,8 +56,8 @@ const Table = <T extends { id: number; name: string }>({
 							</th>
 						))}
 						{(editPath || onDelete) && (
-							<th className={clsx(styles["table-heading"], "text-right")}>
-								Actions
+							<th className={clsx(styles["table-heading"], "text-center")}>
+								Thao tác
 							</th>
 						)}
 					</tr>
@@ -75,7 +75,9 @@ const Table = <T extends { id: number; name: string }>({
 											"text-right": column.align === "right",
 										})}
 									>
-										{String(record[column.key])}
+										{column.render
+											? column.render(record[column.key], record)
+											: String(record[column.key])}
 									</td>
 								))}
 								{(editPath || onDelete) && (
@@ -179,7 +181,8 @@ const Table = <T extends { id: number; name: string }>({
 								<h3>Bạn có chắc chắn?</h3>
 								<p>
 									Hành động này không thể hoàn tác. <br />
-									Tất cả giá trị liên kết với "{selectedRecord.name}" sẽ bị mất.
+									Tất cả giá trị liên kết với "
+									{selectedRecord.name || selectedRecord.title}" sẽ bị mất.
 								</p>
 							</div>
 						</div>

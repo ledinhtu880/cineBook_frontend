@@ -45,4 +45,5 @@ export interface Column<T> {
 	key: keyof T;
 	title: string;
 	align?: "left" | "center" | "right";
+	render?: (value: T[keyof T], record: T) => React.ReactNode;
 }

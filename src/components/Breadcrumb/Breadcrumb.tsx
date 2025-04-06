@@ -6,12 +6,12 @@ import styles from "./Breadcrumb.module.scss";
 
 const Breadcrumb = () => {
 	const location = useLocation();
-	const pathnames = location.pathname
-		.split("/")
-		.filter((x) => x)
-		.filter((path) => isNaN(Number(path)));
+	// Tách path nhưng không filter số ra
+	const allPathnames = location.pathname.split("/").filter((x) => x);
 
-	// Map route to display name
+	// Chỉ filter số khi hiển thị
+	const displayPathnames = allPathnames.filter((path) => isNaN(Number(path)));
+
 	const getDisplayName = (path: string) => {
 		const routeMap: { [key: string]: string } = {
 			admin: "Trang chủ",
@@ -28,9 +28,14 @@ const Breadcrumb = () => {
 
 	return (
 		<nav className={clsx(styles.breadcrumb)}>
-			{pathnames.map((name, index) => {
-				const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
-				const isLast = index === pathnames.length - 1;
+			{displayPathnames.map((name, index) => {
+				// Sử dụng allPathnames để tạo URL, nhưng displayPathnames để hiển thị
+				const routeSegments = allPathnames.slice(
+					0,
+					allPathnames.findIndex((p) => p === name) + 1
+				);
+				const routeTo = `/${routeSegments.join("/")}`;
+				const isLast = index === displayPathnames.length - 1;
 
 				return (
 					<span key={name} className={clsx(styles.item)}>
