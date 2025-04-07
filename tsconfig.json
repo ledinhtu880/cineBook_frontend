@@ -26,7 +26,8 @@
 			"@hooks/*": ["./src/hooks/*"],
 			"@types/*": ["./src/types/*"],
 			"@assets/*": ["./src/assets/*"],
-			"@routes/*": ["./src/routes/*"]
+			"@routes/*": ["./src/routes/*"],
+			"@context/*": ["./src/context/*"]
 		},
 		"types": ["node"]
 	},

@@ -1,7 +1,8 @@
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+
 import { RegisterFormData } from "@/types/";
 
+const API_URL = import.meta.env.VITE_API_URL;
 export interface User {
 	id: number;
 	first_name: string;
@@ -18,6 +19,7 @@ interface LoginResponse {
 		token: string;
 	};
 }
+
 let userCache: User | null = null;
 
 const authService = {
@@ -92,13 +94,12 @@ const authService = {
 				});
 
 				// Cập nhật cache
-				userCache = response.data.data.user;
+				userCache = response.data.data;
 				return userCache;
 			} catch (error) {
 				console.error("Failed to get user info:", error);
 				// Nếu token không hợp lệ, logout luôn
 				if (axios.isAxiosError(error) && error.response?.status === 401) {
-					console.log("Out");
 					authService.logout();
 				}
 				return null;
@@ -119,7 +120,7 @@ const authService = {
 				},
 			});
 
-			userCache = response.data.data.user;
+			userCache = response.data.data;
 			return userCache;
 		} catch (error) {
 			console.error("Failed to refresh user data:", error);

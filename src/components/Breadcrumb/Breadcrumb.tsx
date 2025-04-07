@@ -10,8 +10,9 @@ const Breadcrumb = () => {
 	const allPathnames = location.pathname.split("/").filter((x) => x);
 
 	// Chỉ filter số khi hiển thị
-	const displayPathnames = allPathnames.filter((path) => isNaN(Number(path)));
-
+	const displayPathnames = allPathnames.filter((path, index) =>
+		!isNaN(Number(path)) ? index === allPathnames.length - 1 : true
+	);
 	const getDisplayName = (path: string) => {
 		const routeMap: { [key: string]: string } = {
 			admin: "Trang chủ",
@@ -22,7 +23,14 @@ const Breadcrumb = () => {
 			users: "Quản lý người dùng",
 			edit: "Chỉnh sửa",
 			create: "Thêm mới",
+			show: "Xem chi tiết",
 		};
+
+		// Nếu path là số, trả về "Xem chi tiết"
+		if (!isNaN(Number(path))) {
+			return "Xem chi tiết";
+		}
+
 		return routeMap[path] || path;
 	};
 

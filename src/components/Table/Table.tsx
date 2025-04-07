@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+	Visibility,
 	Edit,
 	Delete,
 	Warning,
@@ -9,6 +10,7 @@ import {
 import clsx from "clsx";
 
 import styles from "./Table.module.scss";
+import Tooltip from "@components/Tooltip";
 import Button from "@components/Button";
 import Modal from "@components/Modal";
 import { Column } from "@/types/";
@@ -17,15 +19,16 @@ interface TableProps<T extends { id: number; name?: string; title?: string }> {
 	columns: Column<T>[];
 	data: T[];
 	editPath?: string;
+	showPath?: string;
 	onDelete?: (record: T) => void;
 	pageSize?: number;
 }
 
 const Table = <T extends { id: number; name?: string; title?: string }>({
-	// Thêm constraint
 	columns,
 	data,
 	editPath,
+	showPath,
 	onDelete,
 	pageSize = 5,
 }: TableProps<T>) => {
@@ -55,7 +58,7 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 								{column.title}
 							</th>
 						))}
-						{(editPath || onDelete) && (
+						{(editPath || showPath || onDelete) && (
 							<th className={clsx(styles["table-heading"], "text-center")}>
 								Thao tác
 							</th>
@@ -74,34 +77,68 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 											"text-center": column.align === "center",
 											"text-right": column.align === "right",
 										})}
+										style={{
+											width: column.width,
+											maxWidth: column.width,
+										}}
 									>
-										{column.render
-											? column.render(record[column.key], record)
-											: String(record[column.key])}
+										{column.tooltip ? (
+											<Tooltip
+												title={String(record[column.key])}
+												placement="bottom-start"
+											>
+												<div className="truncate">
+													{column.render
+														? column.render(record[column.key], record)
+														: String(record[column.key])}
+												</div>
+											</Tooltip>
+										) : (
+											<>
+												{column.render
+													? column.render(record[column.key], record)
+													: String(record[column.key])}
+											</>
+										)}
 									</td>
 								))}
-								{(editPath || onDelete) && (
+								{(editPath || showPath || onDelete) && (
 									<td className={clsx(styles["actions-wrapper"])}>
+										{showPath && (
+											<Tooltip title="Xem chi tiết" placement="bottom" arrow>
+												<Button
+													to={`${showPath}/${record.id}`}
+													size="no-padding"
+													className={clsx(styles["actions-btn-show"])}
+												>
+													<Visibility fontSize="small" />
+												</Button>
+											</Tooltip>
+										)}
 										{editPath && (
-											<Button
-												to={`${editPath}/${record.id}/edit`}
-												size="no-padding"
-												className={clsx(styles["actions-btn-edit"])}
-											>
-												<Edit fontSize="small" />
-											</Button>
+											<Tooltip title="Sửa dữ liệu" placement="bottom" arrow>
+												<Button
+													to={`${editPath}/${record.id}/edit`}
+													size="no-padding"
+													className={clsx(styles["actions-btn-edit"])}
+												>
+													<Edit fontSize="small" />
+												</Button>
+											</Tooltip>
 										)}
 										{onDelete && (
-											<Button
-												onClick={() => {
-													setSelectedRecord(record);
-													setIsModalOpen(true);
-												}}
-												size="no-padding"
-												className={clsx(styles["actions-btn-delete"])}
-											>
-												<Delete fontSize="small" />
-											</Button>
+											<Tooltip title="Xóa dữ liệu" placement="bottom" arrow>
+												<Button
+													onClick={() => {
+														setSelectedRecord(record);
+														setIsModalOpen(true);
+													}}
+													size="no-padding"
+													className={clsx(styles["actions-btn-delete"])}
+												>
+													<Delete fontSize="small" />
+												</Button>
+											</Tooltip>
 										)}
 									</td>
 								)}
@@ -194,7 +231,6 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 									setSelectedRecord(null);
 								}}
 								className={clsx(styles["btn-delete"])}
-								size="small"
 							>
 								Xóa
 							</Button>
@@ -204,7 +240,6 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 									setSelectedRecord(null);
 								}}
 								className={clsx(styles["btn-cancel"])}
-								size="small"
 							>
 								Hủy
 							</Button>

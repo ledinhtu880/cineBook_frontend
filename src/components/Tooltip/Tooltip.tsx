@@ -5,8 +5,6 @@ const Tooltip = ({ children, ...props }: TooltipProps) => {
 	return (
 		<MuiTooltip
 			{...props}
-			arrow
-			placement="bottom"
 			sx={{ fontSize: "30" }}
 			slotProps={{
 				tooltip: {

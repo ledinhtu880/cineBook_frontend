@@ -1,5 +1,5 @@
 .table {
-	@apply min-w-full;
+	@apply min-w-full table-fixed;
 }
 
 .table-header {
@@ -13,11 +13,16 @@
 	@apply divide-y divide-gray-200;
 }
 .table-data {
-	@apply px-6 py-3 text-sm text-gray-800;
+	@apply px-6 py-3 text-sm text-gray-800 truncate;
 }
 .actions-wrapper {
 	@apply flex items-center justify-center gap-1 px-6 py-4;
 }
+
+.actions-btn-show {
+	@apply hover:text-blue-500;
+}
+
 .actions-btn-edit {
 	@apply hover:text-yellow-500;
 }

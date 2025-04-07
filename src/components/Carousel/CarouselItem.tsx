@@ -2,8 +2,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlay, faTicket } from "@fortawesome/free-solid-svg-icons";
+import { ConfirmationNumber, PlayCircle } from "@mui/icons-material";
 
 import styles from "./Carousel.module.scss";
 import Modal from "@/components/Modal";
@@ -56,28 +55,25 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 				</div>
 				<div className={clsx(styles["carousel-overlay"])}>
 					<Button
-						size="small"
 						className={clsx(styles["carousel-btn"])}
 						primary
-						leftIcon={<FontAwesomeIcon icon={faTicket} />}
+						leftIcon={<ConfirmationNumber />}
 					>
 						Mua vé
 					</Button>
 					<Button
-						size="small"
 						className={clsx(
 							styles["carousel-btn"],
 							styles["carousel-btn-outline"]
 						)}
-						outline
-						leftIcon={<FontAwesomeIcon icon={faCirclePlay} />}
+						leftIcon={<PlayCircle />}
 						onClick={handleOpenTrailer}
 					>
 						Trailer
 					</Button>
 				</div>
 			</div>
-			<Tooltip title={item.title}>
+			<Tooltip title={item.title} arrow placement="bottom">
 				<Link to="#" className={clsx(styles["carousel-title"])}>
 					{item.title}
 				</Link>

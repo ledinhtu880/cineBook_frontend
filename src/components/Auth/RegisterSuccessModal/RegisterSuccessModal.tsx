@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import clsx from "clsx";
+import { Check } from "@mui/icons-material";
 
 import styles from "../Auth.module.scss";
 import Modal from "@/components/Modal";
 import Image from "@/components/Image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 interface RegisterModalProps {
 	isOpen: boolean;
@@ -38,7 +37,7 @@ const RegisterSuccessModal = ({
 			/>
 			<h5 className={styles.title}>Đăng ký thành công</h5>
 			<div className={clsx(styles.circle)}>
-				<FontAwesomeIcon icon={faCheck} size="2x" />
+				<Check fontSize="large" />
 			</div>
 			<p className={styles.welcome}>Chào mừng bạn đến với CineBook</p>
 		</Modal>

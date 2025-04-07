@@ -2,11 +2,14 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import GlobalStyles from "@components/GlobalStyles/index";
+import { SnackbarProvider } from "./context/SnackbarContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	// <StrictMode>
 	<GlobalStyles>
-		<App />
+		<SnackbarProvider>
+			<App />
+		</SnackbarProvider>
 	</GlobalStyles>
 	// </StrictMode>
 );

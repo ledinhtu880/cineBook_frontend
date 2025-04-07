@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import styles from "../Auth.module.scss";
 import Input from "@/components/Input";
+import Select from "@/components/Select";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 import Image from "@/components/Image";
-import { ValidationErrors, ApiError, RegisterFormData } from "@/types";
-import { validateRegisterForm } from "@/utils/validation";
-import { authService } from "@/services/";
+import {
+	ValidationErrors,
+	ApiError,
+	RegisterFormData,
+	CityProps,
+} from "@/types";
+import { validateRegisterForm } from "@/utils/authValidation";
+import { authService, cityService } from "@/services/";
 
 interface RegisterModalProps {
 	isOpen: boolean;
@@ -27,10 +33,26 @@ const RegisterModal = ({
 		first_name: "",
 		last_name: "",
 		email: "",
+		phone: "",
+		city_id: "",
 		password: "",
 		password_confirmation: "",
 	});
 	const [errors, setErrors] = useState<ValidationErrors>({});
+	const [cities, setCities] = useState<CityProps[]>([]);
+
+	useEffect(() => {
+		try {
+			const fetchCities = async () => {
+				const data = await cityService.get();
+				setCities(data);
+			};
+			fetchCities();
+		} catch (error) {
+			console.error("Failed to fetch cities:", error);
+			alert("Có lỗi xảy ra khi tải danh sách thành phố. Vui lòng thử lại sau.");
+		}
+	}, []);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -75,7 +97,7 @@ const RegisterModal = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} width={450}>
+		<Modal isOpen={isOpen} onClose={onClose} width={450} height={800}>
 			<Image
 				alt="Icon Login"
 				loading="lazy"
@@ -90,6 +112,7 @@ const RegisterModal = ({
 				<div className="flex gap-4">
 					<Input
 						label="Họ"
+						id="last_name"
 						name="last_name"
 						value={formData.last_name}
 						error={errors.last_name}
@@ -98,6 +121,7 @@ const RegisterModal = ({
 					/>
 					<Input
 						label="Tên"
+						id="first_name"
 						name="first_name"
 						value={formData.first_name}
 						error={errors.first_name}
@@ -105,15 +129,42 @@ const RegisterModal = ({
 						onChange={handleChange}
 					/>
 				</div>
-				<Input
-					label="Email"
-					name="email"
-					placeholder="Nhập email"
-					error={errors.email}
-					onChange={handleChange}
-				/>
+				<div className="flex gap-4">
+					<Input
+						label="Email"
+						id="email"
+						name="email"
+						placeholder="Nhập email"
+						error={errors.email}
+						onChange={handleChange}
+					/>
+					<Input
+						label="Số điện thoại"
+						id="phone"
+						name="phone"
+						placeholder="Nhập số điện thoại"
+						error={errors.phone}
+						onChange={handleChange}
+					/>
+				</div>
+				<Select
+					label="Thành phố"
+					id="city_id"
+					name="city_id"
+					error={errors.city_id}
+				>
+					<option value="" disabled>
+						Chọn thành phố
+					</option>
+					{cities.map((city) => (
+						<option key={city.id} value={city.id}>
+							{city.name}
+						</option>
+					))}
+				</Select>
 				<Input
 					label="Mật khẩu"
+					id="password"
 					name="password"
 					type="password"
 					placeholder="Nhập mật khẩu"
@@ -122,6 +173,7 @@ const RegisterModal = ({
 				/>
 				<Input
 					label="Mật khẩu"
+					id="password_confirmation"
 					name="password_confirmation"
 					type="password"
 					placeholder="Nhập lại mật khẩu"
@@ -130,14 +182,16 @@ const RegisterModal = ({
 				/>
 				<Button className={clsx(styles["btn-primary"])}>Đăng ký</Button>
 			</form>
-			<p className={clsx(styles["info"])}>Bạn đã có tài khoản?</p>
-			<Button
-				className={clsx(styles["btn-secondary"])}
-				outline
-				onClick={onOpenLogin}
-			>
-				Đăng nhập
-			</Button>
+			<div className={clsx(styles["actions-wrapper"])}>
+				<p className={clsx(styles["info"])}>Bạn đã có tài khoản?</p>
+				<Button
+					className={clsx(styles["btn-secondary"])}
+					outline
+					onClick={onOpenLogin}
+				>
+					Đăng nhập
+				</Button>
+			</div>
 		</Modal>
 	);
 };

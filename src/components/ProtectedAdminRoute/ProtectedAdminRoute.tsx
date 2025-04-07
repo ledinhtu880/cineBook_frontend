@@ -11,59 +11,42 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	const [loading, setLoading] = useState(true);
 	const [showLoginModal, setShowLoginModal] = useState(false);
 
-	useEffect(() => {
-		(async () => {
-			try {
-				const token = localStorage.getItem("token");
-				if (!token) {
-					setShowLoginModal(true);
-					setLoading(false);
-					return;
-				}
+	const checkAuth = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) {
+				setShowLoginModal(true);
+				setLoading(false);
+				return;
+			}
 
-				// Sử dụng authService để kiểm tra người dùng hiện tại
-				const userData = await authService.getCurrentUser();
+			const userData = await authService.getCurrentUser();
 
-				if (userData) {
-					setIsAuthenticated(true);
-					setIsAdmin(userData.role);
-				} else {
-					setIsAuthenticated(false);
-					setIsAdmin(false);
-					setShowLoginModal(true);
-				}
-			} catch (error) {
-				console.error("Authentication check failed:", error);
+			if (userData) {
+				setIsAuthenticated(true);
+				setIsAdmin(userData.role);
+				setShowLoginModal(false);
+			} else {
 				setIsAuthenticated(false);
 				setIsAdmin(false);
 				setShowLoginModal(true);
-			} finally {
-				setLoading(false);
-			}
-		})();
-	}, []);
-
-	const handleLoginSuccess = async () => {
-		setLoading(true);
-		try {
-			const userData = await authService.getCurrentUser();
-
-			if (userData && userData) {
-				if (userData.role) {
-					setIsAuthenticated(true);
-					setIsAdmin(true);
-					setShowLoginModal(false);
-				} else {
-					setShowLoginModal(false);
-					return <Navigate to="/" replace />;
-				}
 			}
 		} catch (error) {
-			console.error("Failed to get user data after login:", error);
-			alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+			console.error("Authentication check failed:", error);
+			setIsAuthenticated(false);
+			setIsAdmin(false);
+			setShowLoginModal(true);
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	useEffect(() => {
+		checkAuth();
+	}, []);
+
+	const handleLoginSuccess = async () => {
+		checkAuth();
 	};
 
 	const handleCloseModal = () => {

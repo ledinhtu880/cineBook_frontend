@@ -1,0 +1,18 @@
+.wrapper {
+	@apply flex flex-col gap-2;
+}
+
+.form-input {
+	@apply bg-gray-50 border border-gray-300 text-gray-900 text-sm flex-1 rounded-lg focus:ring-blue-500 focus:border-[--primary-hover] block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white outline-none;
+}
+
+.input-wrapper {
+	@apply relative flex items-center;
+}
+
+.hidden-input {
+	@apply hidden;
+}
+.error-message {
+	@apply mt-2 text-sm text-red-500;
+}

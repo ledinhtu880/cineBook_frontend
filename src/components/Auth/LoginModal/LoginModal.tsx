@@ -1,14 +1,16 @@
 import clsx from "clsx";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import styles from "../Auth.module.scss";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Image from "@/components/Image";
 import Modal from "@/components/Modal";
+import config from "@/config";
 import { authService } from "@/services/";
 import { ApiError, ValidationErrors } from "@/types";
-import { validateLoginForm } from "@/utils/validation";
+import { validateLoginForm } from "@/utils/authValidation";
 
 interface LoginModalProps {
 	isOpen: boolean;
@@ -25,6 +27,7 @@ const LoginModal = ({
 	onOpenRegister,
 	isHaveRegister = true,
 }: LoginModalProps) => {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState<ValidationErrors>({});
@@ -52,9 +55,13 @@ const LoginModal = ({
 		}
 
 		try {
-			await authService.login(email, password);
-			onLoginSuccess(); // Thông báo cho Header biết đăng nhập thành công
-			onClose();
+			const response = await authService.login(email, password);
+			if (response.data.user.role) {
+				navigate(config.routes.admin_dashboard);
+			} else {
+				onLoginSuccess(); // Thông báo cho Header biết đăng nhập thành công
+				onClose();
+			}
 		} catch (error) {
 			const apiError = error as ApiError;
 			if (apiError.response?.data?.errors) {
@@ -111,7 +118,7 @@ const LoginModal = ({
 				<Button className={clsx(styles["btn-primary"])}>Đăng nhập</Button>
 			</form>
 			{isHaveRegister && (
-				<>
+				<div className={clsx(styles["actions-wrapper"])}>
 					<Button className={clsx(styles["btn-forgot"])} size="no-padding">
 						Quên mật khẩu
 					</Button>
@@ -123,7 +130,7 @@ const LoginModal = ({
 					>
 						Đăng ký
 					</Button>
-				</>
+				</div>
 			)}
 		</Modal>
 	);

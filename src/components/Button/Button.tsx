@@ -1,23 +1,49 @@
+import { ReactNode, MouseEvent, ElementType } from "react";
 import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { ReactNode, MouseEvent, ElementType } from "react";
 
 import styles from "./Button.module.scss";
-interface ButtonProps {
-	to?: string;
-	href?: string;
+import { ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
+
+// Props chung cho cả 3 loại button
+interface CommonButtonProps {
 	primary?: boolean;
 	outline?: boolean;
 	text?: boolean;
 	rounded?: boolean;
-	disabled?: boolean;
 	size?: "no-padding" | "extra-small" | "small" | "medium" | "large";
-	children: ReactNode;
 	className?: string;
 	leftIcon?: ReactNode;
 	rightIcon?: ReactNode;
+	add?: boolean;
+	children?: ReactNode;
+}
+
+// Props cho thẻ Link của React Router
+interface LinkButtonProps extends CommonButtonProps {
+	to: string;
+	href?: never;
+}
+
+// Props cho thẻ anchor HTML
+interface AnchorButtonProps
+	extends CommonButtonProps,
+		AnchorHTMLAttributes<HTMLAnchorElement> {
+	href: string;
+	to?: never;
+}
+
+// Props cho thẻ button HTML
+interface NativeButtonProps
+	extends CommonButtonProps,
+		ButtonHTMLAttributes<HTMLButtonElement> {
+	to?: never;
+	href?: never;
 	onClick?: (event: MouseEvent<HTMLElement>) => void;
 }
+
+// Union type của tất cả loại props
+type ButtonProps = LinkButtonProps | AnchorButtonProps | NativeButtonProps;
 
 const Button: React.FC<ButtonProps> = ({
 	to,
@@ -26,26 +52,20 @@ const Button: React.FC<ButtonProps> = ({
 	outline = false,
 	text = false,
 	rounded = false,
-	size = "medium",
+	size = "small",
 	children,
 	className,
 	leftIcon,
 	rightIcon,
-	onClick,
+	add = false,
 	...passProps
 }) => {
 	let Comp: ElementType = "button";
-	const props: Omit<ButtonProps, "children"> = {
-		onClick,
-		...passProps,
-	};
 
 	if (to) {
 		Comp = Link;
-		props.to = to;
 	} else if (href) {
 		Comp = "a";
-		props.href = href;
 	}
 
 	const classes = clsx(
@@ -56,12 +76,17 @@ const Button: React.FC<ButtonProps> = ({
 			[styles.text]: text,
 			[styles.rounded]: rounded,
 			[styles[size]]: size,
+			[styles.add]: add,
 		},
 		className
 	);
 
 	return (
-		<Comp className={classes} {...props}>
+		<Comp
+			className={classes}
+			{...(to ? { to } : href ? { href } : {})}
+			{...passProps}
+		>
 			{leftIcon && <span className={styles.icon}>{leftIcon}</span>}
 			<span className={styles.title}>{children}</span>
 			{rightIcon && <span className={styles.icon}>{rightIcon}</span>}

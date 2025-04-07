@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import clsx from "clsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,7 +9,9 @@ import Loading from "@components/Loading";
 
 import styles from "./Carousel.module.scss";
 import { CarouselProps, MovieProps } from "@/types/index";
-import CarouselItem from "./CarouselItem";
+
+// Lazy load CarouselItem component
+const CarouselItem = lazy(() => import("./CarouselItem"));
 
 const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
 	const [movies, setMovies] = useState<MovieProps[]>([]);
@@ -70,9 +72,11 @@ const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
 									transform: `translateX(calc(-${currentIndex} * (var(--item-width) + var(--item-gap))))`,
 								}}
 							>
-								{movies.map((movie) => (
-									<CarouselItem item={movie} key={movie.id} />
-								))}
+								<Suspense fallback={<Loading />}>
+									{movies.map((movie) => (
+										<CarouselItem item={movie} key={movie.id} />
+									))}
+								</Suspense>
 							</div>
 						</div>
 

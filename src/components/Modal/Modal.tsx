@@ -8,6 +8,7 @@ interface ModalProps {
 	onClose: () => void;
 	title?: string;
 	width?: number;
+	height?: number | "auto";
 	children: ReactNode;
 }
 
@@ -17,6 +18,7 @@ const Modal = ({
 	title,
 	children,
 	width = 400,
+	height = "auto",
 }: ModalProps) => {
 	const style = {
 		position: "absolute",
@@ -24,10 +26,18 @@ const Modal = ({
 		left: "50%",
 		transform: "translate(-50%, -50%)",
 		width: width,
+		height: height,
 		bgcolor: "background.paper",
 		borderRadius: "4px",
 		boxShadow: 24,
+		overflowY: "auto",
 		p: 3,
+		// Hide scrollbar
+		"&::-webkit-scrollbar": {
+			display: "none",
+		},
+		msOverflowStyle: "none", // IE and Edge
+		scrollbarWidth: "none", // Firefox
 	};
 
 	return (

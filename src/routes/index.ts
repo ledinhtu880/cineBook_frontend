@@ -39,11 +39,6 @@ const adminRoutes = [
 		title: "Dashboard",
 	},
 	{
-		path: config.routes.admin_movies,
-		component: Admin.Movie,
-		title: "Quản lý phim",
-	},
-	{
 		path: config.routes.admin_cinemas,
 		component: Admin.Cinema,
 		title: "Quản lý rạp",
@@ -59,6 +54,23 @@ const adminRoutes = [
 		title: "Quản lý đặt vé",
 	},
 
+	// Quản lý phim
+	{
+		path: config.routes.admin_movies,
+		component: Admin.Movie.default,
+		title: "Quản lý phim",
+	},
+	{
+		path: config.routes.admin_movies_create,
+		component: Admin.Movie.MovieCreate,
+		title: "Quản lý phim",
+	},
+	{
+		path: config.routes.admin_movies_edit,
+		component: Admin.Movie.MovieEdit,
+		title: "Chỉnh sửa phim",
+	},
+
 	// Quản lý người dùng
 	{
 		path: config.routes.admin_users,
@@ -66,9 +78,9 @@ const adminRoutes = [
 		title: "Quản lý người dùng",
 	},
 	{
-		path: config.routes.admin_users_edit,
-		component: Admin.User.UserEdit,
-		title: "Chỉnh sửa người dùng",
+		path: config.routes.admin_users_show,
+		component: Admin.User.UserProfile,
+		title: "Xem thông tin người dùng",
 	},
 ];
 

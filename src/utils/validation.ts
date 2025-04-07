@@ -1,98 +1,98 @@
-import { RegisterFormData } from "@/types/";
-
-interface ValidationResult {
-	isValid: boolean;
-	errors: string[];
+export interface ValidationRule {
+	required?: boolean;
+	min?: number;
+	max?: number;
+	minLength?: number;
+	maxLength?: number;
+	pattern?: RegExp;
+	email?: boolean;
+	trailer_url?: boolean;
+	match?: string;
+	custom?: (value: unknown) => string | null;
+	message?: string;
 }
 
-export function validatePassword(password: string): ValidationResult {
-	const errors: string[] = [];
-
-	// Kiểm tra độ dài tối thiểu
-	if (!password) {
-		errors.push("Mật khẩu không được để trống");
-		return { isValid: false, errors };
-	}
-
-	if (password.length < 8) {
-		errors.push("Mật khẩu phải có ít nhất 8 ký tự");
-	}
-
-	// Kiểm tra chữ hoa
-	if (!/[A-Z]/.test(password)) {
-		errors.push("Mật khẩu phải chứa ít nhất một chữ cái viết hoa");
-	}
-
-	// Kiểm tra chữ thường
-	if (!/[a-z]/.test(password)) {
-		errors.push("Mật khẩu phải chứa ít nhất một chữ cái viết thường");
-	}
-
-	// Kiểm tra số
-	if (!/[0-9]/.test(password)) {
-		errors.push("Mật khẩu phải chứa ít nhất một chữ số");
-	}
-
-	return {
-		isValid: errors.length === 0,
-		errors,
-	};
+export interface ValidationRules {
+	[key: string]: ValidationRule;
 }
 
-// Hàm validate tổng hợp cho form đăng nhập
-export function validateLoginForm(
-	email: string,
-	password: string
-): Record<string, string> {
+// Type cho form values
+export type FormValues = {
+	[key: string]: string | number | boolean | File | null | undefined;
+};
+
+export const validateField = (
+	value: unknown,
+	rules: ValidationRule
+): string | null => {
+	if (rules.required && !value) {
+		return rules.message || "Trường này không được để trống";
+	}
+
+	if (value) {
+		// Type guards
+		if (rules.minLength && typeof value === "string") {
+			if (value.length < rules.minLength) {
+				return `Tối thiểu ${rules.minLength} ký tự`;
+			}
+		}
+
+		if (rules.maxLength && typeof value === "string") {
+			if (value.length > rules.maxLength) {
+				return `Tối đa ${rules.maxLength} ký tự`;
+			}
+		}
+
+		if (rules.min && typeof value === "number") {
+			if (value < rules.min) {
+				return `Giá trị tối thiểu là ${rules.min}`;
+			}
+		}
+
+		if (rules.max && typeof value === "number") {
+			if (value > rules.max) {
+				return `Giá trị tối đa là ${rules.max}`;
+			}
+		}
+
+		if (rules.email && typeof value === "string") {
+			if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+				return "Email không hợp lệ";
+			}
+		}
+
+		if (rules.trailer_url && typeof value === "string") {
+			if (!/^https?:\/\/.*/.test(value)) {
+				return "URL không hợp lệ";
+			}
+		}
+
+		if (rules.pattern && typeof value === "string") {
+			if (!rules.pattern.test(value)) {
+				return rules.message || "Giá trị không hợp lệ";
+			}
+		}
+
+		if (rules.custom) {
+			return rules.custom(value);
+		}
+	}
+
+	return null;
+};
+
+export const validateForm = (
+	values: FormValues,
+	rules: ValidationRules
+): Record<string, string> => {
 	const errors: Record<string, string> = {};
 
-	// Validate email
-	if (!email) {
-		errors.email = "Email không được để trống";
-	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-		errors.email = "Email không hợp lệ";
-	}
-
-	// Validate mật khẩu - chỉ kiểm tra cơ bản khi đăng nhập
-	if (!password) {
-		errors.password = "Mật khẩu không được để trống";
-	}
+	Object.keys(rules).forEach((field) => {
+		const error = validateField(values[field], rules[field]);
+		if (error) {
+			errors[field] = error;
+		}
+	});
 
 	return errors;
-}
-
-// Hàm validate tổng hợp cho form đăng ký
-export function validateRegisterForm(
-	formData: RegisterFormData
-): Record<string, string> {
-	const errors: Record<string, string> = {};
-
-	if (!formData.first_name) {
-		errors.first_name = "Tên không được để trống";
-	}
-
-	if (!formData.last_name) {
-		errors.last_name = "Họ không được để trống";
-	}
-	// Validate email
-	if (!formData.email) {
-		errors.email = "Email không được để trống";
-	} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-		errors.email = "Email không hợp lệ";
-	}
-
-	// Validate mật khẩu - áp dụng đầy đủ quy tắc khi đăng ký
-	const passwordValidation = validatePassword(formData.password);
-	if (!passwordValidation.isValid) {
-		errors.password = passwordValidation.errors[0]; // Chỉ lấy lỗi đầu tiên
-	}
-
-	// Validate nhập lại mật khẩu
-	if (!formData.password_confirmation) {
-		errors.password_confirmation = "Mật khẩu nhập lại không được để trống";
-	} else if (formData.password !== formData.password_confirmation) {
-		errors.password_confirmation = "Mật khẩu nhập lại không khớp";
-	}
-
-	return errors;
-}
+};

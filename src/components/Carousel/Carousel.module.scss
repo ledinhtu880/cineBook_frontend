@@ -73,11 +73,15 @@
 }
 
 .carousel-btn {
-	@apply w-[120px] text-white hover:border-[--primary-hover];
+	@apply w-[120px] text-white;
+
+	&:hover {
+		@apply bg-[--primary-hover] border-primary !important;
+	}
 }
 
 .carousel-btn-outline {
-	@apply text-white !important;
+	@apply border-[currentColor] border shadow-md transition-colors;
 }
 
 .trailerOverlay {

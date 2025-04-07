@@ -1,2 +1,2 @@
 export { default } from "./User";
-export { default as UserEdit } from "./Edit";
+export { default as UserProfile } from "./UserProfile";

@@ -59,7 +59,7 @@ const User = () => {
 					<Table<UserData>
 						columns={columns}
 						data={filteredUsers}
-						editPath="/admin/users"
+						showPath="/admin/users"
 					/>
 				)}
 			</Card>
