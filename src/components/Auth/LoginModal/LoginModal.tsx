@@ -31,6 +31,7 @@ const LoginModal = ({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState<ValidationErrors>({});
+	const [loading, setLoading] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -46,6 +47,7 @@ const LoginModal = ({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrors({});
+		setLoading(false);
 
 		// Validate form
 		const validationErrors = validateLoginForm(email, password);
@@ -77,6 +79,8 @@ const LoginModal = ({
 			} else {
 				setErrors({ general: "Có lỗi xảy ra khi đăng nhập" });
 			}
+		} finally {
+			setLoading(true);
 		}
 	};
 
@@ -115,7 +119,9 @@ const LoginModal = ({
 					error={errors.password}
 					onChange={handleChange}
 				/>
-				<Button className={clsx(styles["btn-primary"])}>Đăng nhập</Button>
+				<Button className={clsx(styles["btn-primary"])} disabled={loading}>
+					{loading ? "Đang xử lý..." : "Đăng nhập"}
+				</Button>
 			</form>
 			{isHaveRegister && (
 				<div className={clsx(styles["actions-wrapper"])}>

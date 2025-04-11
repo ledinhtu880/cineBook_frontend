@@ -39,11 +39,6 @@ const adminRoutes = [
 		title: "Dashboard",
 	},
 	{
-		path: config.routes.admin_cinemas,
-		component: Admin.Cinema,
-		title: "Quản lý rạp",
-	},
-	{
 		path: config.routes.admin_showtimes,
 		component: Admin.Showtime,
 		title: "Quản lý suất chiếu",
@@ -54,7 +49,7 @@ const adminRoutes = [
 		title: "Quản lý đặt vé",
 	},
 
-	// Quản lý phim
+	// #region Quản lý phim
 	{
 		path: config.routes.admin_movies,
 		component: Admin.Movie.default,
@@ -62,16 +57,35 @@ const adminRoutes = [
 	},
 	{
 		path: config.routes.admin_movies_create,
-		component: Admin.Movie.MovieCreate,
-		title: "Quản lý phim",
+		component: Admin.Movie.Create,
+		title: "Thêm phim mới",
 	},
 	{
 		path: config.routes.admin_movies_edit,
-		component: Admin.Movie.MovieEdit,
+		component: Admin.Movie.Edit,
 		title: "Chỉnh sửa phim",
 	},
+	// #endregion
 
-	// Quản lý người dùng
+	// #region Quản lý rạp chiếu phim
+	{
+		path: config.routes.admin_cinemas,
+		component: Admin.Cinema.default,
+		title: "Quản lý rạp chiếu phim",
+	},
+	{
+		path: config.routes.admin_cinemas_create,
+		component: Admin.Cinema.Create,
+		title: "Thêm rạp chiếu phim",
+	},
+	{
+		path: config.routes.admin_cinemas_edit,
+		component: Admin.Cinema.Edit,
+		title: "Chỉnh sửa rạp chiếu phim",
+	},
+	// #endregion
+
+	// #region Quản lý người dùng
 	{
 		path: config.routes.admin_users,
 		component: Admin.User.default,
@@ -82,6 +96,7 @@ const adminRoutes = [
 		component: Admin.User.UserProfile,
 		title: "Xem thông tin người dùng",
 	},
+	// #endregion
 ];
 
 export { publicRoutes, privateRoutes, adminRoutes };

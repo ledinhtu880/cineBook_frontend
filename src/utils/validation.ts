@@ -18,7 +18,7 @@ export interface ValidationRules {
 
 // Type cho form values
 export type FormValues = {
-	[key: string]: string | number | boolean | File | null | undefined;
+	[key: string]: string | number | boolean | File | null | undefined | object;
 };
 
 export const validateField = (

@@ -2,8 +2,7 @@ import { Search, Add } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Card.module.scss";
-import Input from "@components/Input";
-import Button from "@components/Button";
+import { Input, Button } from "@components/index";
 
 interface CardProps {
 	title?: string;

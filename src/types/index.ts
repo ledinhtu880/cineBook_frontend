@@ -30,11 +30,11 @@ export interface CarouselProps {
 }
 
 export interface MovieProps {
-	id: string;
+	id: number;
 	title: string;
-	description: string;
-	release_date: string;
-	duration: string;
+	duration_label: string;
+	release_date_label: string;
+	genres: string;
 	poster_url: string;
 	trailer_url: string;
 	age_rating: "P" | "K" | "T13" | "T16" | "T18";

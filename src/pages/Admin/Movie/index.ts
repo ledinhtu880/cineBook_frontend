@@ -1,3 +1,3 @@
 export { default } from "./Movie";
-export { default as MovieEdit } from "./MovieEdit";
-export { default as MovieCreate } from "./MovieCreate";
+export { default as Create } from "./MovieCreate";
+export { default as Edit } from "./MovieEdit";

@@ -1,27 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 
-import PageWrapper from "@/components/PageWrapper";
-import Loading from "@/components/Loading";
-import Table from "@/components/Table";
-import Card from "@/components/Card";
+import { PageWrapper, Loading, Table, Card } from "@/components/";
 import { movieService } from "@/services/";
 import { useDebounce } from "@/hooks";
-import { ApiError } from "@/types/";
-import { Column } from "@/types/";
+import { ApiError, Column, MovieProps } from "@/types/";
 import { useSnackbar } from "@/context";
 
-interface MovieData {
-	id: number;
-	title: string;
-	duration_label: string;
-	release_date_label: string;
-	genres: string;
-	poster_url: string;
-	trailer_url: string;
-	age_rating: string;
-}
-
-const columns: Column<MovieData>[] = [
+const columns: Column<MovieProps>[] = [
 	{ key: "id", title: "#", width: 75 },
 	{ key: "title", title: "Tên", width: 250, tooltip: true },
 	{ key: "duration_label", title: "Thời lượng", width: 130, align: "left" },
@@ -40,7 +25,7 @@ const columns: Column<MovieData>[] = [
 ];
 
 const Movie = () => {
-	const [movies, setMovies] = useState<MovieData[]>([]);
+	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchKeyword, setSearchKeyword] = useState("");
 	const debouncedValue = useDebounce(searchKeyword, 250);
@@ -51,7 +36,7 @@ const Movie = () => {
 	);
 
 	const handleDelete = useCallback(
-		async (record: MovieData) => {
+		async (record: MovieProps) => {
 			try {
 				await movieService.delete(record.id);
 				setMovies((prev) => prev.filter((movie) => movie.id !== record.id));
@@ -90,7 +75,7 @@ const Movie = () => {
 				{loading ? (
 					<Loading />
 				) : (
-					<Table<MovieData>
+					<Table<MovieProps>
 						columns={columns}
 						data={filteredMovies}
 						editPath="/admin/movies"

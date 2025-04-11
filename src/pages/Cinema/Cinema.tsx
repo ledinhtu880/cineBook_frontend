@@ -1,5 +1,5 @@
 const Cinema = () => {
-	return <div>Hệ thống rạp</div>;
+	return <div>Cinema</div>;
 };
 
 export default Cinema;

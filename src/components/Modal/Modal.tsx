@@ -7,7 +7,7 @@ interface ModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	title?: string;
-	width?: number;
+	width?: number | "auto";
 	height?: number | "auto";
 	children: ReactNode;
 }
@@ -32,12 +32,11 @@ const Modal = ({
 		boxShadow: 24,
 		overflowY: "auto",
 		p: 3,
-		// Hide scrollbar
 		"&::-webkit-scrollbar": {
 			display: "none",
 		},
-		msOverflowStyle: "none", // IE and Edge
-		scrollbarWidth: "none", // Firefox
+		msOverflowStyle: "none",
+		scrollbarWidth: "none",
 	};
 
 	return (

@@ -25,5 +25,5 @@
 }
 
 .card-body {
-	@apply overflow-x-auto;
+	@apply overflow-y-auto min-h-[70px];
 }

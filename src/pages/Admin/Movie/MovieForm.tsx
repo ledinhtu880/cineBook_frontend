@@ -6,11 +6,7 @@ import styles from "./Movie.module.scss";
 import config from "@/config";
 import * as Form from "@utils/validation";
 import { ValidationErrors, ApiError } from "@/types";
-import TextArea from "@/components/TextArea";
-import Select from "@/components/Select";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import Image from "@/components/Image";
+import { TextArea, Select, Button, Input, Image } from "@/components/";
 import { useSnackbar } from "@/context";
 
 export interface MovieFormData extends Form.FormValues {
@@ -37,10 +33,38 @@ const ageRatingOptions = [
 	{ value: "T18", label: "T18 - Từ 18 tuổi" },
 ];
 
+const validationRules: Form.ValidationRules = {
+	title: {
+		required: true,
+		minLength: 2,
+		message: "Tên phim không được để trống",
+	},
+	description: {
+		required: true,
+		minLength: 10,
+		message: "Mô tả phải có ít nhất 10 ký tự",
+	},
+	duration: {
+		required: true,
+		min: 30,
+		max: 300,
+		message: "Thời lượng phải từ 30 đến 300 phút",
+	},
+	release_date: {
+		required: true,
+		message: "Vui lòng chọn ngày khởi chiếu",
+	},
+	trailer_url: {
+		required: true,
+		trailer_url: true,
+		message: "URL trailer không hợp lệ",
+	},
+};
+
 const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 	const navigate = useNavigate();
 	const { showSnackbar } = useSnackbar();
-	const [loading, setLoading] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [posterPreview, setPosterPreview] = useState<string>(() => {
 		// Nếu là edit mode, sử dụng URL từ API
 		if (mode === "edit" && typeof initialData?.poster_url === "string") {
@@ -71,34 +95,6 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 		};
 	});
 
-	const validationRules: Form.ValidationRules = {
-		title: {
-			required: true,
-			minLength: 2,
-			message: "Tên phim không được để trống",
-		},
-		description: {
-			required: true,
-			minLength: 10,
-			message: "Mô tả phải có ít nhất 10 ký tự",
-		},
-		duration: {
-			required: true,
-			min: 30,
-			max: 300,
-			message: "Thời lượng phải từ 30 đến 300 phút",
-		},
-		release_date: {
-			required: true,
-			message: "Vui lòng chọn ngày khởi chiếu",
-		},
-		trailer_url: {
-			required: true,
-			trailer_url: true,
-			message: "URL trailer không hợp lệ",
-		},
-	};
-
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrors({});
@@ -110,8 +106,8 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 			return;
 		}
 
-		setLoading(true);
 		try {
+			setIsSubmitting(true);
 			const formDataToSend = new FormData();
 			Object.entries(formData).forEach(([key, value]) => {
 				if (key === "poster_url") {
@@ -127,11 +123,6 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 					formDataToSend.append(key, String(value));
 				}
 			});
-
-			// Log để verify
-			for (const [key, value] of formDataToSend.entries()) {
-				console.log(`${key}:`, value);
-			}
 
 			await onSubmit(formDataToSend);
 			showSnackbar(
@@ -155,7 +146,7 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 				setErrors({ general: "Đã có lỗi xảy ra. Vui lòng thử lại." });
 			}
 		} finally {
-			setLoading(false);
+			setIsSubmitting(false);
 		}
 	};
 
@@ -241,7 +232,14 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 						onChange={handleChange}
 					/>
 
-					<Select className="h-[43px]" label="Giới hạn độ tuổi" id="age_rating">
+					<Select
+						className="h-[43px]"
+						label="Giới hạn độ tuổi"
+						id="age_rating"
+						value={formData.age_rating}
+						error={errors.age_rating}
+						onChange={handleChange}
+					>
 						{ageRatingOptions.map((option) => (
 							<option key={option.value} value={option.value}>
 								{option.label}
@@ -271,7 +269,7 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 
 					<div className="col-span-2">
 						<TextArea
-							className="h-[43px]"
+							className="h-[80px]"
 							label="Mô tả"
 							id="description"
 							error={errors.description}
@@ -285,13 +283,8 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 					<Button outline to={config.routes.admin_movies}>
 						Hủy
 					</Button>
-					<Button
-						onClick={() => setLoading(!loading)}
-						add
-						type="submit"
-						className=""
-					>
-						{loading
+					<Button add type="submit" disabled={isSubmitting}>
+						{isSubmitting
 							? "Đang xử lý..."
 							: mode === "create"
 							? "Tạo phim"

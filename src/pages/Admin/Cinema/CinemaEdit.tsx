@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import { movieService } from "@/services";
-import MovieForm, { MovieFormData } from "./MovieForm";
+import { cinemaService } from "@/services";
+import CinemaForm, { CinemaFormData } from "./CinemaForm";
 import { PageWrapper, Card, Skeleton } from "@/components/";
 
-const MovieEdit = () => {
+const CinemaEdit = () => {
 	const { id } = useParams();
-	const [movie, setMovie] = useState<MovieFormData | null>(null);
+	const [cinema, setCinema] = useState<CinemaFormData | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		(async () => {
 			try {
-				const data = await movieService.show(Number(id));
-				setMovie(data);
+				const data = await cinemaService.show(Number(id));
+				setCinema(data);
 			} catch (error) {
 				console.error(error);
 			} finally {
@@ -25,7 +25,7 @@ const MovieEdit = () => {
 
 	const handleSubmit = async (formData: FormData) => {
 		try {
-			const response = await movieService.update(Number(id), formData);
+			const response = await cinemaService.update(Number(id), formData);
 			return response;
 		} catch (error) {
 			console.error("Error updating movie:", error);
@@ -37,11 +37,11 @@ const MovieEdit = () => {
 		<PageWrapper title="Chỉnh sửa phim">
 			<Card>
 				{loading ? (
-					<Skeleton.MovieSkeleton />
+					<Skeleton.CinemaSkeleton />
 				) : (
-					<MovieForm
+					<CinemaForm
 						mode="edit"
-						initialData={movie || undefined}
+						initialData={cinema || undefined}
 						onSubmit={handleSubmit}
 					/>
 				)}
@@ -50,4 +50,4 @@ const MovieEdit = () => {
 	);
 };
 
-export default MovieEdit;
+export default CinemaEdit;

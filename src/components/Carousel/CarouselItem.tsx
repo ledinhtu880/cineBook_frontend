@@ -84,6 +84,8 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 					isOpen={showTrailer}
 					onClose={handleCloseTrailer}
 					aria-labelledby="movie-trailer"
+					width={1000}
+					height={563}
 				>
 					<Box sx={style}>
 						<iframe
