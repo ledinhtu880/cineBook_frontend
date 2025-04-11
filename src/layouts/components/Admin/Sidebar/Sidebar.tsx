@@ -11,10 +11,9 @@ import {
 } from "@mui/icons-material";
 
 import styles from "./Sidebar.module.scss";
-import Image from "@/components/Image";
-import Menu from "@/components/Menu";
 import images from "@/assets/images";
 import config from "@/config";
+import { Image, Menu } from "@components/index";
 
 interface SidebarProps {
 	isCollapse: boolean;
@@ -35,7 +34,7 @@ const Sidebar = ({ isCollapse }: SidebarProps) => {
 		{
 			to: config.routes.admin_cinemas,
 			icon: Theaters,
-			title: "Rạp/phòng chiếu",
+			title: "Rạp chiếu phim",
 		},
 		{
 			to: config.routes.admin_showtimes,

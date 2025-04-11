@@ -1,29 +1,33 @@
 .wrapper {
-	@apply flex items-center justify-center gap-3 rounded-md border border-transparent;
+	@apply flex items-center justify-center gap-3 rounded-md border border-transparent transition-colors;
+
+	&.primary {
+		@apply text-white bg-primary hover:bg-[--primary-hover];
+	}
 
 	&.add {
-		@apply bg-blue-600 text-white border-[--secondary] border shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors;
+		@apply bg-blue-600 text-white border-[--secondary] border shadow-md disabled:opacity-50 disabled:cursor-not-allowed;
 
 		&:hover {
 			@apply bg-blue-700;
 		}
 	}
-}
 
-.primary {
-	@apply text-white bg-[--primary] hover:bg-[--primary-hover];
-}
-
-.outline {
-	@apply border-[currentColor] border shadow-md transition-colors;
-
-	&:hover {
-		@apply bg-gray-100;
+	&:disabled {
+		@apply opacity-50 cursor-not-allowed;
 	}
-}
 
-.rounded {
-	@apply border-[currentColor] border rounded-md shadow-md;
+	&.outline {
+		@apply border-[currentColor] border shadow-md;
+
+		&:hover {
+			@apply bg-gray-100;
+		}
+	}
+
+	&.rounded {
+		@apply border-[currentColor] border rounded-md shadow-md;
+	}
 }
 
 .text {

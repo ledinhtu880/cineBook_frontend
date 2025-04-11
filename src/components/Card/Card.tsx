@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Search, Add } from "@mui/icons-material";
 import clsx from "clsx";
 
@@ -8,9 +9,10 @@ interface CardProps {
 	title?: string;
 	action?: boolean;
 	children?: React.ReactNode;
-	addLabel?: string; // Add this
-	addPath?: string; // Add this
-	searchLabel?: string; // Add this
+	addLabel?: string;
+	addPath?: string;
+	onAdd?: () => void;
+	searchLabel?: string;
 	onSearch?: (value: string) => void;
 }
 
@@ -20,9 +22,19 @@ const Card = ({
 	children,
 	addLabel,
 	addPath,
+	onAdd,
 	searchLabel,
 	onSearch,
 }: CardProps) => {
+	const navigate = useNavigate();
+	const handleAdd = () => {
+		if (onAdd) {
+			onAdd();
+		} else if (addPath) {
+			navigate(addPath);
+		}
+	};
+
 	return (
 		<div className={clsx(styles["card"])}>
 			{/* Start: Card Header */}
@@ -30,7 +42,7 @@ const Card = ({
 				<div className={clsx(styles["card-header"])}>
 					<h3 className={clsx(styles["card-title"])}>{title}</h3>
 
-					{(action || addPath || onSearch) && (
+					{(action || onAdd || addLabel || onSearch) && (
 						<div className={clsx(styles["card-header-actions"])}>
 							{/* Search */}
 							{onSearch && (
@@ -43,18 +55,13 @@ const Card = ({
 									/>
 								</div>
 							)}
-							{/* Filter Button
-							<button className={clsx(styles["card-header-filter"])}>
-								<Tune />
-								Lọc
-							</button> */}
 
 							{/* Add Button */}
-							{addPath && (
-								<Button to={addPath} leftIcon={<Add />} primary>
+							{addLabel && (addPath || onAdd) ? (
+								<Button primary leftIcon={<Add />} onClick={handleAdd}>
 									{addLabel}
 								</Button>
-							)}
+							) : null}
 						</div>
 					)}
 				</div>

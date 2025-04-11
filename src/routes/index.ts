@@ -83,6 +83,21 @@ const adminRoutes = [
 		component: Admin.Cinema.Edit,
 		title: "Chỉnh sửa rạp chiếu phim",
 	},
+	{
+		path: config.routes.admin_cinemas_show,
+		component: Admin.Cinema.Show,
+		title: "Xem thông tin rạp chiếu phim",
+	},
+	{
+		path: config.routes.admin_cinemas_rooms_show,
+		component: Admin.Cinema.RoomShow,
+		title: "Xem thông tin phòng chiếu",
+	},
+	{
+		path: config.routes.admin_cinemas_rooms_create,
+		component: Admin.Cinema.RoomCreate,
+		title: "Tạo phòng chiếu",
+	},
 	// #endregion
 
 	// #region Quản lý người dùng

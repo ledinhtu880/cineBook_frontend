@@ -86,6 +86,7 @@ const Cinema = () => {
 						columns={columns}
 						data={cinemas}
 						editPath="/admin/cinemas"
+						showPath="/admin/cinemas"
 						onDelete={handleDelete}
 					/>
 				)}

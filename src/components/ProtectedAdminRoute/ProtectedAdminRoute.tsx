@@ -13,8 +13,7 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 	const checkAuth = async () => {
 		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
+			if (!authService.isLoggedIn()) {
 				setShowLoginModal(true);
 				setLoading(false);
 				return;

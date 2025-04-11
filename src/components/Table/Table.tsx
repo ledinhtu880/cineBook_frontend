@@ -149,56 +149,58 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 			</table>
 
 			{/* Pagination Controls */}
-			<div className="flex items-center justify-between px-4 py-3 bg-white border-t">
-				<div className="flex items-center gap-2">
-					<span className="text-sm text-gray-700">
-						Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of{" "}
-						{data.length} entries
-					</span>
-				</div>
-				<div className="flex items-center gap-2">
-					<button
-						onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-						disabled={currentPage === 1}
-						className={clsx(
-							"p-2 rounded-lg",
-							currentPage === 1
-								? "text-gray-400 cursor-not-allowed"
-								: "text-gray-700 hover:bg-gray-100"
-						)}
-					>
-						<KeyboardArrowLeft />
-					</button>
-					{[...Array(totalPages)].map((_, index) => (
+			{data.length > Number(pageSize) && (
+				<div className="flex items-center justify-between px-4 py-3 bg-white border-t">
+					<div className="flex items-center gap-2">
+						<span className="text-sm text-gray-700">
+							Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of{" "}
+							{data.length} entries
+						</span>
+					</div>
+					<div className="flex items-center gap-2">
 						<button
-							key={index + 1}
-							onClick={() => setCurrentPage(index + 1)}
+							onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+							disabled={currentPage === 1}
 							className={clsx(
-								"px-3 py-1 rounded-lg",
-								currentPage === index + 1
-									? "bg-[--primary] text-white"
+								"p-2 rounded-lg",
+								currentPage === 1
+									? "text-gray-400 cursor-not-allowed"
 									: "text-gray-700 hover:bg-gray-100"
 							)}
 						>
-							{index + 1}
+							<KeyboardArrowLeft />
 						</button>
-					))}
-					<button
-						onClick={() =>
-							setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-						}
-						disabled={currentPage === totalPages}
-						className={clsx(
-							"p-2 rounded-lg",
-							currentPage === totalPages
-								? "text-gray-400 cursor-not-allowed"
-								: "text-gray-700 hover:bg-gray-100"
-						)}
-					>
-						<KeyboardArrowRight />
-					</button>
+						{[...Array(totalPages)].map((_, index) => (
+							<button
+								key={index + 1}
+								onClick={() => setCurrentPage(index + 1)}
+								className={clsx(
+									"px-3 py-1 rounded-lg",
+									currentPage === index + 1
+										? "bg-[--primary] text-white"
+										: "text-gray-700 hover:bg-gray-100"
+								)}
+							>
+								{index + 1}
+							</button>
+						))}
+						<button
+							onClick={() =>
+								setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+							}
+							disabled={currentPage === totalPages}
+							className={clsx(
+								"p-2 rounded-lg",
+								currentPage === totalPages
+									? "text-gray-400 cursor-not-allowed"
+									: "text-gray-700 hover:bg-gray-100"
+							)}
+						>
+							<KeyboardArrowRight />
+						</button>
+					</div>
 				</div>
-			</div>
+			)}
 
 			<Modal
 				isOpen={isModalOpen}

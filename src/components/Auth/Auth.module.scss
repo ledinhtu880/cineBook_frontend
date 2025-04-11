@@ -1,6 +1,13 @@
 .form-wrapper {
 	@apply flex flex-col gap-5;
 }
+.form-group {
+	@apply flex gap-4;
+
+	& > div {
+		@apply flex-1;
+	}
+}
 .form-error {
 	@apply text-sm text-red-500;
 }

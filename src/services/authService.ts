@@ -22,6 +22,8 @@ interface LoginResponse {
 
 let userCache: User | null = null;
 
+let currentUserRequest: Promise<User | null> | null = null;
+
 const authService = {
 	login: async (email: string, password: string) => {
 		try {
@@ -34,13 +36,17 @@ const authService = {
 			);
 
 			if (response.data.status === "success") {
-				localStorage.setItem("token", response.data.data.token);
-				userCache = response.data.data.user;
+				const token = response.data.data.token;
+				const user = response.data.data.user;
+
+				// Lưu token và thông tin user vào localStorage
+				localStorage.setItem("token", token);
+
+				// Cập nhật cache
+				userCache = user;
 
 				// Cập nhật API configuration để tự động gửi token
-				axios.defaults.headers.common[
-					"Authorization"
-				] = `Bearer ${response.data.data.token}`;
+				axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 			}
 
 			return response.data;
@@ -62,48 +68,54 @@ const authService = {
 			const token = localStorage.getItem("token");
 			// Gọi API để vô hiệu hóa token
 			if (token) {
-				await axios.post(`${API_URL}/auth/logout`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
+				await axios.post(`${API_URL}/auth/logout`);
 			}
 		} finally {
+			// Xóa dữ liệu khỏi localStorage
 			localStorage.removeItem("token");
+
 			// Xóa user khỏi memory cache
 			userCache = null;
+			currentUserRequest = null;
+
 			// Xóa token khỏi axios headers
 			delete axios.defaults.headers.common["Authorization"];
 		}
 	},
 
 	getCurrentUser: async () => {
-		// Nếu có cache, trả về ngay lập tức
 		if (userCache) {
 			return userCache;
 		}
 
-		// Nếu có token nhưng chưa có cache, gọi API để lấy thông tin
+		if (currentUserRequest) {
+			return currentUserRequest;
+		}
+
 		const token = localStorage.getItem("token");
 		if (token) {
-			try {
-				const response = await axios.get(`${API_URL}/auth/me`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
+			currentUserRequest = (async () => {
+				try {
+					const response = await axios.get(`${API_URL}/auth/me`, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					});
 
-				// Cập nhật cache
-				userCache = response.data.data;
-				return userCache;
-			} catch (error) {
-				console.error("Failed to get user info:", error);
-				// Nếu token không hợp lệ, logout luôn
-				if (axios.isAxiosError(error) && error.response?.status === 401) {
-					authService.logout();
+					userCache = response.data.data;
+					return userCache;
+				} catch (error) {
+					console.error("Failed to get user info:", error);
+					if (axios.isAxiosError(error) && error.response?.status === 401) {
+						authService.logout();
+					}
+					return null;
+				} finally {
+					currentUserRequest = null;
 				}
-				return null;
-			}
+			})();
+
+			return currentUserRequest;
 		}
 
 		return null;
@@ -112,6 +124,9 @@ const authService = {
 	refreshUserData: async () => {
 		const token = localStorage.getItem("token");
 		if (!token) return null;
+
+		userCache = null;
+		currentUserRequest = null;
 
 		try {
 			const response = await axios.get(`${API_URL}/auth/me`, {
@@ -132,7 +147,7 @@ const authService = {
 	},
 
 	isLoggedIn: () => {
-		return !!localStorage.getItem("token") && !!localStorage.getItem("user");
+		return !!localStorage.getItem("token");
 	},
 
 	setupAxiosInterceptors: () => {
@@ -140,17 +155,20 @@ const authService = {
 		if (token) {
 			axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 		}
+
+		const userStr = localStorage.getItem("user");
+		if (userStr) {
+			try {
+				userCache = JSON.parse(userStr);
+			} catch (error) {
+				console.error("Error parsing user from localStorage:", error);
+				localStorage.removeItem("user");
+			}
+		}
 	},
 };
 
-// Thiết lập axios interceptors khi import service
+// Thiết lập axios interceptors và cache khi import service
 authService.setupAxiosInterceptors();
-
-// Khi load trang, lấy thông tin user nếu đã đăng nhập
-(async () => {
-	if (authService.isLoggedIn()) {
-		await authService.getCurrentUser();
-	}
-})();
 
 export default authService;

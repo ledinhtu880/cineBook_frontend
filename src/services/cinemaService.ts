@@ -37,6 +37,24 @@ const cinemaService = {
 		const response = await axios.get(`${API_URL}/admin/cinemas/${id}`);
 		return response.data.data;
 	},
+
+	getRooms: async (id: number) => {
+		const response = await axios.get(`${API_URL}/admin/cinemas/${id}/rooms`);
+		return response.data.data;
+	},
+
+	createRoom: async (id: number, data: FormData) => {
+		const response = await axios.post(
+			`${API_URL}/admin/cinemas/${id}/rooms`,
+			data,
+			{
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			}
+		);
+		return response.data.data;
+	},
 };
 
 export default cinemaService;

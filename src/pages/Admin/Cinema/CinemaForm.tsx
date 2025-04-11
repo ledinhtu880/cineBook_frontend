@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import styles from "./Cinema.module.scss";
 import config from "@/config";
 import { CityProps } from "@/types/";
+import { useSnackbar } from "@/context";
 import { cityService } from "@/services";
 import * as Form from "@utils/validation";
 import { Button, Input, Select, Skeleton } from "@/components";
-import { useSnackbar } from "@/context";
 
 export interface CinemaFormData extends Form.FormValues {
 	name: string;
@@ -107,7 +107,6 @@ const CinemaForm: React.FC<CinemaFormProps> = ({
 		const validationErrors = Form.validateForm(formData, validationRules);
 		if (Object.keys(validationErrors).length > 0) {
 			setErrors(validationErrors);
-			console.log(formData);
 			return;
 		}
 
@@ -119,10 +118,6 @@ const CinemaForm: React.FC<CinemaFormProps> = ({
 					formDataToSend.append(key, String(value));
 				}
 			});
-
-			for (const [key, value] of formDataToSend) {
-				console.log(`${key}: ${value}`);
-			}
 
 			await onSubmit(formDataToSend);
 			showSnackbar(

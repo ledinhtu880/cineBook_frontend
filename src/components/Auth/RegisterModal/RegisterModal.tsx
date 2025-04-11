@@ -34,12 +34,13 @@ const RegisterModal = ({
 		last_name: "",
 		email: "",
 		phone: "",
-		city_id: "",
+		city_id: 0,
 		password: "",
 		password_confirmation: "",
 	});
 	const [errors, setErrors] = useState<ValidationErrors>({});
 	const [cities, setCities] = useState<CityProps[]>([]);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	useEffect(() => {
 		try {
@@ -61,11 +62,14 @@ const RegisterModal = ({
 		const validationErrors = validateRegisterForm(formData);
 
 		if (Object.keys(validationErrors).length > 0) {
+			console.log(formData);
 			setErrors(validationErrors);
 			return;
 		}
 
 		try {
+			setIsSubmitting(true);
+			console.log(formData);
 			await authService.register(formData);
 			onRegisterSuccess();
 		} catch (error) {
@@ -83,10 +87,14 @@ const RegisterModal = ({
 			} else {
 				setErrors({ general: "Đã có lỗi xảy ra. Vui lòng thử lại." });
 			}
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({
 			...prev,
@@ -97,7 +105,7 @@ const RegisterModal = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} width={450} height={800}>
+		<Modal isOpen={isOpen} onClose={onClose} width={600} height={800}>
 			<Image
 				alt="Icon Login"
 				loading="lazy"
@@ -109,7 +117,7 @@ const RegisterModal = ({
 				{errors.general && (
 					<span className={styles["form-error"]}>{errors.general}</span>
 				)}
-				<div className="flex gap-4">
+				<div className={clsx(styles["form-group"])}>
 					<Input
 						label="Họ"
 						id="last_name"
@@ -129,7 +137,7 @@ const RegisterModal = ({
 						onChange={handleChange}
 					/>
 				</div>
-				<div className="flex gap-4">
+				<div className={clsx(styles["form-group"])}>
 					<Input
 						label="Email"
 						id="email"
@@ -152,6 +160,7 @@ const RegisterModal = ({
 					id="city_id"
 					name="city_id"
 					error={errors.city_id}
+					onChange={handleChange}
 				>
 					<option value="" disabled>
 						Chọn thành phố
@@ -180,7 +189,9 @@ const RegisterModal = ({
 					error={errors.password_confirmation}
 					onChange={handleChange}
 				/>
-				<Button className={clsx(styles["btn-primary"])}>Đăng ký</Button>
+				<Button className={clsx(styles["btn-primary"])} disabled={isSubmitting}>
+					{isSubmitting ? "Đang xử lý..." : "Đăng ký"}
+				</Button>
 			</form>
 			<div className={clsx(styles["actions-wrapper"])}>
 				<p className={clsx(styles["info"])}>Bạn đã có tài khoản?</p>

@@ -1,0 +1,119 @@
+.container {
+	@apply flex flex-col gap-8 p-4;
+}
+
+.info {
+	@apply flex justify-center items-center gap-4;
+
+	p {
+		@apply bg-white rounded-lg shadow-sm p-4 flex flex-col items-center justify-center text-center;
+
+		span {
+			@apply block text-2xl font-bold text-indigo-600 mb-2;
+		}
+	}
+}
+
+.info_card {
+	@apply flex-1 bg-white rounded-xl shadow-md p-6 
+           flex flex-col items-center justify-center 
+           transition-all duration-300 
+           hover:shadow-lg hover:-translate-y-1;
+
+	.info_value {
+		@apply text-4xl font-bold mb-2
+               bg-gradient-to-r from-indigo-600 to-blue-500 
+               bg-clip-text text-transparent;
+	}
+
+	.info_label {
+		@apply text-gray-600 font-medium text-sm
+               uppercase tracking-wider;
+	}
+}
+
+.layout {
+	@apply flex flex-col items-center gap-6 bg-gray-50 p-6 shadow-md;
+}
+
+.screen {
+	@apply w-4/5 h-14 bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center text-white rounded-t-3xl shadow-lg font-semibold relative;
+}
+
+.seats-container {
+	@apply flex flex-col gap-3 p-6 overflow-x-auto w-full max-w-4xl;
+}
+
+.seat-row {
+	@apply flex items-center gap-2 py-1 w-full;
+
+	&:nth-child(even) {
+		@apply bg-gray-50/50;
+	}
+}
+
+.row-label {
+	@apply w-10 h-10 text-center font-bold bg-gray-200 rounded-full flex items-center justify-center text-gray-700 sticky left-0;
+}
+
+.seat {
+	@apply w-11 h-11 border rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 transform hover:scale-105 relative flex-1;
+	@apply bg-blue-100 border-blue-300 hover:bg-blue-200;
+
+	&.sweetbox {
+		@apply bg-pink-100 border-pink-300 hover:bg-pink-200;
+	}
+
+	&.vip {
+		@apply bg-purple-100 border-purple-300 hover:bg-purple-200;
+	}
+}
+
+.seat-label {
+	@apply text-sm font-semibold;
+}
+
+// Legend
+.legend {
+	@apply flex flex-wrap justify-center gap-4 p-4 border-t border-gray-200;
+
+	.legend-item {
+		@apply flex items-center gap-2;
+
+		.legend-color {
+			@apply w-6 h-6 rounded border;
+
+			&.normal {
+				@apply bg-blue-100 border-blue-300;
+			}
+
+			&.vip {
+				@apply bg-purple-100 border-purple-300;
+			}
+
+			&.sweetbox {
+				@apply bg-pink-100 border-pink-300;
+			}
+		}
+	}
+}
+
+.form-wrapper {
+	@apply flex flex-col gap-6 px-4;
+}
+
+.form-body {
+	@apply grid grid-cols-1 gap-6;
+}
+
+.actions-wrapper {
+	@apply flex items-center justify-end gap-3 border-gray-200;
+}
+
+.form-group {
+	@apply flex gap-2;
+
+	& > div {
+		@apply flex-1;
+	}
+}

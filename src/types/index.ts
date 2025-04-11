@@ -20,6 +20,15 @@ export interface ApiError {
 	};
 }
 
+export interface Column<T> {
+	key: keyof T;
+	title: string;
+	align?: "left" | "center" | "right";
+	width?: number | string;
+	tooltip?: boolean;
+	render?: (value: T[keyof T], record: T) => React.ReactNode;
+}
+
 export interface ValidationErrors {
 	[key: string]: string;
 }
@@ -50,16 +59,22 @@ export interface RegisterFormData {
 	last_name: string;
 	email: string;
 	phone: string;
-	city_id: string;
+	city_id: string | number;
 	password: string;
 	password_confirmation: string;
 }
 
-export interface Column<T> {
-	key: keyof T;
-	title: string;
-	align?: "left" | "center" | "right";
-	width?: number | string;
-	tooltip?: boolean;
-	render?: (value: T[keyof T], record: T) => React.ReactNode;
+export interface CinemaData {
+	id: number;
+	name: string;
+}
+
+export interface RoomData {
+	id: number;
+	cinema_id: number;
+	cinema_name: string;
+	name: string;
+	seat_rows: number;
+	seat_columns: number;
+	sweetbox_rows: number;
 }

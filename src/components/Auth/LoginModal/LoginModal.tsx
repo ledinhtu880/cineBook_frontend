@@ -31,7 +31,7 @@ const LoginModal = ({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState<ValidationErrors>({});
-	const [loading, setLoading] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -47,7 +47,6 @@ const LoginModal = ({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrors({});
-		setLoading(false);
 
 		// Validate form
 		const validationErrors = validateLoginForm(email, password);
@@ -57,12 +56,12 @@ const LoginModal = ({
 		}
 
 		try {
+			setIsSubmitting(true);
 			const response = await authService.login(email, password);
+			onLoginSuccess(); // Thông báo cho Header biết đăng nhập thành công
+			onClose();
 			if (response.data.user.role) {
 				navigate(config.routes.admin_dashboard);
-			} else {
-				onLoginSuccess(); // Thông báo cho Header biết đăng nhập thành công
-				onClose();
 			}
 		} catch (error) {
 			const apiError = error as ApiError;
@@ -80,7 +79,7 @@ const LoginModal = ({
 				setErrors({ general: "Có lỗi xảy ra khi đăng nhập" });
 			}
 		} finally {
-			setLoading(true);
+			setIsSubmitting(false);
 		}
 	};
 
@@ -119,8 +118,8 @@ const LoginModal = ({
 					error={errors.password}
 					onChange={handleChange}
 				/>
-				<Button className={clsx(styles["btn-primary"])} disabled={loading}>
-					{loading ? "Đang xử lý..." : "Đăng nhập"}
+				<Button className={clsx(styles["btn-primary"])} disabled={isSubmitting}>
+					{isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
 				</Button>
 			</form>
 			{isHaveRegister && (

@@ -6,13 +6,10 @@ import styles from "./Breadcrumb.module.scss";
 
 const Breadcrumb = () => {
 	const location = useLocation();
-	// Tách path nhưng không filter số ra
-	const allPathnames = location.pathname.split("/").filter((x) => x);
+	const allPathnames = location.pathname
+		.split("/")
+		.filter((x) => x && x !== "rooms");
 
-	// Chỉ filter số khi hiển thị
-	const displayPathnames = allPathnames.filter((path, index) =>
-		!isNaN(Number(path)) ? index === allPathnames.length - 1 : true
-	);
 	const getDisplayName = (path: string) => {
 		const routeMap: { [key: string]: string } = {
 			admin: "Trang chủ",
@@ -21,12 +18,12 @@ const Breadcrumb = () => {
 			showtimes: "Quản lý suất chiếu",
 			bookings: "Quản lý đặt vé",
 			users: "Quản lý người dùng",
+			rooms: "Quản lý phòng chiếu",
 			edit: "Chỉnh sửa",
 			create: "Thêm mới",
 			show: "Xem chi tiết",
 		};
 
-		// Nếu path là số, trả về "Xem chi tiết"
 		if (!isNaN(Number(path))) {
 			return "Xem chi tiết";
 		}
@@ -34,16 +31,19 @@ const Breadcrumb = () => {
 		return routeMap[path] || path;
 	};
 
+	const getRouteLink = (name: string) => {
+		const routeSegments = allPathnames.slice(
+			0,
+			allPathnames.findIndex((p) => p === name) + 1
+		);
+		return `/${routeSegments.join("/")}`;
+	};
+
 	return (
 		<nav className={clsx(styles.breadcrumb)}>
-			{displayPathnames.map((name, index) => {
-				// Sử dụng allPathnames để tạo URL, nhưng displayPathnames để hiển thị
-				const routeSegments = allPathnames.slice(
-					0,
-					allPathnames.findIndex((p) => p === name) + 1
-				);
-				const routeTo = `/${routeSegments.join("/")}`;
-				const isLast = index === displayPathnames.length - 1;
+			{allPathnames.map((name, index) => {
+				const routeTo = getRouteLink(name);
+				const isLast = index === allPathnames.length - 1;
 
 				return (
 					<span key={name} className={clsx(styles.item)}>

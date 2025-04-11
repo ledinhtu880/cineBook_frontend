@@ -9,7 +9,6 @@ const routes = {
 	//#endregion
 
 	// #region Quản trị viên
-	admin: "/admin",
 	admin_dashboard: "/admin/dashboard",
 	admin_showtimes: "/admin/showtimes",
 	admin_bookings: "/admin/bookings",
@@ -22,7 +21,12 @@ const routes = {
 	// Quản lý rạp chiếu phim
 	admin_cinemas: "/admin/cinemas",
 	admin_cinemas_create: "/admin/cinemas/create",
+	admin_cinemas_show: "/admin/cinemas/:id",
 	admin_cinemas_edit: "/admin/cinemas/:id/edit",
+	admin_cinemas_rooms_show: "/admin/cinemas/:id/rooms/:id",
+	admin_cinemas_rooms_create: "/admin/cinemas/:id/rooms/create",
+
+	// Quản lý phòng chiếu phim
 
 	// Quản lý người dùngs
 	admin_users: "/admin/users",
