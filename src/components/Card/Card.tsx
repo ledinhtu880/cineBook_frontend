@@ -13,6 +13,7 @@ interface CardProps {
 	addPath?: string;
 	onAdd?: () => void;
 	searchLabel?: string;
+	searchValue: string;
 	onSearch?: (value: string) => void;
 }
 
@@ -25,6 +26,7 @@ const Card = ({
 	onAdd,
 	searchLabel,
 	onSearch,
+	searchValue,
 }: CardProps) => {
 	const navigate = useNavigate();
 	const handleAdd = () => {
@@ -52,6 +54,7 @@ const Card = ({
 										placeholder={searchLabel || "Tìm kiếm..."}
 										className={clsx(styles["card-header-input"])}
 										onChange={(e) => onSearch?.(e.target.value)}
+										value={searchValue}
 									/>
 								</div>
 							)}

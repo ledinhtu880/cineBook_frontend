@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { PageWrapper, Loading, Table, Card } from "@/components/";
-import { movieService } from "@/services/";
 import { useDebounce } from "@/hooks";
-import { ApiError, Column, MovieProps } from "@/types/";
 import { useSnackbar } from "@/context";
+import { movieService } from "@/services/";
+import { ApiError, Column, MovieProps } from "@/types/";
+import { PageWrapper, Loading, Table, Card } from "@/components/";
 
 const columns: Column<MovieProps>[] = [
 	{ key: "id", title: "#", width: 75 },
@@ -31,8 +31,10 @@ const Movie = () => {
 	const debouncedValue = useDebounce(searchKeyword, 250);
 	const { showSnackbar } = useSnackbar();
 
-	const filteredMovies = movies.filter((movie) =>
-		movie.title.toLowerCase().includes(debouncedValue.toLowerCase())
+	const filteredMovies = movies.filter(
+		(movie) =>
+			movie.title.toLowerCase().includes(debouncedValue.toLowerCase()) ||
+			movie.genres.toLowerCase().includes(debouncedValue.toLowerCase())
 	);
 
 	const handleDelete = useCallback(
@@ -55,14 +57,14 @@ const Movie = () => {
 				setMovies(response);
 			} catch (error) {
 				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					console.log(apiError.response?.data?.errors);
+				if (apiError.response?.data) {
+					showSnackbar(apiError.response.data.message, "error");
 				}
 			} finally {
 				setLoading(false);
 			}
 		})();
-	}, []);
+	}, [showSnackbar]);
 
 	return (
 		<PageWrapper title="Quản lý phim">
@@ -71,6 +73,7 @@ const Movie = () => {
 				addPath={"/admin/movies/create"}
 				addLabel="Thêm phim"
 				onSearch={setSearchKeyword}
+				searchValue={searchKeyword}
 			>
 				{loading ? (
 					<Loading />

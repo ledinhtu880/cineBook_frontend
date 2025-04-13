@@ -1,13 +1,44 @@
 :root {
-	--item-width: 282px;
-	--item-gap: 40px; /* equivalent to gap-10 in Tailwind */
+	--item-width: 281px;
+	--item-gap: 40px;
+}
+
+.wrapper {
+	@apply px-4 py-8 relative bg-zinc-100;
+
+	&.has-background {
+		background-image: url("../../assets/images/background.jpg");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-attachment: fixed;
+
+		.title {
+			@apply text-white;
+		}
+
+		.carousel-control {
+			&.prev,
+			&.next {
+				@apply bg-white/50;
+			}
+		}
+
+		.carousel-title {
+			@apply text-[#b0d427];
+		}
+
+		.carousel-genre {
+			@apply text-gray-400;
+		}
+	}
 }
 
 .title {
-	@apply text-2xl font-bold my-8 mb-4;
+	@apply text-2xl font-bold my-8 mb-4 text-center uppercase;
 }
 .carousel-wrapper {
-	@apply relative overflow-hidden;
+	@apply relative container mx-auto;
 
 	&:hover {
 		.carousel-control {
@@ -17,7 +48,7 @@
 }
 
 .carousel-track {
-	@apply w-full overflow-hidden;
+	@apply w-full overflow-hidden p-4;
 }
 
 .carousel-list {
@@ -31,17 +62,21 @@
   hover:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed;
 
 	&.prev {
-		@apply left-0;
+		@apply left-4;
 	}
 
 	&.next {
-		@apply right-0;
+		@apply right-4;
 	}
 }
 
 .carousel-item-wrapper {
 	@apply flex flex-col justify-center flex-shrink-0;
 	width: var(--item-width);
+
+	&:hover {
+		@apply scale-105 transition-transform duration-300;
+	}
 }
 
 .carousel-item {
@@ -57,7 +92,7 @@
 }
 
 .carousel-image {
-	@apply object-cover w-full rounded-lg;
+	@apply object-cover w-full rounded-lg border border-white;
 }
 
 .carousel-badge {
@@ -104,5 +139,9 @@
 }
 
 .carousel-title {
-	@apply max-w-[220px] w-fit text-lg font-medium my-2 truncate p-0 inline;
+	@apply max-w-[220px] w-fit mt-2 text-lg font-medium truncate p-0 inline;
+}
+
+.carousel-genre {
+	@apply text-sm truncate;
 }

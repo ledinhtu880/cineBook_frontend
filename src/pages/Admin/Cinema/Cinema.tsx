@@ -50,14 +50,14 @@ const Cinema = () => {
 				setCinemas(response);
 			} catch (error) {
 				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					console.log(apiError.response?.data?.errors);
+				if (apiError.response?.data) {
+					showSnackbar(apiError.response.data.message, "error");
 				}
 			} finally {
 				setLoading(false);
 			}
 		})();
-	}, []);
+	}, [showSnackbar]);
 
 	const handleDelete = useCallback(
 		async (record: CinemaData) => {

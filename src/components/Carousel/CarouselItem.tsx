@@ -79,6 +79,10 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 				</Link>
 			</Tooltip>
 
+			<Tooltip title={item.genres} arrow placement="bottom">
+				<p className={clsx(styles["carousel-genre"])}>{item.genres}</p>
+			</Tooltip>
+
 			{showTrailer && (
 				<Modal
 					isOpen={showTrailer}

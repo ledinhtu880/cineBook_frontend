@@ -36,6 +36,7 @@ const Home = () => {
 			<Carousel
 				title="Phim đang chiếu"
 				fetchData={movieService.getNowShowingMovies}
+				hasBackground
 			/>
 			{/* End: Now Showing */}
 

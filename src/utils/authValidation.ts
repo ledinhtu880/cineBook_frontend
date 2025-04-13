@@ -46,7 +46,7 @@ function validatePhoneNumber(phone: string): string | null {
 	}
 
 	// Format: +84xxxxxxxxx hoặc 0xxxxxxxxx (x là số)
-	const phoneRegex = /^(?:\+84|0)[1-9]\d{8}$/;
+	const phoneRegex = /^(?:\+84|0)[1-9]\d{8,9}$/;
 	if (!phoneRegex.test(phone)) {
 		return "Số điện thoại không hợp lệ (VD: 0912345678 hoặc +84912345678)";
 	}

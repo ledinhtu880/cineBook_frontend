@@ -202,53 +202,54 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 				</div>
 			)}
 
-			<Modal
-				isOpen={isModalOpen}
-				onClose={() => {
-					setIsModalOpen(false);
-					setSelectedRecord(null);
-				}}
-				// Bỏ prop title ở đây để không hiển thị header
-			>
-				{selectedRecord && (
-					<>
-						<div className={styles["modal-body"]}>
-							<div className={styles["warning-message"]}>
-								<div className={styles["warning-icon-wrapper"]}>
-									<Warning className={styles["warning-icon"]} />
+			{onDelete && (
+				<Modal
+					isOpen={isModalOpen}
+					onClose={() => {
+						setIsModalOpen(false);
+						setSelectedRecord(null);
+					}}
+				>
+					{selectedRecord && (
+						<>
+							<div className={styles["modal-body"]}>
+								<div className={styles["warning-message"]}>
+									<div className={styles["warning-icon-wrapper"]}>
+										<Warning className={styles["warning-icon"]} />
+									</div>
+									<h3>Bạn có chắc chắn?</h3>
+									<p>
+										Hành động này không thể hoàn tác. <br />
+										Tất cả giá trị liên kết với "
+										{selectedRecord.name || selectedRecord.title}" sẽ bị mất.
+									</p>
 								</div>
-								<h3>Bạn có chắc chắn?</h3>
-								<p>
-									Hành động này không thể hoàn tác. <br />
-									Tất cả giá trị liên kết với "
-									{selectedRecord.name || selectedRecord.title}" sẽ bị mất.
-								</p>
 							</div>
-						</div>
-						<div className={styles["modal-footer"]}>
-							<Button
-								onClick={() => {
-									onDelete?.(selectedRecord);
-									setIsModalOpen(false);
-									setSelectedRecord(null);
-								}}
-								className={clsx(styles["btn-delete"])}
-							>
-								Xóa
-							</Button>
-							<Button
-								onClick={() => {
-									setIsModalOpen(false);
-									setSelectedRecord(null);
-								}}
-								className={clsx(styles["btn-cancel"])}
-							>
-								Hủy
-							</Button>
-						</div>
-					</>
-				)}
-			</Modal>
+							<div className={styles["modal-footer"]}>
+								<Button
+									onClick={() => {
+										onDelete?.(selectedRecord);
+										setIsModalOpen(false);
+										setSelectedRecord(null);
+									}}
+									className={clsx(styles["btn-delete"])}
+								>
+									Xóa
+								</Button>
+								<Button
+									onClick={() => {
+										setIsModalOpen(false);
+										setSelectedRecord(null);
+									}}
+									className={clsx(styles["btn-cancel"])}
+								>
+									Hủy
+								</Button>
+							</div>
+						</>
+					)}
+				</Modal>
+			)}
 		</div>
 	);
 };

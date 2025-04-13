@@ -5,15 +5,19 @@ import {
 	faChevronLeft,
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import Loading from "@components/Loading";
 
 import styles from "./Carousel.module.scss";
+import Loading from "@components/Loading";
 import { CarouselProps, MovieProps } from "@/types/index";
 
 // Lazy load CarouselItem component
 const CarouselItem = lazy(() => import("./CarouselItem"));
 
-const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
+const Carousel: React.FC<CarouselProps> = ({
+	title,
+	fetchData,
+	hasBackground = false,
+}) => {
 	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +52,11 @@ const Carousel: React.FC<CarouselProps> = ({ title, fetchData }) => {
 	};
 
 	return (
-		<div className={clsx(styles.wrapper)}>
+		<div
+			className={clsx(styles.wrapper, {
+				[styles["has-background"]]: hasBackground,
+			})}
+		>
 			<h2 className={clsx(styles.title)}>{title}</h2>
 			<div className={clsx(styles["carousel-wrapper"])}>
 				{isLoading ? (

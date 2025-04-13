@@ -29,12 +29,12 @@ const Cinema = () => {
 				setCinema(response);
 			} catch (error) {
 				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					console.log(apiError.response?.data?.errors);
+				if (apiError.response?.data) {
+					showSnackbar(apiError.response.data.message, "error");
 				}
 			}
 		})();
-	}, [id]);
+	}, [id, showSnackbar]);
 
 	useEffect(() => {
 		(async () => {
@@ -43,14 +43,14 @@ const Cinema = () => {
 				setRooms(response);
 			} catch (error) {
 				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					console.log(apiError.response?.data?.errors);
+				if (apiError.response?.data) {
+					showSnackbar(apiError.response.data.message, "error");
 				}
 			} finally {
 				setLoading(false);
 			}
 		})();
-	}, [id]);
+	}, [id, showSnackbar]);
 
 	const handleAddRoom = () => {
 		navigate(`/admin/cinemas/${id}/rooms/create`, {

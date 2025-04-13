@@ -62,14 +62,12 @@ const RegisterModal = ({
 		const validationErrors = validateRegisterForm(formData);
 
 		if (Object.keys(validationErrors).length > 0) {
-			console.log(formData);
 			setErrors(validationErrors);
 			return;
 		}
 
 		try {
 			setIsSubmitting(true);
-			console.log(formData);
 			await authService.register(formData);
 			onRegisterSuccess();
 		} catch (error) {

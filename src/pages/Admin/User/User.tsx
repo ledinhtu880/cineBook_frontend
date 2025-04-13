@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
 
-import PageWrapper from "@/components/PageWrapper";
-import Loading from "@/components/Loading";
-import Table from "@/components/Table";
-import Card from "@/components/Card";
-import { userService } from "@/services/";
+import { Column, ApiError } from "@/types/";
 import { useDebounce } from "@/hooks";
-import { ApiError } from "@/types/";
-import { Column } from "@/types/";
+import { userService } from "@/services/";
+import { useSnackbar } from "@/context";
+import { PageWrapper, Loading, Table, Card } from "@/components/";
 
 interface UserData {
 	id: number;
@@ -23,6 +20,7 @@ const columns: Column<UserData>[] = [
 	{ key: "string_role", title: "Vai trò" },
 ];
 const User = () => {
+	const { showSnackbar } = useSnackbar();
 	const [users, setUsers] = useState<UserData[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchKeyword, setSearchKeyword] = useState("");
@@ -41,14 +39,14 @@ const User = () => {
 				setUsers(response);
 			} catch (error) {
 				const apiError = error as ApiError;
-				if (apiError.response?.data?.errors) {
-					console.log(apiError.response?.data?.errors);
+				if (apiError.response?.data) {
+					showSnackbar(apiError.response.data.message, "error");
 				}
 			} finally {
 				setLoading(false);
 			}
 		})();
-	}, []);
+	}, [showSnackbar]);
 
 	return (
 		<PageWrapper title="Quản lý người dùng">

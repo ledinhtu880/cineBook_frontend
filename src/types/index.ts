@@ -14,7 +14,7 @@ export interface ApiError {
 			status: "error";
 			message: string;
 			errors: {
-				[key: string]: string[]; // Giữ nguyên array nhưng biết chắc chỉ có 1 phần tử
+				[key: string]: string[];
 			};
 		};
 	};
@@ -35,7 +35,8 @@ export interface ValidationErrors {
 
 export interface CarouselProps {
 	title: string;
-	fetchData: () => Promise<MovieProps[]>; // Function to fetch data
+	fetchData: () => Promise<MovieProps[]>;
+	hasBackground?: boolean;
 }
 
 export interface MovieProps {

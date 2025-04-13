@@ -1,5 +1,5 @@
 .wrapper {
-	@apply container mx-auto px-4;
+	@apply w-full overflow-x-hidden;
 }
 
 .row {
@@ -19,7 +19,7 @@
 }
 
 .slider {
-	@apply relative overflow-hidden my-[48px];
+	@apply relative overflow-hidden container mx-auto my-[48px];
 
 	&Track {
 		@apply flex transition-transform duration-300;
