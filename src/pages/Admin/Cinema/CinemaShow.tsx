@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { roomService, cinemaService } from "@/services/";
 import { useSnackbar } from "@/context";
 import { ApiError, Column, RoomData, CinemaData } from "@/types/";
-import { PageWrapper, Loading, Table, Card } from "@/components/";
+import { PageWrapper, Loading, Table, Card } from "@/components";
 
 const columns: Column<RoomData>[] = [
 	{ key: "id", title: "#", width: 75 },

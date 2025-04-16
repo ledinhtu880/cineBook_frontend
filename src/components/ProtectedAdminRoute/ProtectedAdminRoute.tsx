@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { useState, useEffect, ReactElement } from "react";
 
-import { LoginModal } from "@components/Auth/index";
-import Loading from "@components/Loading";
 import { authService } from "@/services/";
+import { Loading } from "@/components";
+import { LoginModal } from "@/components/Auth";
 
 const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,6 +13,9 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 	const checkAuth = async () => {
 		try {
+			setIsAuthenticated(false);
+			setIsAdmin(false);
+
 			if (!authService.isLoggedIn()) {
 				setShowLoginModal(true);
 				setLoading(false);
@@ -23,7 +26,10 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 			if (userData) {
 				setIsAuthenticated(true);
-				setIsAdmin(userData.role);
+
+				const isAdminRole = userData.role == !!1;
+
+				setIsAdmin(isAdminRole);
 				setShowLoginModal(false);
 			} else {
 				setIsAuthenticated(false);
@@ -50,7 +56,7 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 	const handleCloseModal = () => {
 		setShowLoginModal(false);
-		return <Navigate to="/" replace />;
+		window.location.href = "/"; // Force full page navigation
 	};
 
 	if (loading) {
@@ -82,6 +88,8 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 			/>
 		);
 	}
+
+	alert("Admin");
 
 	// If admin, show admin content
 	return children;

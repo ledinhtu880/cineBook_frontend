@@ -1,11 +1,9 @@
 import { useState, useLayoutEffect, useCallback } from "react";
-import clsx from "clsx";
 import { Link } from "react-router-dom";
+import clsx from "clsx";
 
 import styles from "./Header.module.scss";
-import config from "@config/index";
-import Button from "@/components/Button";
-import Image from "@/components/Image";
+import config from "@/config";
 import images from "@/assets/images";
 import { authService } from "@/services/";
 import {
@@ -13,6 +11,7 @@ import {
 	RegisterModal,
 	RegisterSuccessModal,
 } from "@/components/Auth/";
+import { Button, Image } from "@/components";
 
 const Header = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(

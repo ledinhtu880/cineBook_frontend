@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { PageWrapper, Loading, Table, Card } from "@/components/";
-import { ApiError, Column } from "@/types/";
-import { cinemaService } from "@/services/";
+import { ApiError, Column } from "@/types";
+import { cinemaService } from "@/services";
 import { useSnackbar } from "@/context";
+import { PageWrapper, Loading, Table, Card } from "@/components";
 
 interface CinemaData {
 	id: number;

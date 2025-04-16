@@ -1,6 +1,6 @@
 import CinemaForm from "./CinemaForm";
 import { cinemaService } from "@/services";
-import { PageWrapper, Card } from "@/components/";
+import { PageWrapper, Card } from "@/components";
 
 const CinemaCreate = () => {
 	return (

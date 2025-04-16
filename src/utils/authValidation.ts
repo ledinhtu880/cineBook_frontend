@@ -75,9 +75,9 @@ export function validateLoginForm(
 		errors.email = "Email không hợp lệ";
 	}
 
-	// Validate mật khẩu - chỉ kiểm tra cơ bản khi đăng nhập
-	if (!password) {
-		errors.password = "Mật khẩu không được để trống";
+	const passwordValidation = validatePassword(password);
+	if (!passwordValidation.isValid) {
+		errors.password = passwordValidation.errors[0]; // Chỉ lấy lỗi đầu tiên
 	}
 
 	return errors;

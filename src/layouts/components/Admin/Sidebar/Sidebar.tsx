@@ -1,6 +1,4 @@
-import clsx from "clsx";
 import { Link } from "react-router-dom";
-
 import {
 	GridView,
 	Movie,
@@ -9,11 +7,12 @@ import {
 	ConfirmationNumber,
 	People,
 } from "@mui/icons-material";
+import clsx from "clsx";
 
 import styles from "./Sidebar.module.scss";
 import images from "@/assets/images";
 import config from "@/config";
-import { Image, Menu } from "@components/index";
+import { Image, Menu } from "@/components";
 
 interface SidebarProps {
 	isCollapse: boolean;

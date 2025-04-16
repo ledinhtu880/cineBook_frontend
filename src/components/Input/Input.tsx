@@ -2,7 +2,7 @@ import React, { InputHTMLAttributes, useRef, useState } from "react";
 import clsx from "clsx";
 
 import styles from "./Input.module.scss";
-import Label from "@/components/Label/index";
+import { Label } from "@/components";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 	type?: string;

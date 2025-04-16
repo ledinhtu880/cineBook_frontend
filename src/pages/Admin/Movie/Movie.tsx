@@ -4,7 +4,7 @@ import { useDebounce } from "@/hooks";
 import { useSnackbar } from "@/context";
 import { movieService } from "@/services/";
 import { ApiError, Column, MovieProps } from "@/types/";
-import { PageWrapper, Loading, Table, Card } from "@/components/";
+import { PageWrapper, Loading, Table, Card } from "@/components";
 
 const columns: Column<MovieProps>[] = [
 	{ key: "id", title: "#", width: 75 },

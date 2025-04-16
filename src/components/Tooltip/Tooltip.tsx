@@ -1,5 +1,4 @@
-import { TooltipProps } from "@mui/material";
-import MuiTooltip from "@mui/material/Tooltip";
+import { TooltipProps, Tooltip as MuiTooltip } from "@mui/material";
 
 const Tooltip = ({ children, ...props }: TooltipProps) => {
 	return (

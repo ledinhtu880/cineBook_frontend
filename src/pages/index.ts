@@ -3,4 +3,5 @@ export { default as NowShowing } from "./NowShowing";
 export { default as ComingSoon } from "./ComingSoon";
 export { default as Cinema } from "./Cinema";
 export { default as NotFoundPage } from "./NotFoundPage";
+export { default as Movie } from "./MoviePage";
 export * as Admin from "./Admin";

@@ -1,16 +1,12 @@
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useEffect } from "react";
 
-import Header from "@layouts/components/Header";
-import { publicRoutes } from "@routes/index";
+import { publicRoutes } from "@/routes";
 import { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
+import Header from "@/layouts/components/Header";
 
-interface DefaultLayoutProps {
-	children: React.ReactNode;
-}
-
-function DefaultLayout({ children }: DefaultLayoutProps) {
+function DefaultLayout({ children }: { children: React.ReactNode }) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const state = location.state as LocationState;

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { cinemaService } from "@/services";
 import CinemaForm, { CinemaFormData } from "./CinemaForm";
-import { PageWrapper, Card, Skeleton } from "@/components/";
+import { PageWrapper, Card, Skeleton } from "@/components";
 
 const CinemaEdit = () => {
 	const { id } = useParams();

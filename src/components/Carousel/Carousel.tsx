@@ -1,16 +1,11 @@
 import { useState, useEffect, Suspense, lazy } from "react";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import clsx from "clsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faChevronLeft,
-	faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 
 import styles from "./Carousel.module.scss";
-import Loading from "@components/Loading";
 import { CarouselProps, MovieProps } from "@/types/index";
+import { Loading } from "@/components";
 
-// Lazy load CarouselItem component
 const CarouselItem = lazy(() => import("./CarouselItem"));
 
 const Carousel: React.FC<CarouselProps> = ({
@@ -70,7 +65,7 @@ const Carousel: React.FC<CarouselProps> = ({
 							onClick={handlePrev}
 							disabled={currentIndex === 0}
 						>
-							<FontAwesomeIcon icon={faChevronLeft} />
+							<ChevronLeft />
 						</button>
 
 						<div className={clsx(styles["carousel-track"])}>
@@ -93,7 +88,7 @@ const Carousel: React.FC<CarouselProps> = ({
 							onClick={handleNext}
 							disabled={currentIndex + 4 >= movies.length}
 						>
-							<FontAwesomeIcon icon={faChevronRight} />
+							<ChevronRight />
 						</button>
 					</>
 				)}

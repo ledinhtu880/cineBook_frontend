@@ -1,16 +1,13 @@
-import clsx from "clsx";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 
 import styles from "../Auth.module.scss";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import Image from "@/components/Image";
-import Modal from "@/components/Modal";
 import config from "@/config";
 import { authService } from "@/services/";
 import { ApiError, ValidationErrors } from "@/types";
 import { validateLoginForm } from "@/utils/authValidation";
+import { Button, Input, Image, Modal } from "@/components";
 
 interface LoginModalProps {
 	isOpen: boolean;
@@ -58,7 +55,7 @@ const LoginModal = ({
 		try {
 			setIsSubmitting(true);
 			const response = await authService.login(email, password);
-			onLoginSuccess(); // Thông báo cho Header biết đăng nhập thành công
+			onLoginSuccess();
 			onClose();
 			if (response.data.user.role) {
 				navigate(config.routes.admin_dashboard);
@@ -130,8 +127,8 @@ const LoginModal = ({
 					<p className={clsx(styles["info"])}>Bạn chưa có tài khoản</p>
 					<Button
 						className={clsx(styles["btn-secondary"])}
-						outline
 						onClick={onOpenRegister}
+						outline
 					>
 						Đăng ký
 					</Button>

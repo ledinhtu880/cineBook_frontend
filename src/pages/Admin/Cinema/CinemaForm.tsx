@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 
 import styles from "./Cinema.module.scss";
 import config from "@/config";
 import { CityProps } from "@/types/";
 import { useSnackbar } from "@/context";
 import { cityService } from "@/services";
-import * as Form from "@utils/validation";
+import * as Form from "@/utils/validation";
 import { Button, Input, Select, Skeleton } from "@/components";
 
 export interface CinemaFormData extends Form.FormValues {

@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 
-import ProtectedAdminRoute from "@components/ProtectedAdminRoute/index";
+import { useSnackbar } from "@/context";
+import AdminLayout from "@/layouts/AdminLayout";
+import DefaultLayout from "@/layouts/DefaultLayout";
 import { publicRoutes, adminRoutes } from "./routes";
-import DefaultLayout from "@layouts/DefaultLayout";
-import AdminLayout from "@layouts/AdminLayout";
-import { useSnackbar } from "@/context/";
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 const App = () => {
 	const { open, message, severity, closeSnackbar } = useSnackbar();

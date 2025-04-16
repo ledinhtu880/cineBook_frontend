@@ -1,7 +1,6 @@
-import PageWrapper from "@/components/PageWrapper";
-import Card from "@/components/Card";
 import MovieForm from "./MovieForm";
 import { movieService } from "@/services";
+import { Card, PageWrapper } from "@/components";
 
 const MovieCreate = () => {
 	return (

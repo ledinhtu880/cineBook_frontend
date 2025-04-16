@@ -2,18 +2,13 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import clsx from "clsx";
 
-import { adminRoutes } from "@routes/index";
 import styles from "./AdminLayout.module.scss";
-import Header from "@/layouts/components/Admin/Header";
-import Sidebar from "@/layouts/components/Admin/Sidebar";
 import { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
+import { adminRoutes } from "@routes/index";
+import { Header, Sidebar } from "@layouts/components/Admin";
 
-interface AdminLayoutProps {
-	children: React.ReactNode;
-}
-
-function AdminLayout({ children }: AdminLayoutProps) {
+function AdminLayout({ children }: { children: React.ReactNode }) {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const state = location.state as LocationState;

@@ -1,49 +1,35 @@
 import { useState } from "react";
-import clsx from "clsx";
-import { Link } from "react-router-dom";
-import Box from "@mui/material/Box";
+import { Link, useNavigate } from "react-router-dom";
 import { ConfirmationNumber, PlayCircle } from "@mui/icons-material";
+import clsx from "clsx";
 
 import styles from "./Carousel.module.scss";
-import Modal from "@/components/Modal";
-import Button from "@/components/Button";
+import config from "@/config";
 import { MovieProps } from "@/types/index";
-import Image from "@/components/Image";
-import Tooltip from "@/components/Tooltip";
+import { getYoutubeEmbedUrl } from "@/utils";
+import { Modal, Button, Image, Tooltip, Box } from "@/components";
 
-const style = {
-	position: "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "90vw",
-	maxWidth: "1000px",
-	bgcolor: "background.paper",
-	boxShadow: 24,
-	p: 0,
-	outline: "none",
-	borderRadius: "8px",
-	aspectRatio: "16/9",
-};
 const CarouselItem = ({ item }: { item: MovieProps }) => {
+	const navigate = useNavigate();
 	const [showTrailer, setShowTrailer] = useState(false);
 
-	const handleOpenTrailer = () => setShowTrailer(true);
+	const handleOpenTrailer = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		setShowTrailer(true);
+	};
+
 	const handleCloseTrailer = () => setShowTrailer(false);
 
-	const getYoutubeEmbedUrl = (url: string) => {
-		// Handle different YouTube URL formats
-		const regExp =
-			/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-		const match = url.match(regExp);
-
-		return match && match[2].length === 11
-			? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
-			: url;
+	const handleNavigate = () => {
+		const path = config.routes.movie_shows.replace(":slug", String(item.slug));
+		navigate(path);
 	};
 
 	return (
-		<div className={clsx(styles["carousel-item-wrapper"])}>
+		<div
+			className={clsx(styles["carousel-item-wrapper"])}
+			onClick={handleNavigate}
+		>
 			<div className={clsx(styles["carousel-item"])}>
 				<Image
 					src={item.poster_url}
@@ -91,7 +77,7 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 					width={1000}
 					height={563}
 				>
-					<Box sx={style}>
+					<Box>
 						<iframe
 							src={getYoutubeEmbedUrl(item.trailer_url)}
 							title={`${item.title} Trailer`}

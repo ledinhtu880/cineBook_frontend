@@ -3,7 +3,7 @@ import { Search, Add } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Card.module.scss";
-import { Input, Button } from "@components/index";
+import { Input, Button } from "@/components";
 
 interface CardProps {
 	title?: string;
@@ -13,7 +13,7 @@ interface CardProps {
 	addPath?: string;
 	onAdd?: () => void;
 	searchLabel?: string;
-	searchValue: string;
+	searchValue?: string;
 	onSearch?: (value: string) => void;
 }
 

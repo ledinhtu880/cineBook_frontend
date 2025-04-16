@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "@mui/icons-material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
-import Button from "@/components/Button";
-import Image from "@/components/Image";
+import { User, authService } from "@/services/";
+import { Button, Image } from "@/components";
 
 interface HeaderProps {
 	onCollapse: () => void;
@@ -13,6 +13,20 @@ interface HeaderProps {
 
 const Header = ({ onCollapse }: HeaderProps) => {
 	const [isCollapse, setIsCollapse] = useState(false);
+	const [userData, setUserData] = useState<User | null>(null);
+
+	useEffect(() => {
+		const fetchUserData = async () => {
+			try {
+				const user = await authService.getCurrentUser();
+				setUserData(user);
+			} catch (error) {
+				console.error("Failed to fetch user data:", error);
+			}
+		};
+
+		fetchUserData();
+	}, [userData]);
 
 	return (
 		<header className={clsx(styles["header"])}>
@@ -40,7 +54,7 @@ const Header = ({ onCollapse }: HeaderProps) => {
 						size="no-padding"
 						text
 					>
-						Lê Đình Tú
+						{userData?.name}
 					</Button>
 				</div>
 			</div>

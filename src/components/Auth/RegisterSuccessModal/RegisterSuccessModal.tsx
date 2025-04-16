@@ -3,8 +3,7 @@ import clsx from "clsx";
 import { Check } from "@mui/icons-material";
 
 import styles from "../Auth.module.scss";
-import Modal from "@/components/Modal";
-import Image from "@/components/Image";
+import { Modal, Image } from "@/components";
 
 interface RegisterModalProps {
 	isOpen: boolean;

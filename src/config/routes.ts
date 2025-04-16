@@ -1,12 +1,16 @@
 const routes = {
-	// #region Người dùng
+	// #region Chung chung
 	home: "/",
 	now_showing: "/phim-dang-chieu",
 	coming_soon: "/phim-sap-chieu",
 	cinema: "/he-thong-rap",
 	forgot_password: "/quen-mat-khau",
 	not_found: "*",
+
+	movie_shows: "/phim/:slug",
 	//#endregion
+
+	// #region phim d
 
 	// #region Quản trị viên
 	admin_dashboard: "/admin/dashboard",

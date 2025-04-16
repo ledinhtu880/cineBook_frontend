@@ -1,10 +1,9 @@
-import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import clsx from "clsx";
 
 import styles from "./Home.module.scss";
-import Image from "@/components/Image";
-import Carousel from "@/components/Carousel";
-import movieService from "@/services/movieService";
+import { movieService } from "@/services";
+import { Image, Carousel } from "@/components";
 
 const Home = () => {
 	return (
@@ -30,7 +29,7 @@ const Home = () => {
 					<ChevronRight />
 				</button>
 			</div>
-			{/* Start: End */}
+			{/* Start: Slider */}
 
 			{/* Start: Now Showing */}
 			<Carousel

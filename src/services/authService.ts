@@ -7,6 +7,7 @@ export interface User {
 	id: number;
 	first_name: string;
 	last_name: string;
+	name: string;
 	email: string;
 	role: boolean;
 }
@@ -22,7 +23,9 @@ interface LoginResponse {
 
 let userCache: User | null = null;
 
-let currentUserRequest: Promise<User | null> | null = null;
+const getTokenFromStorage = (): string | null => {
+	return localStorage.getItem("token");
+};
 
 const authService = {
 	login: async (email: string, password: string) => {
@@ -39,19 +42,15 @@ const authService = {
 				const token = response.data.data.token;
 				const user = response.data.data.user;
 
-				// Lưu token và thông tin user vào localStorage
 				localStorage.setItem("token", token);
 
-				// Cập nhật cache
 				userCache = user;
 
-				// Cập nhật API configuration để tự động gửi token
 				axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 			}
 
 			return response.data;
 		} catch (error) {
-			// Bắt lỗi network hoặc validation
 			console.error("Login error:", error);
 			throw error;
 		}
@@ -76,57 +75,39 @@ const authService = {
 
 			// Xóa user khỏi memory cache
 			userCache = null;
-			currentUserRequest = null;
 
 			// Xóa token khỏi axios headers
 			delete axios.defaults.headers.common["Authorization"];
 		}
 	},
 
-	getCurrentUser: async () => {
-		if (userCache) {
+	getCurrentUser: async (forceRefresh = false) => {
+		try {
+			if (forceRefresh || !userCache) {
+				const response = await axios.get(`${API_URL}/auth/me`, {
+					headers: {
+						Authorization: `Bearer ${getTokenFromStorage()}`,
+						"Cache-Control": "no-cache",
+					},
+				});
+
+				// Lưu vào cache
+				userCache = response.data;
+				return response.data;
+			}
+
 			return userCache;
+		} catch (error) {
+			console.error("Error getting current user:", error);
+			return null;
 		}
-
-		if (currentUserRequest) {
-			return currentUserRequest;
-		}
-
-		const token = localStorage.getItem("token");
-		if (token) {
-			currentUserRequest = (async () => {
-				try {
-					const response = await axios.get(`${API_URL}/auth/me`, {
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					});
-
-					userCache = response.data.data;
-					return userCache;
-				} catch (error) {
-					console.error("Failed to get user info:", error);
-					if (axios.isAxiosError(error) && error.response?.status === 401) {
-						authService.logout();
-					}
-					return null;
-				} finally {
-					currentUserRequest = null;
-				}
-			})();
-
-			return currentUserRequest;
-		}
-
-		return null;
 	},
 
 	refreshUserData: async () => {
-		const token = localStorage.getItem("token");
+		const token = getTokenFromStorage();
 		if (!token) return null;
 
 		userCache = null;
-		currentUserRequest = null;
 
 		try {
 			const response = await axios.get(`${API_URL}/auth/me`, {
@@ -151,19 +132,9 @@ const authService = {
 	},
 
 	setupAxiosInterceptors: () => {
-		const token = localStorage.getItem("token");
+		const token = getTokenFromStorage();
 		if (token) {
 			axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-		}
-
-		const userStr = localStorage.getItem("user");
-		if (userStr) {
-			try {
-				userCache = JSON.parse(userStr);
-			} catch (error) {
-				console.error("Error parsing user from localStorage:", error);
-				localStorage.removeItem("user");
-			}
 		}
 	},
 };

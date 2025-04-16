@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import styles from "../Auth.module.scss";
-import Input from "@/components/Input";
-import Select from "@/components/Select";
-import Modal from "@/components/Modal";
-import Button from "@/components/Button";
-import Image from "@/components/Image";
 import {
 	ValidationErrors,
 	ApiError,
@@ -15,6 +10,7 @@ import {
 } from "@/types";
 import { validateRegisterForm } from "@/utils/authValidation";
 import { authService, cityService } from "@/services/";
+import { Input, Select, Modal, Button, Image } from "@/components";
 
 interface RegisterModalProps {
 	isOpen: boolean;

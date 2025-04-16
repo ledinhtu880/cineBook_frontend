@@ -44,10 +44,16 @@ export interface MovieProps {
 	title: string;
 	duration_label: string;
 	release_date_label: string;
+	country: string;
+	rating: string;
 	genres: string;
+	banner_url: string;
 	poster_url: string;
+	duration: string;
 	trailer_url: string;
 	age_rating: "P" | "K" | "T13" | "T16" | "T18";
+	slug?: string;
+	description?: string;
 }
 
 export interface CityProps {

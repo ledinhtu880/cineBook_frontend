@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 import styles from "./PageWrapper.module.scss";
-import Breadcrumb from "@components/Breadcrumb";
+import { Breadcrumb } from "@/components";
 
 interface PageWrapper {
 	title: string;

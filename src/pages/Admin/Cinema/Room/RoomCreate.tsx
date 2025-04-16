@@ -13,9 +13,9 @@ import config from "@/config";
 import { CinemaData } from "@/types";
 import { useSnackbar } from "@/context";
 import * as Form from "@utils/validation";
-import { PageWrapper, Card, Input, Button } from "@/components";
 import { cinemaService } from "@/services";
 import { SeatLayout, Seat } from "./RoomShow";
+import { PageWrapper, Card, Input, Button } from "@/components";
 
 interface PreviewModalProps {
 	isOpen: boolean;

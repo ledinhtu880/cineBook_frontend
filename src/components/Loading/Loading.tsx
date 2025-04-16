@@ -1,7 +1,6 @@
 import clsx from "clsx";
+import { Box, CircularProgress } from "@mui/material";
 
-import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import styles from "./Loading.module.scss";
 
 interface LoadingProps {

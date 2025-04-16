@@ -1,0 +1,17 @@
+.wrapper {
+	@apply px-4 py-8 relative bg-zinc-100;
+}
+
+.movie-wrapper {
+	@apply relative mx-auto flex flex-wrap gap-6;
+
+	&:hover {
+		.carousel-control {
+			@apply flex;
+		}
+	}
+}
+
+.empty {
+	@apply text-center py-8 text-gray-500;
+}

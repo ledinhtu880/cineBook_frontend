@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 // import styles from "./User.module.scss";
 import { userService } from "@/services";
-import { PageWrapper, Card, Skeleton } from "@/components/";
+import { PageWrapper, Card, Skeleton } from "@/components";
 
 interface UserInterface {
 	id: number;

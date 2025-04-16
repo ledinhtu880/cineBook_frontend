@@ -1,0 +1,39 @@
+import { memo } from "react";
+import clsx from "clsx";
+
+import styles from "./Movie.module.scss";
+import { MovieProps } from "@/types";
+import { Image, Button, Tooltip } from "@/components";
+interface MovieCardProps {
+	movie: MovieProps;
+	onClick?: () => void;
+}
+
+const MovieCard = ({ movie, onClick }: MovieCardProps) => {
+	return (
+		<div className={clsx(styles.card)} onClick={onClick}>
+			<div className={clsx(styles.poster)}>
+				<Image
+					className={clsx(styles.image)}
+					src={movie.poster_url}
+					alt={movie.title}
+				/>
+				<div className={clsx(styles.badge)}>
+					<span>{movie.age_rating}</span>
+				</div>
+			</div>
+			<div className={clsx(styles.info)}>
+				<h3 className={clsx(styles.title, "line-clamp-2")}>{movie.title}</h3>
+				<div className={clsx(styles.text)}>
+					Thời gian: {movie.duration_label}
+				</div>
+				<Tooltip title={movie.genres} arrow placement="bottom">
+					<p className={clsx(styles.text)}>Thể loại: {movie.genres}</p>
+				</Tooltip>
+			</div>
+			<Button primary>Xem chi tiết</Button>
+		</div>
+	);
+};
+
+export default memo(MovieCard);

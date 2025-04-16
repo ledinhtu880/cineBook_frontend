@@ -2,7 +2,7 @@ import React, { InputHTMLAttributes } from "react";
 import clsx from "clsx";
 
 import styles from "./Select.module.scss";
-import Label from "@/components/Label/index";
+import { Label } from "@/components";
 
 interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
 	children?: React.ReactNode[] | React.ReactNode;

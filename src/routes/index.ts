@@ -1,4 +1,4 @@
-import config from "@config/index";
+import config from "@/config";
 import {
 	Home,
 	NowShowing,
@@ -6,6 +6,7 @@ import {
 	Cinema,
 	Admin,
 	NotFoundPage,
+	Movie,
 } from "../pages";
 
 // Không đăng nhập vẫn xem được
@@ -20,6 +21,11 @@ const publicRoutes = [
 		path: config.routes.coming_soon,
 		component: ComingSoon,
 		title: "Phim sắp chiếu",
+	},
+	{
+		path: config.routes.movie_shows,
+		component: Movie,
+		title: "Chỉnh sửa phim",
 	},
 	{ path: config.routes.cinema, component: Cinema, title: "Rạp chiếu" },
 	{

@@ -1,14 +1,22 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
+interface MovieQueryParams {
+	limit?: number;
+	sort?: string;
+	order?: "asc" | "desc";
+}
+
 const movieService = {
 	getMovies: async () => {
 		const response = await axios.get(`${API_URL}/admin/movies`);
 		return response.data.data;
 	},
 
-	getNowShowingMovies: async () => {
-		const response = await axios.get(`${API_URL}/movies/now-showing`);
+	getNowShowingMovies: async (params?: MovieQueryParams) => {
+		const response = await axios.get(`${API_URL}/movies/now-showing`, {
+			params,
+		});
 		return response.data.data;
 	},
 
@@ -45,6 +53,11 @@ const movieService = {
 
 	show: async (id: number) => {
 		const response = await axios.get(`${API_URL}/admin/movies/${id}`);
+		return response.data.data;
+	},
+
+	getMovieBySlug: async (slug: string) => {
+		const response = await axios.get(`${API_URL}/movies/${slug}`);
 		return response.data.data;
 	},
 };
