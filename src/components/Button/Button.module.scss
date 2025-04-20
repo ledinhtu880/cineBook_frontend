@@ -56,5 +56,5 @@
 }
 
 .icon {
-	@apply inline-flex items-center w-[18px];
+	@apply inline-flex justify-center items-center min-w-[20px];
 }

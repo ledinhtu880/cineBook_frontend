@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import clsx from "clsx";
 
-import styles from "./MoviePage.module.scss";
+import styles from "./Movie.module.scss";
 import MovieItem from "./MovieItem";
 import { getYoutubeEmbedUrl } from "@/utils";
 import { MovieProps } from "@/types";
@@ -31,8 +31,10 @@ const Movie = () => {
 				if (!slug) return;
 				const response = await movieService.getMovieBySlug(slug);
 				setMovie(response);
+
+				document.title = response.title;
 			} catch (error) {
-				console.error("Error fetching movie details:", error);
+				console.error("Lỗi khi tải dữ liệu phim:", error);
 			} finally {
 				setLoading(false);
 			}
@@ -55,7 +57,7 @@ const Movie = () => {
 	}, []);
 
 	if (loading) {
-		return <Loading />;
+		return <Loading absolute />;
 	}
 
 	if (!movie) {
@@ -82,7 +84,6 @@ const Movie = () => {
 					</div>
 				</div>
 			</div>
-
 			<div className={clsx(styles["content-wrapper"])}>
 				<div className={clsx(styles["content"])}>
 					<div className={clsx(styles["main-info"])}>
@@ -144,7 +145,7 @@ const Movie = () => {
 					</div>
 
 					<div className={clsx(styles["description"])}>
-						<h2>Nội dung phim</h2>
+						<h2 className={clsx("border-left-accent")}>Nội dung phim</h2>
 						{movie.description?.split("\n").map((text, index) => (
 							<p key={index}>{text}</p>
 						))}
@@ -152,7 +153,9 @@ const Movie = () => {
 				</div>
 
 				<div className={clsx(styles["section"])}>
-					<h2 className={clsx(styles["section-title"])}>Phim đang chiếu</h2>
+					<h2 className={clsx(styles["section-title"], "border-left-accent")}>
+						Phim đang chiếu
+					</h2>
 
 					<div className={clsx(styles["movie-list"])}>
 						{movies.map((movie) => (
@@ -161,7 +164,6 @@ const Movie = () => {
 					</div>
 				</div>
 			</div>
-
 			{showTrailer && (
 				<Modal
 					isOpen={showTrailer}

@@ -2,6 +2,34 @@
 	@apply px-4 py-8 relative;
 }
 
+.header {
+	@apply flex flex-wrap gap-6 items-center mb-8;
+}
+
+.header-title {
+	@apply text-2xl font-medium uppercase ps-4;
+}
+
+.movie-tabs {
+	@apply flex gap-6;
+}
+
+.tab-item {
+	@apply py-2 font-medium cursor-pointer transition-all duration-200;
+
+	&:hover {
+		@apply text-primary;
+	}
+}
+
+.tab-active {
+	@apply text-primary border-b-2 border-primary pb-1;
+}
+
+.tab-inactive {
+	@apply text-gray-400;
+}
+
 .movie-wrapper {
 	@apply relative mx-auto flex flex-wrap gap-6;
 

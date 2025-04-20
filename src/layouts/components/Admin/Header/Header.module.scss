@@ -27,3 +27,117 @@
 .header-avatar {
 	@apply w-[44px] h-[44px] object-cover rounded-full;
 }
+
+.dropdown-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 20px;
+	min-width: 150px;
+	background-color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	padding: 8px 0;
+	z-index: 1000;
+	animation: fadeIn 0.2s ease;
+
+	// Mũi tên ở trên dropdown
+	&:before {
+		content: "";
+		position: absolute;
+		top: -8px;
+		right: 20px;
+		width: 16px;
+		height: 16px;
+		background-color: #fff;
+		transform: rotate(45deg);
+		border-left: 1px solid #f0f0f0;
+		border-top: 1px solid #f0f0f0;
+	}
+}
+
+.dropdown-header {
+	display: flex;
+	align-items: center;
+	padding: 12px 16px;
+}
+
+.dropdown-avatar {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-right: 12px;
+}
+
+.dropdown-user-info {
+	h4 {
+		font-size: 16px;
+		font-weight: 600;
+		margin: 0;
+		color: #333;
+	}
+
+	p {
+		font-size: 13px;
+		color: #666;
+		margin: 4px 0 0 0;
+	}
+}
+
+.dropdown-divider {
+	height: 1px;
+	background-color: #f0f0f0;
+	margin: 8px 0;
+}
+
+.dropdown-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.dropdown-item {
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.dropdown-btn {
+	width: 100%;
+	text-align: left;
+	padding: 10px 16px;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+
+	svg {
+		color: #555;
+	}
+
+	&:hover {
+		background-color: #f5f5f5;
+	}
+}
+
+.dropdown-btn-logout {
+	color: #d32f2f;
+
+	svg {
+		color: #d32f2f;
+	}
+
+	&:hover {
+		background-color: rgba(211, 47, 47, 0.1);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}

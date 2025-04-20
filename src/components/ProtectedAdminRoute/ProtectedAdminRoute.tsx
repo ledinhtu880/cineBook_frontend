@@ -27,7 +27,9 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 			if (userData) {
 				setIsAuthenticated(true);
 
-				const isAdminRole = userData.role == !!1;
+				const isAdminRole = userData.role;
+
+				console.log(userData);
 
 				setIsAdmin(isAdminRole);
 				setShowLoginModal(false);
@@ -88,8 +90,6 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 			/>
 		);
 	}
-
-	alert("Admin");
 
 	// If admin, show admin content
 	return children;

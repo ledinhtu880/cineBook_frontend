@@ -227,7 +227,7 @@ const RoomCreate = () => {
 			await cinemaService.createRoom(cinema.id, formDataToSend);
 			showSnackbar(`Tạo rạp phòng chiếu phim thành công`, "success");
 			navigate(
-				config.routes.admin_cinemas_show.replace(":id", cinema.id.toString())
+				config.routes.admin_cinemas_detail.replace(":id", cinema.id.toString())
 			);
 		} catch (error) {
 			console.error("Error submitting form:", error);

@@ -25,7 +25,10 @@ const NowShowing = () => {
 	}, []);
 
 	const handleClick = (movie: MovieProps) => {
-		const path = config.routes.movie_shows.replace(":slug", String(movie.slug));
+		const path = config.routes.movie_detail.replace(
+			":slug",
+			String(movie.slug)
+		);
 		navigate(path);
 	};
 

@@ -1,7 +1,5 @@
 .wrapper {
-	width: 100%;
-	background-color: #fff;
-	color: #333;
+	@apply w-full bg-white;
 }
 
 .banner-wrapper {
@@ -91,10 +89,6 @@
 
 	h2 {
 		@apply relative text-lg font-medium mb-2.5 ps-4;
-
-		&:before {
-			@apply content-[''] absolute left-0 top-0 h-full w-1 bg-primary;
-		}
 	}
 
 	p {
@@ -112,10 +106,6 @@
 
 .section-title {
 	@apply relative mb-4 ps-4 font-medium text-gray-600 text-xl uppercase;
-
-	&:before {
-		@apply content-[''] absolute left-0 top-0 h-full w-1 bg-primary;
-	}
 }
 
 .movie-list {

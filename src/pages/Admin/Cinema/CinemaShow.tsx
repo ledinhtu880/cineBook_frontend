@@ -52,11 +52,11 @@ const Cinema = () => {
 		})();
 	}, [id, showSnackbar]);
 
-	const handleAddRoom = () => {
+	const handleAddRoom = useCallback(() => {
 		navigate(`/admin/cinemas/${id}/rooms/create`, {
 			state: { cinema },
 		});
-	};
+	}, [cinema, id, navigate]);
 
 	const handleDelete = useCallback(
 		async (record: RoomData) => {

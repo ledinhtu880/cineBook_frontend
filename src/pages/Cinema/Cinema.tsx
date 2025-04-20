@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LocationOn, Phone, AccessTime } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Cinema.module.scss";
-import { CityProps } from "@/types";
+import { CinemaData, CityProps } from "@/types";
 import { cityService } from "@/services";
 import { Container, Select, Loading, Image, Button } from "@/components";
+import config from "@/config";
 
 const Cinema = () => {
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [cities, setCities] = useState<CityProps[]>([]);
 	const [selectedCity, setSelectedCity] = useState<CityProps | null>(null);
@@ -16,6 +19,10 @@ const Cinema = () => {
 		const cityId = Number(event.target.value);
 		const city = cities.find((city) => city.id === cityId);
 		if (city) setSelectedCity(city);
+	};
+
+	const handleClick = (cinema: CinemaData) => {
+		navigate(config.routes.cinema_detail.replace(":slug", String(cinema.slug)));
 	};
 
 	const cinemas = selectedCity?.cinemas || [];
@@ -43,7 +50,9 @@ const Cinema = () => {
 	return (
 		<Container className="py-8 min-vh-100">
 			<div className={clsx(styles.header)}>
-				<h1 className={clsx(styles.title)}>Hệ thống rạp chiếu phim</h1>
+				<h4 className={clsx(styles.title, "border-left-accent")}>
+					rạp chiếu phim
+				</h4>
 
 				<div className={clsx(styles["filter-wrapper"])}>
 					<label htmlFor="selected_city" className="font-medium">
@@ -69,10 +78,7 @@ const Cinema = () => {
 					cinemas.map((cinema) => (
 						<div key={cinema.id} className={clsx(styles["cinema-card"])}>
 							<div className={clsx(styles["cinema-image"])}>
-								<Image
-									src="https://gigamall.vn/data/2019/05/06/11365490_logo-cgv-500x500.jpg"
-									alt={cinema.name}
-								/>
+								<Image src={cinema.image} alt={cinema.name} />
 							</div>
 							<div className={clsx(styles["cinema-info"])}>
 								<h2 className={clsx(styles["cinema-name"])}>{cinema.name}</h2>
@@ -84,10 +90,13 @@ const Cinema = () => {
 									<Phone className={clsx(styles["icon"])} /> {cinema.phone}
 								</p>
 								<p className={clsx(styles["cinema-value"])}>
-									<AccessTime className={clsx(styles["icon"])} /> 09:00 - 22:00
+									<AccessTime className={clsx(styles["icon"])} />{" "}
+									{cinema.opening_hours}
 								</p>
 								<div>
-									<Button primary>Xem lịch chiếu</Button>
+									<Button primary onClick={() => handleClick(cinema)}>
+										Xem lịch chiếu
+									</Button>
 								</div>
 							</div>
 						</div>

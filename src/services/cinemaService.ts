@@ -55,6 +55,18 @@ const cinemaService = {
 		);
 		return response.data.data;
 	},
+
+	getCinemaBySlug: async (slug: string) => {
+		const response = await axios.get(
+			`${API_URL}/cinemas/${slug}?get-city=true`
+		);
+		return response.data.data;
+	},
+
+	getShowtimese: async (slug: string) => {
+		const response = await axios.get(`${API_URL}/cinemas/${slug}/showtimes`);
+		return response.data.data;
+	},
 };
 
 export default cinemaService;

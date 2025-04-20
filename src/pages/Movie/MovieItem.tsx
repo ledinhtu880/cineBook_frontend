@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Star, ConfirmationNumber } from "@mui/icons-material";
 import clsx from "clsx";
 
-import styles from "./MoviePage.module.scss";
+import styles from "./Movie.module.scss";
 import config from "@/config";
 import { MovieProps } from "@/types/index";
 import { Badge, Button, Image } from "@/components";
@@ -11,7 +12,7 @@ const MovieItem = ({ movie }: { movie: MovieProps }) => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
-		navigate(config.routes.movie_shows.replace(":slug", String(movie.slug)));
+		navigate(config.routes.movie_detail.replace(":slug", String(movie.slug)));
 	};
 
 	return (
@@ -39,7 +40,7 @@ const MovieItem = ({ movie }: { movie: MovieProps }) => {
 			</div>
 			<Link
 				className={clsx(styles["movie-item-title"])}
-				to={config.routes.movie_shows.replace(":slug", String(movie.slug))}
+				to={config.routes.movie_detail.replace(":slug", String(movie.slug))}
 			>
 				{movie.title}
 			</Link>
@@ -47,4 +48,4 @@ const MovieItem = ({ movie }: { movie: MovieProps }) => {
 	);
 };
 
-export default MovieItem;
+export default memo(MovieItem);

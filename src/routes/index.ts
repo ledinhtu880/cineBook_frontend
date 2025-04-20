@@ -4,10 +4,11 @@ import {
 	NowShowing,
 	ComingSoon,
 	Cinema,
+	CinemaDetail,
 	Admin,
 	NotFoundPage,
 	Movie,
-} from "../pages";
+} from "@/pages";
 
 // Không đăng nhập vẫn xem được
 const publicRoutes = [
@@ -23,9 +24,14 @@ const publicRoutes = [
 		title: "Phim sắp chiếu",
 	},
 	{
-		path: config.routes.movie_shows,
+		path: config.routes.movie_detail,
 		component: Movie,
-		title: "Chỉnh sửa phim",
+		title: "Xem chi tiết phim",
+	},
+	{
+		path: config.routes.cinema_detail,
+		component: CinemaDetail,
+		title: "Lịch chiếu phim của rạp",
 	},
 	{ path: config.routes.cinema, component: Cinema, title: "Rạp chiếu" },
 	{
@@ -90,12 +96,12 @@ const adminRoutes = [
 		title: "Chỉnh sửa rạp chiếu phim",
 	},
 	{
-		path: config.routes.admin_cinemas_show,
+		path: config.routes.admin_cinemas_detail,
 		component: Admin.Cinema.Show,
 		title: "Xem thông tin rạp chiếu phim",
 	},
 	{
-		path: config.routes.admin_cinemas_rooms_show,
+		path: config.routes.admin_cinemas_rooms_detail,
 		component: Admin.Cinema.RoomShow,
 		title: "Xem thông tin phòng chiếu",
 	},

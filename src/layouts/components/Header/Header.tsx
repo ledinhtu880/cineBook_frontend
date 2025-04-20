@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 
@@ -21,7 +21,7 @@ const Header = () => {
 	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 	const [isRegisterSuccessOpen, setIsRegisterSuccessOpen] = useState(false);
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const token = localStorage.getItem("token");
 
 		if (token) {

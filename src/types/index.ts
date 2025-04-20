@@ -52,8 +52,8 @@ export interface MovieProps {
 	duration: string;
 	trailer_url: string;
 	age_rating: "P" | "K" | "T13" | "T16" | "T18";
-	slug?: string;
-	description?: string;
+	slug: string;
+	description: string;
 }
 
 export interface CityProps {
@@ -75,8 +75,16 @@ export interface RegisterFormData {
 export interface CinemaData {
 	id: number;
 	name: string;
-	address?: string;
-	phone?: string;
+	address: string;
+	phone: string;
+	slug: string;
+	opening_hours: string;
+	image: string;
+
+	city?: {
+		id: number;
+		name: string;
+	};
 }
 
 export interface RoomData {

@@ -92,8 +92,8 @@ const authService = {
 				});
 
 				// Lưu vào cache
-				userCache = response.data;
-				return response.data;
+				userCache = response.data.data;
+				return response.data.data;
 			}
 
 			return userCache;

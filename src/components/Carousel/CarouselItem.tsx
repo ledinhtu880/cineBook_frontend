@@ -21,7 +21,7 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 	const handleCloseTrailer = () => setShowTrailer(false);
 
 	const handleNavigate = () => {
-		const path = config.routes.movie_shows.replace(":slug", String(item.slug));
+		const path = config.routes.movie_detail.replace(":slug", String(item.slug));
 		navigate(path);
 	};
 
