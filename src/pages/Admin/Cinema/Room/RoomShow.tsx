@@ -132,7 +132,7 @@ const RoomShow = () => {
 	return (
 		<PageWrapper title={`Chi tiết phòng ${room.name}`}>
 			<Card title={`${room.cinema_name} - ${room.name}`}>
-				<div className={styles.container}>
+				<div className={styles.wrapper}>
 					<div className={styles.info}>
 						{/* <p>
 							<span>{room.seats.length}</span>

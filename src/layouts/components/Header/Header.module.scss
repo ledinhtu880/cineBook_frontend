@@ -15,11 +15,6 @@
 .header {
 	@apply bg-primary;
 }
-
-.wrapper {
-	@apply container mx-auto px-4;
-}
-
 .nav {
 	@apply flex justify-between items-center py-1;
 }

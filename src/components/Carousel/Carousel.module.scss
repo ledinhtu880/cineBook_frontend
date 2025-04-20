@@ -4,7 +4,7 @@
 }
 
 .wrapper {
-	@apply px-4 py-8 relative bg-zinc-100 min-h-[652.7px];
+	@apply py-6;
 
 	&.has-background {
 		background-image: url("../../assets/images/background.jpg");
@@ -35,16 +35,7 @@
 }
 
 .title {
-	@apply text-2xl font-bold my-8 mb-4 text-center uppercase;
-}
-.carousel-wrapper {
-	@apply relative container mx-auto;
-
-	&:hover {
-		.carousel-control {
-			@apply flex;
-		}
-	}
+	@apply text-2xl font-bold mb-4 text-center uppercase;
 }
 
 .carousel-track {

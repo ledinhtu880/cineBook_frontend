@@ -1,11 +1,12 @@
 import clsx from "clsx";
 
 import styles from "./NotFoundPage.module.scss";
+import { Container } from "@/components";
 
 const NotFoundPage = () => {
 	return (
-		<div className={clsx(styles.container)}>
-			<div className={clsx(styles.content)}>
+		<div className={clsx(styles.wrapper)}>
+			<Container className={clsx("px-4", "py-8")}>
 				<div className={clsx(styles.main)}>
 					<div className={clsx(styles.text)}>
 						<h1>404</h1>
@@ -17,7 +18,7 @@ const NotFoundPage = () => {
 						</p>
 					</div>
 				</div>
-			</div>
+			</Container>
 		</div>
 	);
 };

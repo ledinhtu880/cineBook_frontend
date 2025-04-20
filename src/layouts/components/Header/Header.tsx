@@ -11,7 +11,7 @@ import {
 	RegisterModal,
 	RegisterSuccessModal,
 } from "@/components/Auth/";
-import { Button, Image } from "@/components";
+import { Button, Image, Container } from "@/components";
 
 const Header = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(
@@ -41,7 +41,7 @@ const Header = () => {
 	return (
 		<>
 			<header className={clsx(styles["header-languages"])}>
-				<div className={clsx(styles.wrapper)}>
+				<Container className={clsx(styles["wrapper"])}>
 					{isLoggedIn ? (
 						<Button
 							className={clsx(styles.button, styles["btn-sm"])}
@@ -102,10 +102,10 @@ const Header = () => {
 							</>
 						</>
 					)}
-				</div>
+				</Container>
 			</header>
 			<header className={clsx(styles.header)}>
-				<div className={clsx(styles.wrapper)}>
+				<Container>
 					<nav className={clsx(styles.nav)}>
 						<div className={clsx(styles["left-section"])}>
 							<Link to={config.routes.home}>
@@ -128,7 +128,7 @@ const Header = () => {
 							</Button>
 						</div>
 					</nav>
-				</div>
+				</Container>
 			</header>
 		</>
 	);

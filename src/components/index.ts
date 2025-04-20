@@ -1,8 +1,11 @@
+export { default as Badge } from "@/components/Badge";
+export { default as Box } from "@/components/Box";
 export { default as Breadcrumb } from "@/components/Breadcrumb";
 export { default as Button } from "@/components/Button";
-export { default as Badge } from "@/components/Badge";
 export { default as Card } from "@/components/Card";
 export { default as Carousel } from "@/components/Carousel";
+export { default as Container } from "@/components/Container";
+export { default as GlobalStyles } from "@/components/GlobalStyles";
 export { default as Image } from "@/components/Image";
 export { default as Input } from "@/components/Input";
 export { default as Label } from "@/components/Label";
@@ -14,7 +17,6 @@ export { default as Select } from "@/components/Select";
 export { default as Table } from "@/components/Table";
 export { default as TextArea } from "@/components/TextArea";
 export { default as Tooltip } from "@/components/Tooltip";
-export { default as Box } from "@/components/Box";
-export { default as GlobalStyles } from "@/components/GlobalStyles";
+
 export { Movie as Movie, MovieCard as MovieCard } from "@/components/Movie";
 export * as Skeleton from "@/components/Skeleton";
