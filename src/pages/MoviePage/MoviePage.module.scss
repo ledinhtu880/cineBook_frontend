@@ -54,10 +54,6 @@
 	@apply text-3xl font-bold flex items-center gap-2 flex-wrap;
 }
 
-.movie-badge {
-	@apply inline-flex items-center justify-center p-1 bg-[--primary] rounded text-sm text-white font-bold;
-}
-
 .movie-info {
 	@apply flex flex-col gap-4;
 }
@@ -143,14 +139,6 @@
 
 	.movie-image {
 		@apply rounded object-cover;
-	}
-
-	.movie-age-rating {
-		@apply absolute bottom-[10px] right-[10px];
-
-		span {
-			@apply inline-flex items-center justify-center w-[38px] h-7 bg-[--primary] rounded text-sm text-center text-white font-bold not-italic;
-		}
 	}
 
 	.movie-vote {

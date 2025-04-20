@@ -1,0 +1,43 @@
+.wrapper {
+	@apply inline-flex items-center justify-center rounded text-sm text-center text-white font-bold not-italic;
+
+	.badge {
+		@apply py-1 px-2 rounded;
+	}
+}
+
+.ageP {
+	@apply bg-green-500;
+}
+.ageK {
+	@apply bg-blue-500;
+}
+.ageC13 {
+	@apply bg-yellow-500;
+}
+.ageC16 {
+	@apply bg-orange-500;
+}
+.ageC18 {
+	@apply bg-red-500;
+}
+
+.top-right {
+	@apply absolute top-[10px] right-[10px];
+}
+
+.top-left {
+	@apply absolute top-[10px] left-[10px];
+}
+
+.bottom-right {
+	@apply absolute bottom-[10px] right-[10px];
+}
+
+.bottom-left {
+	@apply absolute bottom-[10px] left-[10px];
+}
+
+.default {
+	@apply relative;
+}

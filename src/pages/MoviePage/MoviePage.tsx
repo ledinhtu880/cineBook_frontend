@@ -13,7 +13,7 @@ import MovieItem from "./MovieItem";
 import { getYoutubeEmbedUrl } from "@/utils";
 import { MovieProps } from "@/types";
 import { movieService } from "@/services";
-import { Loading, Image, Modal, Box, Button } from "@/components";
+import { Badge, Box, Button, Loading, Image, Modal } from "@/components";
 
 const Movie = () => {
 	const { slug } = useParams();
@@ -97,9 +97,9 @@ const Movie = () => {
 							<div className={clsx(styles["movie-info"])}>
 								<h1 className={clsx(styles["movie-title"])}>
 									{movie.title}
-									<span className={clsx(styles["movie-badge"])}>
+									<Badge position="default" isAgeRating>
 										{movie.age_rating}
-									</span>
+									</Badge>
 								</h1>
 								<div className={clsx(styles["meta-wrapper"])}>
 									<div className={clsx(styles["meta-item"])}>

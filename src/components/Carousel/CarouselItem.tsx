@@ -7,7 +7,7 @@ import styles from "./Carousel.module.scss";
 import config from "@/config";
 import { MovieProps } from "@/types/index";
 import { getYoutubeEmbedUrl } from "@/utils";
-import { Modal, Button, Image, Tooltip, Box } from "@/components";
+import { Badge, Box, Button, Image, Modal, Tooltip } from "@/components";
 
 const CarouselItem = ({ item }: { item: MovieProps }) => {
 	const navigate = useNavigate();
@@ -36,9 +36,9 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 					alt={item.title}
 					className={clsx(styles["carousel-image"])}
 				/>
-				<div className={clsx(styles["carousel-badge"])}>
-					<span>{item.age_rating}</span>
-				</div>
+				<Badge position="bottom-right" isAgeRating>
+					{item.age_rating}
+				</Badge>
 				<div className={clsx(styles["carousel-overlay"])}>
 					<Button
 						className={clsx(styles["carousel-btn"])}
@@ -83,7 +83,6 @@ const CarouselItem = ({ item }: { item: MovieProps }) => {
 							title={`${item.title} Trailer`}
 							width="100%"
 							height="100%"
-							frameBorder="0"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 							allowFullScreen
 						/>

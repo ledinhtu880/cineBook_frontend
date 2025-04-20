@@ -95,14 +95,6 @@
 	@apply object-cover w-full rounded-lg border border-white;
 }
 
-.carousel-badge {
-	@apply absolute bottom-[10px] right-[10px];
-
-	span {
-		@apply inline-flex items-center justify-center w-[38px] h-7 bg-[--primary] rounded text-sm text-center text-white font-bold not-italic;
-	}
-}
-
 .carousel-overlay {
 	@apply hidden absolute inset-0 bg-black/40 rounded-lg flex-col items-center justify-center gap-3;
 }
