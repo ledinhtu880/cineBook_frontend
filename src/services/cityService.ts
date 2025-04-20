@@ -6,6 +6,10 @@ const cityService = {
 		const response = await axios.get(`${API_URL}/cities/`);
 		return response.data.data;
 	},
+	getWithCinemas: async () => {
+		const response = await axios.get(`${API_URL}/cities?with_cinemas=true`);
+		return response.data.data;
+	},
 };
 
 export default cityService;

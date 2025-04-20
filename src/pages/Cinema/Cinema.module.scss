@@ -1,3 +1,63 @@
-.wrapper {
-	@apply px-4 py-8 relative bg-zinc-100;
+.header {
+	@apply flex flex-wrap gap-4 justify-between items-center mb-8;
+}
+
+.title {
+	@apply text-3xl font-bold text-gray-800;
+}
+
+.filter-wrapper {
+	@apply flex gap-4 items-center;
+}
+
+.filter-select {
+	@apply px-4 py-2 min-w-[200px] rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all duration-200;
+}
+
+.cinema-list {
+	@apply flex flex-col gap-6;
+}
+
+.cinema-card {
+	@apply bg-white flex rounded-xl overflow-hidden shadow-lg hover:shadow-lg transition-all duration-300 px-6 py-3;
+
+	&:hover {
+		@apply transform -translate-y-1;
+	}
+
+	@media (max-width: 768px) {
+		@apply flex-col;
+	}
+}
+
+.cinema-image {
+	@apply w-48 h-auto flex-shrink-0 overflow-hidden flex items-center justify-center;
+
+	@media (max-width: 768px) {
+		@apply w-full h-48;
+	}
+}
+
+.cinema-info {
+	@apply flex-1 p-6 flex flex-col;
+}
+
+.cinema-name {
+	@apply text-xl font-bold text-gray-800 mb-4;
+}
+
+.cinema-value {
+	@apply text-gray-600 mb-3 text-sm;
+}
+
+.icon {
+	@apply text-primary mr-2 flex-shrink-0;
+}
+
+.noCinemas {
+	@apply py-16 px-6 text-center bg-gray-50 rounded-xl;
+
+	p {
+		@apply text-lg text-gray-500;
+	}
 }

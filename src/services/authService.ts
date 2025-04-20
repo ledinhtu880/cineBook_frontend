@@ -119,7 +119,6 @@ const authService = {
 			userCache = response.data.data;
 			return userCache;
 		} catch (error) {
-			console.error("Failed to refresh user data:", error);
 			if (axios.isAxiosError(error) && error.response?.status === 401) {
 				authService.logout();
 			}

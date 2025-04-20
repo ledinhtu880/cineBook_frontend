@@ -57,8 +57,9 @@ export interface MovieProps {
 }
 
 export interface CityProps {
-	id: string;
+	id: number;
 	name: string;
+	cinemas?: CinemaData[];
 }
 
 export interface RegisterFormData {
@@ -74,6 +75,8 @@ export interface RegisterFormData {
 export interface CinemaData {
 	id: number;
 	name: string;
+	address?: string;
+	phone?: string;
 }
 
 export interface RoomData {

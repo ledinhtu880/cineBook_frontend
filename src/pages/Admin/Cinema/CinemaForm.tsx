@@ -73,7 +73,10 @@ const CinemaForm: React.FC<CinemaFormProps> = ({
 				const response = await cityService.get();
 				setCities(response);
 			} catch (error) {
-				console.error("Failed to fetch cities:", error);
+				console.error(
+					"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
+					error
+				);
 			} finally {
 				setLoading(false);
 			}

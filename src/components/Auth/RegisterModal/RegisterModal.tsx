@@ -46,8 +46,10 @@ const RegisterModal = ({
 			};
 			fetchCities();
 		} catch (error) {
-			console.error("Failed to fetch cities:", error);
-			alert("Có lỗi xảy ra khi tải danh sách thành phố. Vui lòng thử lại sau.");
+			console.error(
+				"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
+				error
+			);
 		}
 	}, []);
 

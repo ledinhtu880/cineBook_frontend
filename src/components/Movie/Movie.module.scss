@@ -1,5 +1,5 @@
 .wrapper {
-	@apply px-4 py-8 relative bg-zinc-100;
+	@apply px-4 py-8 relative;
 }
 
 .movie-wrapper {
@@ -17,9 +17,9 @@
 }
 
 .card {
-	@apply flex flex-col justify-between border rounded-lg overflow-hidden shadow-md 
+	@apply flex flex-col bg-white justify-between border rounded-lg overflow-hidden shadow-md 
     transition-transform duration-300 cursor-pointer w-[calc(20%-20px)] p-4;
-	aspect-ratio: 2/4; // Add fixed aspect ratio for consistent card shapes
+	aspect-ratio: 2/4;
 
 	&:hover {
 		@apply shadow-lg transform scale-105;

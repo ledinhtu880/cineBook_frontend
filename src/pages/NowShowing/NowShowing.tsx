@@ -30,7 +30,7 @@ const NowShowing = () => {
 	};
 
 	if (loading) {
-		return <Loading />;
+		return <Loading absolute />;
 	}
 
 	return <Movie movies={movies} handleClick={handleClick} />;

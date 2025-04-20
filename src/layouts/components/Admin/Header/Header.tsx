@@ -21,7 +21,7 @@ const Header = ({ onCollapse }: HeaderProps) => {
 				const user = await authService.getCurrentUser();
 				setUserData(user);
 			} catch (error) {
-				console.error("Failed to fetch user data:", error);
+				console.error("Có lỗi xảy ra trong quá trình tải người dùng:", error);
 			}
 		};
 

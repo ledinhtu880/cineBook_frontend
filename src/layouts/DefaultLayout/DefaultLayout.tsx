@@ -1,6 +1,8 @@
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useEffect } from "react";
+import clsx from "clsx";
 
+import styles from "./DefaultLayout.module.scss";
 import { publicRoutes } from "@/routes";
 import { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
@@ -34,7 +36,7 @@ function DefaultLayout({ children }: { children: React.ReactNode }) {
 		<>
 			<Header />
 
-			<section>{children}</section>
+			<section className={clsx(styles.wrapper)}>{children}</section>
 		</>
 	);
 }
