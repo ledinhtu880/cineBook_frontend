@@ -46,7 +46,7 @@ const Cinema = () => {
 	useEffect(() => {
 		(async () => {
 			try {
-				const response = await cinemaService.get();
+				const response = await cinemaService.get("?get-city=true");
 				setCinemas(response);
 			} catch (error) {
 				const apiError = error as ApiError;

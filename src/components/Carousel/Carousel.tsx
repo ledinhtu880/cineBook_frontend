@@ -57,7 +57,9 @@ const Carousel: React.FC<CarouselProps> = ({
 				{isLoading ? (
 					<Loading />
 				) : movies.length === 0 ? (
-					<div className={clsx(styles.empty)}>Không có phim nào đang chiếu</div>
+					<div className={clsx("empty")}>
+						<p>Không có phim nào đang chiếu</p>
+					</div>
 				) : (
 					<>
 						<button

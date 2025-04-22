@@ -23,10 +23,10 @@ const Card = ({
 	children,
 	addLabel,
 	addPath,
-	onAdd,
 	searchLabel,
-	onSearch,
 	searchValue,
+	onAdd,
+	onSearch,
 }: CardProps) => {
 	const navigate = useNavigate();
 	const handleAdd = () => {

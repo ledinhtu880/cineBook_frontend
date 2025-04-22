@@ -87,7 +87,7 @@ const Movie: React.FC<Props> = ({ movies, handleClick }) => {
 			</div>
 
 			{movies.length === 0 && (
-				<div className={clsx(styles.empty)}>
+				<div className={clsx("empty")}>
 					<p>Không có phim nào đang chiếu</p>
 				</div>
 			)}

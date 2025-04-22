@@ -62,6 +62,14 @@ export interface CityProps {
 	cinemas?: CinemaData[];
 }
 
+export interface ShowtimeProps {
+	id: number;
+	room: string;
+	start_time: string;
+	end_time: string;
+	date: string;
+}
+
 export interface RegisterFormData {
 	first_name: string;
 	last_name: string;

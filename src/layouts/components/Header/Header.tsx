@@ -1,42 +1,20 @@
-import { useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
 import config from "@/config";
 import images from "@/assets/images";
-import { authService } from "@/services/";
-import {
-	LoginModal,
-	RegisterModal,
-	RegisterSuccessModal,
-} from "@/components/Auth/";
+import { useAuth } from "@/hooks"; // Import hook
 import { Button, Image, Container } from "@/components";
 
 const Header = () => {
-	const [isLoggedIn, setIsLoggedIn] = useState(
-		localStorage.getItem("token") ? true : false
-	);
-	const [isLoginOpen, setIsLoginOpen] = useState(false);
-	const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-	const [isRegisterSuccessOpen, setIsRegisterSuccessOpen] = useState(false);
-
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-
-		if (token) {
-			setIsLoggedIn(true);
-		}
-	}, []);
-
-	const handleLoginSuccess = useCallback(() => {
-		setIsLoggedIn(true);
-	}, []);
-
-	const handleLogout = useCallback(() => {
-		authService.logout();
-		setIsLoggedIn(false);
-	}, []);
+	const {
+		isLoggedIn,
+		setIsLoginOpen,
+		setIsRegisterOpen,
+		handleLogout,
+		LoginModalComponent,
+	} = useAuth();
 
 	return (
 		<>
@@ -69,37 +47,6 @@ const Header = () => {
 							>
 								Đăng ký
 							</Button>
-							<>
-								<LoginModal
-									isOpen={isLoginOpen}
-									onClose={() => setIsLoginOpen(false)}
-									onLoginSuccess={handleLoginSuccess}
-									onOpenRegister={() => {
-										setIsLoginOpen(false);
-										setIsRegisterOpen(true);
-									}}
-								/>
-								<RegisterModal
-									isOpen={isRegisterOpen}
-									onClose={() => setIsRegisterOpen(false)}
-									onOpenLogin={() => {
-										setIsLoginOpen(true);
-										setIsRegisterOpen(false);
-									}}
-									onRegisterSuccess={() => {
-										setIsRegisterOpen(false);
-										setIsRegisterSuccessOpen(true);
-									}}
-								/>
-								<RegisterSuccessModal
-									isOpen={isRegisterSuccessOpen}
-									onClose={() => setIsRegisterSuccessOpen(false)}
-									onRegisterSuccess={() => {
-										setIsRegisterSuccessOpen(false);
-										setIsLoggedIn(true);
-									}}
-								/>
-							</>
 						</>
 					)}
 				</Container>
@@ -130,6 +77,8 @@ const Header = () => {
 					</nav>
 				</Container>
 			</header>
+
+			<LoginModalComponent />
 		</>
 	);
 };

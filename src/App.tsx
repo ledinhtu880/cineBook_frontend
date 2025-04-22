@@ -4,7 +4,8 @@ import { Snackbar, Alert } from "@mui/material";
 import { useSnackbar } from "@/context";
 import AdminLayout from "@/layouts/AdminLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
-import { publicRoutes, adminRoutes } from "./routes";
+import { publicRoutes, adminRoutes, privateRoutes } from "./routes";
+import ProtectedUserRoute from "@/components/ProtectedUserRoute";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
 
 const App = () => {
@@ -22,6 +23,19 @@ const App = () => {
 								<DefaultLayout>
 									<route.component />
 								</DefaultLayout>
+							}
+						/>
+					))}
+					{privateRoutes.map((route, index) => (
+						<Route
+							key={index}
+							path={route.path}
+							element={
+								<ProtectedUserRoute>
+									<DefaultLayout>
+										<route.component />
+									</DefaultLayout>
+								</ProtectedUserRoute>
 							}
 						/>
 					))}

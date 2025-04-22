@@ -39,6 +39,57 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 	const endIndex = startIndex + pageSize;
 	const currentData = data.slice(startIndex, endIndex);
 
+	// Thêm hàm tính toán nút phân trang
+	const getPaginationButtons = () => {
+		// Số trang hiển thị xung quanh trang hiện tại (trước và sau)
+		const siblingCount = 1;
+		// Tổng số trang hiển thị chưa tính ellipsis, trang đầu và trang cuối
+		// (siblingCount ở cả hai bên + trang hiện tại)
+		const visiblePages = siblingCount * 2 + 1;
+
+		// Trường hợp số trang ít, hiển thị tất cả
+		if (totalPages <= visiblePages + 2) {
+			// +2 cho trang đầu và trang cuối
+			const pages = [];
+			for (let i = 1; i <= totalPages; i++) {
+				pages.push(i);
+			}
+			return pages;
+		}
+
+		const pageNumbers: (string | number)[] = [];
+
+		// Tính toán phạm vi trang hiển thị
+		const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+		const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
+
+		// Xác định xem có nên hiển thị ellipsis bên trái và bên phải
+		const shouldShowLeftDots = leftSiblingIndex > 2;
+		const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
+
+		if (leftSiblingIndex > 1) {
+			pageNumbers.push(1);
+		}
+
+		if (shouldShowLeftDots) {
+			pageNumbers.push("...");
+		}
+
+		for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+			pageNumbers.push(i);
+		}
+
+		if (shouldShowRightDots) {
+			pageNumbers.push("...");
+		}
+
+		if (rightSiblingIndex < totalPages) {
+			pageNumbers.push(totalPages);
+		}
+
+		return pageNumbers;
+	};
+
 	return (
 		<div>
 			<table className={clsx(styles["table"])}>
@@ -151,8 +202,8 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 				<div className="flex items-center justify-between px-4 py-3 bg-white border-t">
 					<div className="flex items-center gap-2">
 						<span className="text-sm text-gray-700">
-							Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of{" "}
-							{data.length} entries
+							Đang hiển thị {startIndex + 1} đến{" "}
+							{Math.min(endIndex, data.length)} trong tổng số {data.length} mục
 						</span>
 					</div>
 					<div className="flex items-center gap-2">
@@ -168,20 +219,32 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 						>
 							<KeyboardArrowLeft />
 						</button>
-						{[...Array(totalPages)].map((_, index) => (
-							<button
-								key={index + 1}
-								onClick={() => setCurrentPage(index + 1)}
-								className={clsx(
-									"px-3 py-1 rounded-lg",
-									currentPage === index + 1
-										? "bg-[--primary] text-white"
-										: "text-gray-700 hover:bg-gray-100"
-								)}
-							>
-								{index + 1}
-							</button>
-						))}
+
+						{getPaginationButtons().map((page, idx) => {
+							if (page === "...") {
+								return (
+									<span key={`ellipsis-${idx}`} className="px-3 py-1">
+										...
+									</span>
+								);
+							}
+
+							return (
+								<button
+									key={`page-${page}`}
+									onClick={() => setCurrentPage(Number(page))}
+									className={clsx(
+										"px-3 py-1 rounded-lg",
+										currentPage === Number(page)
+											? "bg-[--primary] text-white"
+											: "text-gray-700 hover:bg-gray-100"
+									)}
+								>
+									{page}
+								</button>
+							);
+						})}
+
 						<button
 							onClick={() =>
 								setCurrentPage((prev) => Math.min(prev + 1, totalPages))

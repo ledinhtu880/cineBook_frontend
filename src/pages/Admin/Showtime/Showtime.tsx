@@ -7,7 +7,14 @@ import { useDebounce } from "@/hooks";
 import { Column, ApiError } from "@/types";
 import { showtimeService } from "@/services";
 import { formatDate, formatTime } from "@/utils/datetime";
-import { PageWrapper, Card, Table, Loading, Select } from "@/components";
+import {
+	Card,
+	Container,
+	PageWrapper,
+	Table,
+	Loading,
+	Select,
+} from "@/components";
 
 interface ShowtimeData {
 	id: number;
@@ -333,7 +340,9 @@ const Showtime = () => {
 				</div>
 
 				{loading ? (
-					<Loading />
+					<Container className="pb-20">
+						<Loading absolute />
+					</Container>
 				) : (
 					<>
 						{filteredShowtimes.length > 0 ? (
@@ -342,6 +351,7 @@ const Showtime = () => {
 								data={filteredShowtimes}
 								onDelete={handleDelete}
 								showPath="/admin/showtimes"
+								pageSize={20}
 							/>
 						) : (
 							<div className={clsx(styles["no-results"])}>

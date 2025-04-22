@@ -4,17 +4,15 @@ import clsx from "clsx";
 
 import styles from "./CinemaDetail.module.scss";
 import config from "@/config";
+import { useAuth } from "@/hooks";
 import { cinemaService, cityService } from "@/services";
-import { CinemaData as CinemaProps, CityProps, MovieProps } from "@/types";
+import {
+	CinemaData as CinemaProps,
+	CityProps,
+	MovieProps,
+	ShowtimeProps,
+} from "@/types";
 import { Button, Container, Image, Loading, Select } from "@/components";
-
-interface ShowtimeProps {
-	id: number;
-	room: string;
-	start_time: string;
-	end_time: string;
-	date: string;
-}
 
 interface Props extends MovieProps {
 	showtimes: ShowtimeProps[];
@@ -35,6 +33,7 @@ const CinemaDetail = () => {
 	const [expandMovie, setExpandMovie] = useState<number | null>(null);
 	const [movies, setMovies] = useState([]);
 	const [filteredMovies, setFilteredMovies] = useState<Props[]>([]);
+	const { checkAuthAndExecute, LoginModalComponent } = useAuth();
 
 	useEffect(() => {
 		(() => {
@@ -93,7 +92,7 @@ const CinemaDetail = () => {
 		(() => {
 			if (!movies.length) return;
 
-			const formattedDate = selectedDate.toISOString().split("T")[0]; // Format YYYY-MM-DD
+			const formattedDate = selectedDate.toISOString().split("T")[0];
 
 			const filtered = movies
 				.map((movie: Props) => {
@@ -140,6 +139,14 @@ const CinemaDetail = () => {
 	const handleDateSelect = (date: Date) => {
 		setSelectedDate(date);
 		setExpandMovie(null);
+	};
+
+	const handleClick = (slug: string, showtime: ShowtimeProps) => {
+		checkAuthAndExecute(() => {
+			navigate(config.routes.booking.replace(":slug", slug), {
+				state: { showtime },
+			});
+		});
 	};
 
 	const toggleMovieExpand = (movieId: number) => {
@@ -247,7 +254,6 @@ const CinemaDetail = () => {
 					</div>
 				</Container>
 			</div>
-
 			<Container>
 				<div className={clsx(styles["showtime-wrapper"])}>
 					<header>
@@ -284,81 +290,79 @@ const CinemaDetail = () => {
 						</div>
 					</header>
 					<div className={clsx(styles["showtime-content"])}>
-						{filteredMovies.map((movie: Props) => {
-							return (
-								<div key={movie.id}>
-									<div
-										className="cursor-pointer"
-										onClick={() => toggleMovieExpand(movie.id)}
-									>
-										<Image src={movie.poster_url} alt={movie.title} />
-										<h5
-											className={clsx(styles["movie-title"], {
-												[styles["movie-title-active"]]:
-													expandMovie === movie.id,
-											})}
+						{filteredMovies && filteredMovies.length > 0 ? (
+							filteredMovies.map((movie: Props) => {
+								return (
+									<div key={movie.id}>
+										<div
+											className="cursor-pointer"
+											onClick={() => toggleMovieExpand(movie.id)}
 										>
-											{movie.title}
-										</h5>
-									</div>
-									{expandMovie === movie.id && (
-										<>
-											<div className={clsx(styles["showtime-container"])}>
-												{movie.showtimes && movie.showtimes.length > 0 ? (
-													<div className={clsx(styles["showtime-card"])}>
-														<span
-															className={clsx(
-																styles["showtime-label"],
-																"border-left-accent"
-															)}
-														>
-															Suất chiếu
-														</span>
-														<div className="flex gap-3">
-															{movie.showtimes.map((showtime) => (
-																<Button
-																	key={showtime.id}
-																	className={clsx(styles["showtime-button"])}
-																	onClick={() =>
-																		navigate(`/booking/${showtime.id}`)
-																	}
-																>
-																	<div
-																		className={clsx(styles["showtime-time"])}
+											<Image src={movie.poster_url} alt={movie.title} />
+											<h5
+												className={clsx(styles["movie-title"], {
+													[styles["movie-title-active"]]:
+														expandMovie === movie.id,
+												})}
+											>
+												{movie.title}
+											</h5>
+										</div>
+										{expandMovie === movie.id && (
+											<>
+												<div className={clsx(styles["showtime-container"])}>
+													{movie.showtimes.length > 0 && (
+														<div className={clsx(styles["showtime-card"])}>
+															<span
+																className={clsx(
+																	styles["showtime-label"],
+																	"border-left-accent"
+																)}
+															>
+																Suất chiếu
+															</span>
+															<div className="flex gap-3">
+																{movie.showtimes.map((showtime) => (
+																	<Button
+																		key={showtime.id}
+																		className={clsx(styles["showtime-button"])}
+																		onClick={() =>
+																			handleClick(movie.slug, showtime)
+																		}
 																	>
-																		{new Date(
-																			showtime.start_time
-																		).toLocaleTimeString("vi-VN", {
-																			hour: "2-digit",
-																			minute: "2-digit",
-																		})}
-																	</div>
-																	<div
-																		className={clsx(
-																			styles["showtime-room-label"]
-																		)}
-																	>
-																		{showtime.room}
-																	</div>
-																</Button>
-															))}
+																		<div
+																			className={clsx(styles["showtime-time"])}
+																		>
+																			{showtime.start_time}
+																		</div>
+																		<div
+																			className={clsx(
+																				styles["showtime-room-label"]
+																			)}
+																		>
+																			{showtime.room}
+																		</div>
+																	</Button>
+																))}
+															</div>
 														</div>
-													</div>
-												) : (
-													<p className={clsx(styles["no-showtimes"])}>
-														Không có suất chiếu nào cho ngày này
-													</p>
-												)}
-											</div>
-											<div className="h-[136px]"></div>
-										</>
-									)}
-								</div>
-							);
-						})}
+													)}
+												</div>
+												<div className="h-[136px]"></div>
+											</>
+										)}
+									</div>
+								);
+							})
+						) : (
+							<p className={clsx("empty", "col-span-full")}>
+								Không có suất chiếu nào cho ngày này
+							</p>
+						)}
 					</div>
 				</div>
 			</Container>
+			<LoginModalComponent />
 		</>
 	);
 };

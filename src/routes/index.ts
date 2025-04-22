@@ -8,6 +8,7 @@ import {
 	Admin,
 	NotFoundPage,
 	Movie,
+	Booking,
 } from "@/pages";
 
 // Không đăng nhập vẫn xem được
@@ -42,7 +43,13 @@ const publicRoutes = [
 ];
 
 // Đăng nhập mới xem được
-const privateRoutes = [];
+const privateRoutes = [
+	{
+		path: config.routes.booking,
+		component: Booking,
+		title: "Đặt vé",
+	},
+];
 
 const adminRoutes = [
 	{

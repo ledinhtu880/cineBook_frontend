@@ -53,11 +53,3 @@
 .icon {
 	@apply text-primary mr-2 flex-shrink-0;
 }
-
-.noCinemas {
-	@apply py-16 px-6 text-center bg-gray-50 rounded-xl;
-
-	p {
-		@apply text-lg text-gray-500;
-	}
-}

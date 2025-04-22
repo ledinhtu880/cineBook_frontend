@@ -6,6 +6,7 @@ const routes = {
 	cinema: "/he-thong-rap",
 	forgot_password: "/quen-mat-khau",
 	not_found: "*",
+	booking: "/dat-ve/:slug",
 
 	movie_detail: "/phim/:slug",
 	cinema_detail: "/rap/:slug",

@@ -48,3 +48,11 @@ body {
 		@apply content-[''] absolute left-0 top-0 h-full w-1 bg-primary;
 	}
 }
+
+.empty {
+	@apply py-16 px-6 text-center bg-gray-50 rounded-xl;
+
+	p {
+		@apply text-lg text-gray-500;
+	}
+}

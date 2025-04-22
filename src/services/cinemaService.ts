@@ -2,8 +2,8 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const cinemaService = {
-	get: async () => {
-		const response = await axios.get(`${API_URL}/admin/cinemas`);
+	get: async (params: string | null) => {
+		const response = await axios.get(`${API_URL}/admin/cinemas${params}`);
 		return response.data.data;
 	},
 

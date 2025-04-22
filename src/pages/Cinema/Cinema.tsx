@@ -102,7 +102,7 @@ const Cinema = () => {
 						</div>
 					))
 				) : (
-					<div className={clsx(styles.noCinemas)}>
+					<div className={clsx("empty")}>
 						<p>Không có rạp chiếu phim nào tại {selectedCity.name}</p>
 					</div>
 				)}

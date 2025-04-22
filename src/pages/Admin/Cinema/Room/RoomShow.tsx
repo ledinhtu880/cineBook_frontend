@@ -149,7 +149,7 @@ const RoomShow = () => {
 						<p>
 							<span>{sweetboxSeats}</span>
 							Ghế đôi
-						</p> */}
+						</p> */}x
 						<StatCard label="Tổng số ghế" value={room.seats.length} />
 						<StatCard label="Ghế thường" value={normalSeats} />
 						<StatCard label="Ghế VIP" value={vipSeats} />
