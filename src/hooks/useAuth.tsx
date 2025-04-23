@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { authService } from "@/services";
+import { useNavigate } from "react-router-dom";
 import {
 	LoginModal,
 	RegisterModal,
@@ -7,6 +8,8 @@ import {
 } from "@/components/Auth/";
 
 export const useAuth = () => {
+	const navigate = useNavigate();
+
 	// States
 	const [isLoggedIn, setIsLoggedIn] = useState(
 		localStorage.getItem("token") ? true : false
@@ -42,7 +45,14 @@ export const useAuth = () => {
 	const handleLogout = useCallback(() => {
 		authService.logout();
 		setIsLoggedIn(false);
-	}, []);
+		// Redirect to home page after logout
+		navigate("/", {
+			state: {
+				message: "Bạn đã đăng xuất khỏi hệ thống",
+				severity: "info",
+			},
+		});
+	}, [navigate]);
 
 	// Chuyển từ form đăng nhập sang đăng ký
 	const switchToRegister = useCallback(() => {

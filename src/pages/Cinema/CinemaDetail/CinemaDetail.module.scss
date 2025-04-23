@@ -54,37 +54,6 @@
 	@apply text-sm text-gray-500 mt-2;
 }
 
-.date-tabs {
-	@apply flex flex-nowrap overflow-x-auto my-5 px-12 gap-4;
-
-	&::-webkit-scrollbar {
-		height: 5px;
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background-color: rgba(0, 0, 0, 0.2);
-		border-radius: 10px;
-	}
-
-	.date-tab-item {
-		@apply flex-1 flex flex-col rounded-md items-center justify-center py-4 bg-zinc-100 cursor-pointer transition-colors text-center hover:bg-zinc-200;
-
-		&.date-tab-active {
-			@apply bg-primary text-white hover:bg-primary-hover;
-		}
-	}
-
-	.date-tab-weekday {
-		font-size: 0.9rem;
-		margin-bottom: 4px;
-		font-weight: 500;
-	}
-
-	.date-tab-date {
-		font-size: 0.85rem;
-	}
-}
-
 .showtime-content {
 	@apply mt-4 grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 relative md:gap-8 gap-2;
 

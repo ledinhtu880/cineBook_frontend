@@ -12,7 +12,7 @@ import {
 	MovieProps,
 	ShowtimeProps,
 } from "@/types";
-import { Button, Container, Image, Loading, Select } from "@/components";
+import { Button, Container, Image, Loading, Select, Tabs } from "@/components";
 
 interface Props extends MovieProps {
 	showtimes: ShowtimeProps[];
@@ -69,8 +69,6 @@ const CinemaDetail = () => {
 				}
 			} catch (error) {
 				console.error("Lỗi khi tải dữ liệu rạp chiếu phim:", error);
-			} finally {
-				setLoading(false);
 			}
 		})();
 	}, [slug]);
@@ -84,6 +82,8 @@ const CinemaDetail = () => {
 				setMovies(response);
 			} catch (error) {
 				console.error("Lỗi khi tải dữ liệu suất chiếu:", error);
+			} finally {
+				setLoading(false);
 			}
 		})();
 	}, [selectedCinema.slug]);
@@ -141,10 +141,19 @@ const CinemaDetail = () => {
 		setExpandMovie(null);
 	};
 
-	const handleClick = (slug: string, showtime: ShowtimeProps) => {
+	const handleClick = (movie: MovieProps, showtime: ShowtimeProps) => {
+		const showtimeWithCinema = {
+			...showtime,
+			cinema: {
+				name: selectedCinema.name,
+			},
+		};
+
+		const movieWithShowtime = movie;
+
 		checkAuthAndExecute(() => {
-			navigate(config.routes.booking.replace(":slug", slug), {
-				state: { showtime },
+			navigate(config.routes.booking.replace(":slug", movie.slug), {
+				state: { movieWithShowtime, showtimeWithCinema },
 			});
 		});
 	};
@@ -176,6 +185,16 @@ const CinemaDetail = () => {
 			date.getFullYear() === today.getFullYear()
 		);
 	};
+
+	const dateTabs = dates.map((date) => {
+		const { weekday, formattedDate } = formatDate(date);
+		return {
+			key: date.getTime(),
+			value: date,
+			primary: isToday(date) ? "Hôm nay" : weekday,
+			secondary: formattedDate,
+		};
+	});
 
 	if (loading) return <Loading absolute />;
 
@@ -267,26 +286,11 @@ const CinemaDetail = () => {
 						</p>
 
 						<div className={clsx(styles["date-tabs"])}>
-							{dates.map((date, index) => {
-								const { weekday, formattedDate } = formatDate(date);
-								return (
-									<div
-										key={index}
-										className={clsx(styles["date-tab-item"], {
-											[styles["date-tab-active"]]:
-												selectedDate.getTime() === date.getTime(),
-										})}
-										onClick={() => handleDateSelect(date)}
-									>
-										<div className={styles["date-tab-weekday"]}>
-											{isToday(date) ? "Hôm nay" : weekday}
-										</div>
-										<div className={styles["date-tab-date"]}>
-											{formattedDate}
-										</div>
-									</div>
-								);
-							})}
+							<Tabs
+								items={dateTabs}
+								selectedValue={selectedDate}
+								onSelect={handleDateSelect}
+							/>
 						</div>
 					</header>
 					<div className={clsx(styles["showtime-content"])}>
@@ -326,9 +330,7 @@ const CinemaDetail = () => {
 																	<Button
 																		key={showtime.id}
 																		className={clsx(styles["showtime-button"])}
-																		onClick={() =>
-																			handleClick(movie.slug, showtime)
-																		}
+																		onClick={() => handleClick(movie, showtime)}
 																	>
 																		<div
 																			className={clsx(styles["showtime-time"])}
@@ -340,7 +342,7 @@ const CinemaDetail = () => {
 																				styles["showtime-room-label"]
 																			)}
 																		>
-																			{showtime.room}
+																			{showtime.room.name}
 																		</div>
 																	</Button>
 																))}

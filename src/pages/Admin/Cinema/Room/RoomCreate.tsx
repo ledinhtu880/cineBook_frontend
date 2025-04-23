@@ -10,12 +10,11 @@ import clsx from "clsx";
 
 import styles from "./Room.module.scss";
 import config from "@/config";
-import { CinemaData } from "@/types";
+import { CinemaData, SeatProps } from "@/types";
 import { useSnackbar } from "@/context";
 import * as Form from "@utils/validation";
 import { cinemaService } from "@/services";
-import { SeatLayout, Seat } from "./RoomShow";
-import { PageWrapper, Card, Input, Button } from "@/components";
+import { PageWrapper, Card, Input, Button, SeatLayout } from "@/components";
 
 interface PreviewModalProps {
 	isOpen: boolean;
@@ -35,7 +34,7 @@ const PreviewModal = ({
 	sweetboxRows,
 }: PreviewModalProps) => {
 	const generateSeats = () => {
-		const seats: Seat[] = [];
+		const seats: SeatProps[] = [];
 		const hasSweetbox = sweetboxRows > 0;
 
 		// Calculate VIP area
@@ -58,19 +57,16 @@ const PreviewModal = ({
 		const sweetboxStartRow = rows - sweetboxRows + 1;
 
 		for (let row = 1; row <= rows; row++) {
-			const rowLetter = String.fromCharCode(64 + row); // A, B, C...
+			const rowLetter = String.fromCharCode(64 + row);
 
 			for (let col = 1; col <= columns; col++) {
 				let seatType: SeatType = "normal";
 				let isSweetbox = false;
 
-				// Check sweetbox first
 				if (hasSweetbox && row >= sweetboxStartRow) {
 					seatType = "sweetbox";
 					isSweetbox = true;
-				}
-				// Then check VIP seats
-				else if (
+				} else if (
 					row >= vipStartRow &&
 					row <= vipEndRow &&
 					col >= startCol &&

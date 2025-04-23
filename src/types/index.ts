@@ -64,7 +64,10 @@ export interface CityProps {
 
 export interface ShowtimeProps {
 	id: number;
-	room: string;
+	room: {
+		name: string;
+		seats: SeatProps[];
+	};
 	start_time: string;
 	end_time: string;
 	date: string;
@@ -103,4 +106,13 @@ export interface RoomData {
 	seat_rows: number;
 	seat_columns: number;
 	sweetbox_rows: number;
+}
+
+export interface SeatProps {
+	id: number;
+	room_id: number;
+	seat_code: string;
+	seat_type: "normal" | "vip" | "sweetbox";
+	is_sweetbox: boolean;
+	price: number;
 }
