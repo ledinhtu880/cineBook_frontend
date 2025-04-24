@@ -63,6 +63,10 @@
 .step-container {
 	@apply w-2/3 bg-white rounded-lg shadow-lg p-5;
 
+	.date-tabs {
+		@apply my-6 mx-12;
+	}
+
 	.step-title {
 		@apply ps-4 text-xl font-bold;
 	}

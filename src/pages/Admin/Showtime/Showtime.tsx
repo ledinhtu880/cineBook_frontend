@@ -6,7 +6,10 @@ import styles from "./Showtime.module.scss";
 import { useDebounce } from "@/hooks";
 import { Column, ApiError } from "@/types";
 import { showtimeService } from "@/services";
-import { formatDate, formatTime } from "@/utils/datetime";
+import {
+	formateDateWithYear as formatDate,
+	formatTime,
+} from "@/utils/datetime";
 import {
 	Card,
 	Container,

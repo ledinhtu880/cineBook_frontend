@@ -5,25 +5,60 @@ import {
 	AccessTime,
 	CalendarToday,
 	Star,
+	LocationOn,
 } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Movie.module.scss";
 import MovieItem from "./MovieItem";
 import { getYoutubeEmbedUrl } from "@/utils";
-import { MovieProps } from "@/types";
-import { movieService } from "@/services";
-import { Badge, Box, Button, Loading, Image, Modal } from "@/components";
+import { formatDate, isToday } from "@/utils/datetime";
+import { MovieProps, CityProps, CinemaProps } from "@/types";
+import { movieService, cityService } from "@/services";
+import {
+	Badge,
+	Box,
+	Button,
+	Loading,
+	Image,
+	Modal,
+	Select,
+	Tabs,
+} from "@/components";
 
 const Movie = () => {
 	const { slug } = useParams();
-	const [movie, setMovie] = useState<MovieProps | null>(null);
-	const [movies, setMovies] = useState<MovieProps[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [showTrailer, setShowTrailer] = useState(false);
 
-	const handleOpenTrailer = () => setShowTrailer(true);
-	const handleCloseTrailer = () => setShowTrailer(false);
+	const [loading, setLoading] = useState(true);
+
+	const [dates, setDates] = useState<Date[]>([]);
+	const [cities, setCities] = useState<CityProps[]>([]);
+	const [movie, setMovie] = useState<MovieProps | null>(null);
+	const [ratedMovies, setRatedMovies] = useState<MovieProps[]>([]);
+
+	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+	const [selectedCity, setSelectedCity] = useState<CityProps | null>(null);
+	const [selectedCinema, setSelectedCinema] = useState<CinemaProps | null>(
+		null
+	);
+
+	const [showTrailer, setShowTrailer] = useState(false);
+	const [showBookingModal, setShowBookingModal] = useState(false);
+
+	useEffect(() => {
+		(() => {
+			const today = new Date();
+			const nextDates: Date[] = [];
+			for (let i = 0; i < 8; i++) {
+				const newDate = new Date(today);
+				newDate.setDate(today.getDate() + i);
+				nextDates.push(newDate);
+			}
+
+			setDates(nextDates);
+			setSelectedDate(today);
+		})();
+	}, []);
 
 	useEffect(() => {
 		(async () => {
@@ -44,17 +79,62 @@ const Movie = () => {
 	useEffect(() => {
 		(async () => {
 			try {
-				const response = await movieService.getNowShowingMovies({
+				const response = await movieService.getTopRatedNowShowingMovies({
 					limit: 3,
 					sort: "rating",
 					order: "desc",
 				});
-				setMovies(response);
+				setRatedMovies(response);
 			} catch (error) {
 				console.error("Error fetching movies:", error);
 			}
 		})();
 	}, []);
+
+	useEffect(() => {
+		try {
+			(async () => {
+				const data = await cityService.getWithCinemas();
+				setCities(data);
+
+				if (data && data.length > 0) {
+					setSelectedCity(data[0]);
+					setSelectedCinema(data[0].cinemas[0]);
+				}
+			})();
+		} catch (error) {
+			console.error(
+				"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
+				error
+			);
+		}
+	}, []);
+
+	const handleOpenTrailer = () => setShowTrailer(true);
+	const handleCloseTrailer = () => setShowTrailer(false);
+
+	const handleOpenBookingModal = () => setShowBookingModal(true);
+	const handleCloseBookingModal = () => setShowBookingModal(false);
+
+	const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const cityId = Number(event.target.value);
+		const city = cities.find((city) => city.id === cityId);
+		if (city) setSelectedCity(city);
+	};
+
+	const handleClickCinema = (cinema: CinemaProps) => {
+		setSelectedCinema(cinema);
+	};
+
+	const dateTabs = dates.map((date) => {
+		const { weekday, formattedDate } = formatDate(date);
+		return {
+			key: date.getTime(),
+			value: date,
+			primary: isToday(date) ? "Hôm nay" : weekday,
+			secondary: formattedDate,
+		};
+	});
 
 	if (loading) {
 		return <Loading absolute />;
@@ -117,16 +197,22 @@ const Movie = () => {
 									</div>
 								</div>
 								<div className={clsx(styles["meta-item"])}>
-									<span className={clsx(styles["meta-label"])}>Quốc gia:</span>
+									<span className={clsx(styles["meta-label"])}>
+										Quốc gia:&nbsp;
+									</span>
 									<span>{movie.country}</span>
 								</div>
 								<div className={clsx(styles["meta-item"])}>
-									<span className={clsx(styles["meta-label"])}>Ngôn ngữ:</span>
+									<span className={clsx(styles["meta-label"])}>
+										Ngôn ngữ:&nbsp;
+									</span>
 									<span>Phụ đề</span>
 								</div>
 
 								<div className={clsx(styles["meta-item"])}>
-									<span className={clsx(styles["meta-label"])}>Thể loại:</span>
+									<span className={clsx(styles["meta-label"])}>
+										Thể loại:&nbsp;
+									</span>
 									<ul className={clsx(styles["genre-list"])}>
 										{movie.genres.split(",").map((genre, index) => (
 											<li key={index}>
@@ -137,9 +223,23 @@ const Movie = () => {
 								</div>
 							</div>
 							<div>
-								<Button primary className={clsx(styles["action-btn"])}>
-									Đặt vé ngay
-								</Button>
+								{movie.is_now_showing ? (
+									<Button
+										primary
+										className={clsx(styles["action-btn"])}
+										onClick={handleOpenBookingModal}
+									>
+										Đặt vé ngay
+									</Button>
+								) : (
+									<Button
+										primary
+										className={clsx(styles["action-btn"])}
+										disabled
+									>
+										Sắp chiếu
+									</Button>
+								)}
 							</div>
 						</div>
 					</div>
@@ -158,7 +258,7 @@ const Movie = () => {
 					</h2>
 
 					<div className={clsx(styles["movie-list"])}>
-						{movies.map((movie) => (
+						{ratedMovies.map((movie) => (
 							<MovieItem key={movie.id} movie={movie} />
 						))}
 					</div>
@@ -182,6 +282,114 @@ const Movie = () => {
 							allowFullScreen
 						/>
 					</Box>
+				</Modal>
+			)}
+
+			{showBookingModal && (
+				<Modal
+					isOpen={showBookingModal}
+					onClose={handleCloseBookingModal}
+					width={1200}
+					height={700}
+				>
+					<div className={clsx(styles["modal-content"])}>
+						<div className={clsx(styles["modal-header"])}>
+							<Image
+								src={movie.poster_url}
+								alt={movie.title}
+								className={clsx(styles["modal-image"])}
+							/>
+							<div className={clsx(styles["modal-header-wrapper"])}>
+								<h3 className={clsx(styles["modal-header-title"])}>
+									{movie.title}
+									<Badge position="default" isAgeRating>
+										{movie.age_rating}
+									</Badge>
+								</h3>
+								<p className={clsx(styles["modal-header-info"])}>
+									<span>Thời lượng:&nbsp;</span>
+									{movie.duration_label}
+								</p>
+								<p className={clsx(styles["modal-header-info"])}>
+									<span>Thể loại:&nbsp;</span>
+									{movie.genres}
+								</p>
+								<p className={clsx(styles["modal-header-info"])}>
+									<span>Quốc gia:&nbsp;</span>
+									{movie.country}
+								</p>
+							</div>
+						</div>
+						<div className={clsx(styles["modal-body"])}>
+							<div className={clsx(styles["modal-left"])}>
+								<div className={clsx(styles["modal-select-location"])}>
+									<Select
+										id="city_id"
+										name="city_id"
+										onChange={handleSelectCity}
+										arrow
+									>
+										<option value="" disabled>
+											Chọn thành phố
+										</option>
+										{cities.map((city) => (
+											<option key={city.id} value={city.id}>
+												{city.name}
+											</option>
+										))}
+									</Select>
+								</div>
+
+								{selectedCity?.cinemas && (
+									<ul className={clsx(styles["cinema-list"])}>
+										{selectedCity.cinemas.length > 0 ? (
+											selectedCity.cinemas.map((cinema) => (
+												<li
+													key={cinema.id}
+													className={clsx(styles["cinema-item"], {
+														[styles["active"]]:
+															selectedCinema?.id === cinema.id,
+													})}
+													onClick={() => handleClickCinema(cinema)}
+												>
+													<Image
+														className={clsx(styles["cinema-image"])}
+														src={cinema.image}
+														alt={cinema.name}
+													/>
+													<div className={clsx(styles["cinema-info"])}>
+														<h2>{cinema.name}</h2>
+														<p className={clsx(styles["cinema-address"])}>
+															<LocationOn fontSize="inherit" /> {cinema.address}
+														</p>
+													</div>
+												</li>
+											))
+										) : (
+											<div className={clsx("empty")}>
+												<p>
+													Không có rạp chiếu phim nào tại {selectedCity.name}
+												</p>
+											</div>
+										)}
+									</ul>
+								)}
+							</div>
+							<div className={clsx(styles["modal-right"])}>
+								<div className={clsx(styles["date-tabs"])}>
+									<Tabs
+										items={dateTabs}
+										selectedValue={selectedDate}
+										onSelect={(date: Date) => {
+											setSelectedDate(date);
+										}}
+										small
+										white
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
 				</Modal>
 			)}
 		</div>

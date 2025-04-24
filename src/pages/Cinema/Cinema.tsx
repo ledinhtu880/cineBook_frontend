@@ -73,10 +73,10 @@ const Cinema = () => {
 				</div>
 			</div>
 
-			<div className={clsx(styles["cinema-list"])}>
+			<ul className={clsx(styles["cinema-list"])}>
 				{cinemas.length > 0 ? (
 					cinemas.map((cinema) => (
-						<div key={cinema.id} className={clsx(styles["cinema-card"])}>
+						<li key={cinema.id} className={clsx(styles["cinema-card"])}>
 							<div className={clsx(styles["cinema-image"])}>
 								<Image src={cinema.image} alt={cinema.name} />
 							</div>
@@ -99,14 +99,14 @@ const Cinema = () => {
 									</Button>
 								</div>
 							</div>
-						</div>
+						</li>
 					))
 				) : (
 					<div className={clsx("empty")}>
 						<p>Không có rạp chiếu phim nào tại {selectedCity.name}</p>
 					</div>
 				)}
-			</div>
+			</ul>
 		</Container>
 	);
 };

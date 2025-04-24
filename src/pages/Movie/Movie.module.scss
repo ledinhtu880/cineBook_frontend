@@ -151,3 +151,65 @@
 		@apply text-gray-700 hover:text-primary;
 	}
 }
+
+.modal-content {
+	@apply flex flex-col gap-4 p-2 h-full;
+
+	.modal-header {
+		@apply flex gap-4;
+
+		.modal-image {
+			@apply w-[120px] h-[180px] rounded-lg;
+		}
+
+		.modal-header-wrapper {
+			@apply flex flex-col gap-2;
+		}
+
+		.modal-header-title {
+			@apply text-2xl text-neutral-800 flex gap-2 items-center;
+		}
+
+		.modal-header-info {
+			@apply text-sm text-neutral-500 font-light;
+		}
+	}
+	.modal-body {
+		@apply flex-1 flex justify-between border border-neutral-300 rounded-lg overflow-hidden;
+	}
+
+	.modal-left {
+		@apply w-2/5 flex flex-col;
+
+		.modal-select-location {
+			@apply p-4;
+		}
+
+		.cinema-list {
+			@apply flex flex-col gap-3 overflow-y-auto p-4;
+		}
+		.cinema-item {
+			@apply p-2 flex justify-between items-center gap-2 border border-neutral-300 rounded-lg cursor-pointer;
+
+			&.active {
+				@apply border-primary;
+			}
+		}
+		.cinema-image {
+			@apply w-10 h-10 object-cover;
+		}
+		.cinema-info {
+			@apply flex flex-col gap-1;
+		}
+		.cinema-address {
+			@apply text-xs text-neutral-500 line-clamp-2;
+		}
+	}
+	.modal-right {
+		@apply flex-1 border-l border-neutral-300;
+
+		.date-tabs {
+			@apply border-b border-neutral-300 px-6 py-3;
+		}
+	}
+}

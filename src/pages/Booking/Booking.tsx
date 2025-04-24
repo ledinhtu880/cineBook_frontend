@@ -300,11 +300,14 @@ const Booking = () => {
 							Đổi suất chiếu
 						</h2>
 
-						<Tabs
-							items={timeTabs}
-							selectedValue={selectedShowtime}
-							onSelect={handleShowtimeSelect}
-						/>
+						<div className={clsx(styles["date-tabs"])}>
+							<Tabs
+								items={timeTabs}
+								selectedValue={selectedShowtime}
+								onSelect={handleShowtimeSelect}
+								small
+							/>
+						</div>
 						<SeatLayout
 							onClick={handleClickSeat}
 							seats={selectedShowtime.room.seats}

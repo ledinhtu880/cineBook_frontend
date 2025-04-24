@@ -9,7 +9,9 @@ interface MovieQueryParams {
 }
 
 let nowShowingCache: MovieProps | null = null;
+let sortingNowShowingCache: MovieProps | null = null;
 let comingSoonCache: MovieProps | null = null;
+let movieBySlugCache: MovieProps | null = null;
 
 const movieService = {
 	getMovies: async () => {
@@ -17,15 +19,26 @@ const movieService = {
 		return response.data.data;
 	},
 
-	getNowShowingMovies: async (params?: MovieQueryParams) => {
+	getNowShowingMovies: async () => {
 		if (nowShowingCache) return nowShowingCache;
+
+		const response = await axios.get(`${API_URL}/movies/now-showing`);
+
+		const data = response.data.data;
+		nowShowingCache = data;
+
+		return data;
+	},
+
+	getTopRatedNowShowingMovies: async (params?: MovieQueryParams) => {
+		if (sortingNowShowingCache) return sortingNowShowingCache;
 
 		const response = await axios.get(`${API_URL}/movies/now-showing`, {
 			params,
 		});
 
 		const data = response.data.data;
-		nowShowingCache = data;
+		sortingNowShowingCache = data;
 
 		return data;
 	},
@@ -73,8 +86,15 @@ const movieService = {
 	},
 
 	getMovieBySlug: async (slug: string) => {
+		if (movieBySlugCache && movieBySlugCache.slug === slug)
+			return movieBySlugCache;
+
 		const response = await axios.get(`${API_URL}/movies/${slug}`);
-		return response.data.data;
+		const data = response.data.data;
+
+		movieBySlugCache = data;
+
+		return data;
 	},
 };
 

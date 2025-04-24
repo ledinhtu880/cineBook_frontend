@@ -49,6 +49,7 @@ export interface MovieProps {
 	age_rating: "P" | "K" | "T13" | "T16" | "T18";
 	slug: string;
 	description: string;
+	is_now_showing: boolean;
 }
 
 export interface CityProps {

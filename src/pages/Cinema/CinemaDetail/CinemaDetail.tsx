@@ -6,6 +6,8 @@ import styles from "./CinemaDetail.module.scss";
 import config from "@/config";
 import { useAuth } from "@/hooks";
 import { cinemaService, cityService } from "@/services";
+
+import { formatDate, isToday } from "@/utils/datetime";
 import { CinemaProps, CityProps, MovieProps, ShowtimeProps } from "@/types";
 import { Button, Container, Image, Loading, Select, Tabs } from "@/components";
 
@@ -17,16 +19,18 @@ const CinemaDetail = () => {
 	const navigate = useNavigate();
 	const { slug } = useParams();
 	const [loading, setLoading] = useState(true);
+
+	const [dates, setDates] = useState<Date[]>([]);
+	const [movies, setMovies] = useState([]);
 	const [cities, setCities] = useState<CityProps[]>([]);
+	const [expandMovie, setExpandMovie] = useState<number | null>(null);
+
+	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 	const [selectedCity, setSelectedCity] = useState<CityProps>({} as CityProps);
 	const [selectedCinema, setSelectedCinema] = useState<CinemaProps>(
 		{} as CinemaProps
 	);
 
-	const [dates, setDates] = useState<Date[]>([]);
-	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-	const [expandMovie, setExpandMovie] = useState<number | null>(null);
-	const [movies, setMovies] = useState([]);
 	const [filteredMovies, setFilteredMovies] = useState<Props[]>([]);
 	const { checkAuthAndExecute, LoginModalComponent } = useAuth();
 
@@ -75,6 +79,7 @@ const CinemaDetail = () => {
 			try {
 				const response = await cinemaService.getShowtimese(selectedCinema.slug);
 				setMovies(response);
+				console.log(response);
 			} catch (error) {
 				console.error("Lỗi khi tải dữ liệu suất chiếu:", error);
 			} finally {
@@ -159,26 +164,6 @@ const CinemaDetail = () => {
 		} else {
 			setExpandMovie(movieId);
 		}
-	};
-
-	const formatDate = (date: Date) => {
-		const day = date.getDate();
-		const month = date.getMonth() + 1;
-		const weekday = date.toLocaleDateString("vi-VN", { weekday: "long" });
-		const formattedDate = `${day.toString().padStart(2, "0")}/${month
-			.toString()
-			.padStart(2, "0")}`;
-
-		return { day, month, weekday, formattedDate };
-	};
-
-	const isToday = (date: Date) => {
-		const today = new Date();
-		return (
-			date.getDate() === today.getDate() &&
-			date.getMonth() === today.getMonth() &&
-			date.getFullYear() === today.getFullYear()
-		);
 	};
 
 	const dateTabs = dates.map((date) => {

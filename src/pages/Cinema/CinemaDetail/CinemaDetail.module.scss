@@ -54,6 +54,10 @@
 	@apply text-sm text-gray-500 mt-2;
 }
 
+.date-tabs {
+	@apply my-6 mx-12;
+}
+
 .showtime-content {
 	@apply mt-4 grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 relative md:gap-8 gap-2;
 

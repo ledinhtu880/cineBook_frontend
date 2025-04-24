@@ -12,8 +12,9 @@ interface TabItem<T> {
 interface TabsProps<T> {
 	items: TabItem<T>[];
 	selectedValue: T;
-	onSelect: (value: T) => void;
 	className?: string;
+	small?: boolean;
+	white?: boolean;
 	tabClassName?: string;
 	activeTabClassName?: string;
 	renderCustomTab?: (
@@ -21,16 +22,19 @@ interface TabsProps<T> {
 		isSelected: boolean,
 		index: number
 	) => React.ReactNode;
+	onSelect: (value: T) => void;
 }
 
 function Tabs<T>({
 	items,
 	selectedValue,
-	onSelect,
 	className,
+	small = false,
+	white = false,
 	tabClassName,
 	activeTabClassName,
 	renderCustomTab,
+	onSelect,
 }: TabsProps<T>) {
 	const isSelected = (item: TabItem<T>) => {
 		// Xử lý trường hợp Date
@@ -58,8 +62,10 @@ function Tabs<T>({
 		return selectedValue == item.value;
 	};
 
+	const classes = clsx(styles["tabs-container"], className);
+
 	return (
-		<div className={clsx(styles["tabs-container"], className)}>
+		<ul className={classes}>
 			{items.map((item, index) => {
 				const selected = isSelected(item);
 
@@ -70,10 +76,14 @@ function Tabs<T>({
 
 				// Mặc định hiển thị
 				return (
-					<div
+					<li
 						key={item.key}
 						className={clsx(
 							styles["tab-item"],
+							{
+								[styles["small"]]: small,
+								[styles["white"]]: white,
+							},
 							tabClassName,
 							selected && [styles["tab-item-active"], activeTabClassName]
 						)}
@@ -81,10 +91,10 @@ function Tabs<T>({
 					>
 						<span>{item.primary}</span>
 						{item.secondary && <span>{item.secondary}</span>}
-					</div>
+					</li>
 				);
 			})}
-		</div>
+		</ul>
 	);
 }
 
