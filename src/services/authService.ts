@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { RegisterFormData } from "@/types/";
+import { RegisterFormProps } from "@/types/";
 
 const API_URL = import.meta.env.VITE_API_URL;
 export interface User {
@@ -56,7 +56,7 @@ const authService = {
 		}
 	},
 
-	register: async (formData: RegisterFormData) => {
+	register: async (formData: RegisterFormProps) => {
 		const response = await axios.post(`${API_URL}/auth/register`, formData);
 
 		return response.data;

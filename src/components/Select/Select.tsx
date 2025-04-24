@@ -10,6 +10,7 @@ interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
 	className?: string;
 	id?: string;
 	error?: string;
+	arrow?: boolean;
 }
 
 const Input: React.FC<SelectProps> = ({
@@ -18,9 +19,16 @@ const Input: React.FC<SelectProps> = ({
 	className,
 	id,
 	error,
+	arrow = false,
 	...passProps
 }) => {
-	const classes = clsx(styles["form-input"], className);
+	const classes = clsx(
+		styles["form-input"],
+		{
+			[styles["arrow-hidden"]]: arrow,
+		},
+		className
+	);
 
 	return (
 		<div className={styles["wrapper"]}>

@@ -3,11 +3,6 @@ export interface LocationState {
 	severity?: "error" | "warning" | "info" | "success";
 }
 
-export interface LoginFormData {
-	email: string;
-	password: string;
-}
-
 export interface ApiError {
 	response?: {
 		data?: {
@@ -59,7 +54,7 @@ export interface MovieProps {
 export interface CityProps {
 	id: number;
 	name: string;
-	cinemas?: CinemaData[];
+	cinemas?: CinemaProps[];
 }
 
 export interface ShowtimeProps {
@@ -73,7 +68,7 @@ export interface ShowtimeProps {
 	date: string;
 }
 
-export interface RegisterFormData {
+export interface RegisterFormProps {
 	first_name: string;
 	last_name: string;
 	email: string;
@@ -83,7 +78,7 @@ export interface RegisterFormData {
 	password_confirmation: string;
 }
 
-export interface CinemaData {
+export interface CinemaProps {
 	id: number;
 	name: string;
 	address: string;
@@ -98,7 +93,7 @@ export interface CinemaData {
 	};
 }
 
-export interface RoomData {
+export interface RoomProps {
 	id: number;
 	cinema_id: number;
 	cinema_name: string;

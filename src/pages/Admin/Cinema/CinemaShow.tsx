@@ -3,10 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { roomService, cinemaService } from "@/services/";
 import { useSnackbar } from "@/context";
-import { ApiError, Column, RoomData, CinemaData } from "@/types/";
+import { ApiError, Column, RoomProps, CinemaProps } from "@/types/";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
-const columns: Column<RoomData>[] = [
+const columns: Column<RoomProps>[] = [
 	{ key: "id", title: "#", width: 75 },
 	{ key: "name", title: "Tên", width: 250, tooltip: true },
 	{ key: "seat_rows", title: "Số hàng", align: "center" },
@@ -19,8 +19,8 @@ const Cinema = () => {
 	const { id } = useParams();
 	const { showSnackbar } = useSnackbar();
 	const [loading, setLoading] = useState(true);
-	const [rooms, setRooms] = useState<RoomData[]>([]);
-	const [cinema, setCinema] = useState<CinemaData>();
+	const [rooms, setRooms] = useState<RoomProps[]>([]);
+	const [cinema, setCinema] = useState<CinemaProps>();
 
 	useEffect(() => {
 		(async () => {
@@ -59,7 +59,7 @@ const Cinema = () => {
 	}, [cinema, id, navigate]);
 
 	const handleDelete = useCallback(
-		async (record: RoomData) => {
+		async (record: RoomProps) => {
 			try {
 				await roomService.delete(record.id);
 				setRooms((prev) => prev.filter((room) => room.id !== record.id));
@@ -80,7 +80,7 @@ const Cinema = () => {
 				onAdd={handleAddRoom}
 				addLabel="Thêm phòng chiếu"
 			>
-				<Table<RoomData>
+				<Table<RoomProps>
 					columns={columns}
 					data={rooms}
 					onDelete={handleDelete}

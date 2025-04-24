@@ -1,4 +1,4 @@
-import { RegisterFormData } from "@/types/";
+import { RegisterFormProps } from "@/types/";
 
 interface ValidationResult {
 	isValid: boolean;
@@ -85,7 +85,7 @@ export function validateLoginForm(
 
 // Hàm validate tổng hợp cho form đăng ký
 export function validateRegisterForm(
-	formData: RegisterFormData
+	formData: RegisterFormProps
 ): Record<string, string> {
 	const errors: Record<string, string> = {};
 

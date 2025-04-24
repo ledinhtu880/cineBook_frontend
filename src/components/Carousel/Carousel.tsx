@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Carousel.module.scss";
-import { CarouselProps, MovieProps } from "@/types/index";
+import { CarouselProps, MovieProps } from "@/types";
 import { Loading, Container } from "@/components";
 
 const CarouselItem = lazy(() => import("./CarouselItem"));

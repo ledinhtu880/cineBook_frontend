@@ -6,12 +6,7 @@ import styles from "./CinemaDetail.module.scss";
 import config from "@/config";
 import { useAuth } from "@/hooks";
 import { cinemaService, cityService } from "@/services";
-import {
-	CinemaData as CinemaProps,
-	CityProps,
-	MovieProps,
-	ShowtimeProps,
-} from "@/types";
+import { CinemaProps, CityProps, MovieProps, ShowtimeProps } from "@/types";
 import { Button, Container, Image, Loading, Select, Tabs } from "@/components";
 
 interface Props extends MovieProps {
@@ -54,15 +49,15 @@ const CinemaDetail = () => {
 		(async () => {
 			try {
 				if (!slug) return;
-				const cinemaData = await cinemaService.getCinemaBySlug(slug);
-				setSelectedCinema(cinemaData);
-				document.title = "Rạp " + cinemaData.name + " - Lịch chiếu phim";
+				const CinemaProps = await cinemaService.getCinemaBySlug(slug);
+				setSelectedCinema(CinemaProps);
+				document.title = "Rạp " + CinemaProps.name + " - Lịch chiếu phim";
 
 				const citiesData = await cityService.getWithCinemas();
 				setCities(citiesData);
 
 				const city = citiesData.find(
-					(city: CityProps) => city.id === cinemaData.city?.id
+					(city: CityProps) => city.id === CinemaProps.city?.id
 				);
 				if (city) {
 					setSelectedCity(city);

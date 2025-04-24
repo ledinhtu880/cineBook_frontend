@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import styles from "./Movie.module.scss";
 import config from "@/config";
-import { MovieProps } from "@/types/index";
+import { MovieProps } from "@/types";
 import { Badge, Button, Image } from "@/components";
 
 const MovieItem = ({ movie }: { movie: MovieProps }) => {

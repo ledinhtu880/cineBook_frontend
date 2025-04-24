@@ -10,7 +10,7 @@ import clsx from "clsx";
 
 import styles from "./Room.module.scss";
 import config from "@/config";
-import { CinemaData, SeatProps } from "@/types";
+import { CinemaProps, SeatProps } from "@/types";
 import { useSnackbar } from "@/context";
 import * as Form from "@utils/validation";
 import { cinemaService } from "@/services";
@@ -163,7 +163,7 @@ const RoomCreate = () => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 	const { showSnackbar } = useSnackbar();
-	const { cinema } = state as { cinema: CinemaData };
+	const { cinema } = state as { cinema: CinemaProps };
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [formData, setFormData] = useState<RoomFormData>({

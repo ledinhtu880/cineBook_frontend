@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import styles from "./Room.module.scss";
-import { RoomData, SeatProps } from "@/types";
+import { RoomProps, SeatProps } from "@/types";
 import { roomService } from "@/services";
 import { Card, Loading, PageWrapper, SeatLayout, StatCard } from "@/components";
 
-interface Room extends RoomData {
+interface Room extends RoomProps {
 	seats: SeatProps[];
 }
 

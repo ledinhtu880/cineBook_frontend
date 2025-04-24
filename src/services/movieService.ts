@@ -1,11 +1,15 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
+import { MovieProps } from "@/types";
 
 interface MovieQueryParams {
 	limit?: number;
 	sort?: string;
 	order?: "asc" | "desc";
 }
+
+let nowShowingCache: MovieProps | null = null;
+let comingSoonCache: MovieProps | null = null;
 
 const movieService = {
 	getMovies: async () => {
@@ -14,15 +18,27 @@ const movieService = {
 	},
 
 	getNowShowingMovies: async (params?: MovieQueryParams) => {
+		if (nowShowingCache) return nowShowingCache;
+
 		const response = await axios.get(`${API_URL}/movies/now-showing`, {
 			params,
 		});
-		return response.data.data;
+
+		const data = response.data.data;
+		nowShowingCache = data;
+
+		return data;
 	},
 
 	getComingSoonMovies: async () => {
+		if (comingSoonCache) return comingSoonCache;
+
 		const response = await axios.get(`${API_URL}/movies/coming-soon`);
-		return response.data.data;
+
+		const data = response.data.data;
+		comingSoonCache = data;
+
+		return data;
 	},
 
 	create: async (data: FormData) => {

@@ -5,7 +5,7 @@ import styles from "../Auth.module.scss";
 import {
 	ValidationErrors,
 	ApiError,
-	RegisterFormData,
+	RegisterFormProps,
 	CityProps,
 } from "@/types";
 import { validateRegisterForm } from "@/utils/authValidation";
@@ -25,7 +25,7 @@ const RegisterModal = ({
 	onOpenLogin,
 	onRegisterSuccess,
 }: RegisterModalProps) => {
-	const [formData, setFormData] = useState<RegisterFormData>({
+	const [formData, setFormData] = useState<RegisterFormProps>({
 		first_name: "",
 		last_name: "",
 		email: "",

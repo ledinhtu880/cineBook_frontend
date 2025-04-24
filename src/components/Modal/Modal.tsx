@@ -9,6 +9,7 @@ interface ModalProps {
 	title?: string;
 	width?: number | "auto";
 	height?: number | "auto";
+	customStyle?: object;
 	children: ReactNode;
 }
 
@@ -19,6 +20,7 @@ const Modal = ({
 	children,
 	width = 400,
 	height = "auto",
+	customStyle,
 }: ModalProps) => {
 	const style = {
 		position: "absolute",
@@ -28,7 +30,7 @@ const Modal = ({
 		width: width,
 		height: height,
 		bgcolor: "background.paper",
-		borderRadius: "4px",
+		borderRadius: "12px",
 		boxShadow: 24,
 		overflowY: "auto",
 		p: 3,
@@ -39,9 +41,11 @@ const Modal = ({
 		scrollbarWidth: "none",
 	};
 
+	const classes = { ...style, ...customStyle };
+
 	return (
 		<MuiModal open={isOpen} onClose={onClose} aria-labelledby="modal-title">
-			<Box sx={style}>
+			<Box sx={classes}>
 				{title && (
 					<div className={clsx(styles["modal-header"])}>
 						<h3 className={clsx(styles["modal-title"])} id="modal-title">

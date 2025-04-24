@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 let productCombosCache: CityProps | null = null;
 
-const cityService = {
+const productComboService = {
 	get: async () => {
 		if (productCombosCache) return productCombosCache;
 
@@ -17,4 +17,4 @@ const cityService = {
 	},
 };
 
-export default cityService;
+export default productComboService;

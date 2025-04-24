@@ -1,6 +1,16 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
+import { CinemaProps, ShowtimeProps as Showtime } from "@/types";
+
+interface ShowtimeProps {
+	slug: string;
+	showtimes: Showtime[];
+}
+
+let cinemaBySlugCache: CinemaProps | null = null;
+let showtimeseBySlugCache: ShowtimeProps | null = null;
+
 const cinemaService = {
 	get: async (params: string | null) => {
 		const response = await axios.get(`${API_URL}/admin/cinemas${params}`);
@@ -17,7 +27,6 @@ const cinemaService = {
 	},
 
 	update: async (id: number, data: FormData) => {
-		// Thêm _method field để Laravel hiểu đây là PUT request
 		data.append("_method", "PUT");
 
 		const response = await axios.post(`${API_URL}/admin/cinemas/${id}`, data, {
@@ -57,15 +66,32 @@ const cinemaService = {
 	},
 
 	getCinemaBySlug: async (slug: string) => {
+		if (cinemaBySlugCache && cinemaBySlugCache.slug == slug)
+			return cinemaBySlugCache;
+
 		const response = await axios.get(
 			`${API_URL}/cinemas/${slug}?get-city=true`
 		);
-		return response.data.data;
+
+		const data = response.data.data;
+		cinemaBySlugCache = data;
+
+		return data;
 	},
 
 	getShowtimese: async (slug: string) => {
+		if (showtimeseBySlugCache && showtimeseBySlugCache.slug === slug)
+			return showtimeseBySlugCache.showtimes;
+
 		const response = await axios.get(`${API_URL}/cinemas/${slug}/showtimes`);
-		return response.data.data;
+
+		const data = response.data.data;
+		showtimeseBySlugCache = {
+			slug: slug,
+			showtimes: data,
+		};
+
+		return data;
 	},
 };
 

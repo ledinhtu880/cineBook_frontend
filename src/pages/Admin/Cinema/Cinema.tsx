@@ -5,7 +5,7 @@ import { cinemaService } from "@/services";
 import { useSnackbar } from "@/context";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
-interface CinemaData {
+interface CinemaProps {
 	id: number;
 	name: string;
 	address: string;
@@ -16,7 +16,7 @@ interface CinemaData {
 	};
 }
 
-const columns: Column<CinemaData>[] = [
+const columns: Column<CinemaProps>[] = [
 	{ key: "id", title: "#", width: 75 },
 	{ key: "name", title: "Tên", width: 250, tooltip: true },
 	{
@@ -34,13 +34,13 @@ const columns: Column<CinemaData>[] = [
 		key: "city",
 		title: "Thành phố",
 		width: 200,
-		render: (value) => (value as CinemaData["city"]).name,
+		render: (value) => (value as CinemaProps["city"]).name,
 	},
 ];
 
 const Cinema = () => {
 	const { showSnackbar } = useSnackbar();
-	const [cinemas, setCinemas] = useState<CinemaData[]>([]);
+	const [cinemas, setCinemas] = useState<CinemaProps[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -60,7 +60,7 @@ const Cinema = () => {
 	}, [showSnackbar]);
 
 	const handleDelete = useCallback(
-		async (record: CinemaData) => {
+		async (record: CinemaProps) => {
 			try {
 				await cinemaService.delete(record.id);
 				setCinemas((prev) => prev.filter((cinema) => cinema.id !== record.id));
@@ -82,7 +82,7 @@ const Cinema = () => {
 				{loading ? (
 					<Loading />
 				) : (
-					<Table<CinemaData>
+					<Table<CinemaProps>
 						columns={columns}
 						data={cinemas}
 						editPath="/admin/cinemas"

@@ -4,7 +4,7 @@ import { LocationOn, Phone, AccessTime } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Cinema.module.scss";
-import { CinemaData, CityProps } from "@/types";
+import { CinemaProps, CityProps } from "@/types";
 import { cityService } from "@/services";
 import { Container, Select, Loading, Image, Button } from "@/components";
 import config from "@/config";
@@ -21,7 +21,7 @@ const Cinema = () => {
 		if (city) setSelectedCity(city);
 	};
 
-	const handleClick = (cinema: CinemaData) => {
+	const handleClick = (cinema: CinemaProps) => {
 		navigate(config.routes.cinema_detail.replace(":slug", String(cinema.slug)));
 	};
 
