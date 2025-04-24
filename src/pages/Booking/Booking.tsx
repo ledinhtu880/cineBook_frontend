@@ -8,15 +8,30 @@ import {
 	ShowtimeProps as Showtime,
 	MovieProps as Movie,
 } from "@/types";
+import { productComboService } from "@/services";
 import {
 	Button,
 	Container,
 	CountdownTimer,
 	Loading,
+	Image,
 	SeatLayout,
 	Tabs,
 	Tooltip,
 } from "@/components";
+
+interface ComboProps {
+	id: number;
+	name: string;
+	description: string;
+	price: number;
+	price_label: string;
+	image_url: string;
+}
+
+interface SelectedProductProps extends ComboProps {
+	quantity: number;
+}
 
 interface ShowtimeProps extends Showtime {
 	cinema: {
@@ -39,14 +54,18 @@ const Booking = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
+	const [combos, setCombos] = useState<ComboProps[]>([]);
 	const [movie, setMovie] = useState<MovieProps>({} as MovieProps);
 	const [loading, setLoading] = useState(true);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [selectedSeats, setSelectedSeats] = useState<SeatProps[]>([]);
-	const [paymentMethod, setPaymentMethod] = useState<string>("");
+	const [selectedProducts, setSelectedProducts] = useState<
+		SelectedProductProps[]
+	>([]);
 	const [selectedShowtime, setSelectedShowtime] = useState<ShowtimeProps>(
 		{} as ShowtimeProps
 	);
+	const [paymentMethod, setPaymentMethod] = useState<string>("");
 
 	useEffect(() => {
 		if (!location.state) {
@@ -64,6 +83,7 @@ const Booking = () => {
 
 			setSelectedShowtime(showtimeWithCinema);
 			setMovie(movieWithShowtime);
+			document.title = "Đặt vé  " + movieWithShowtime.title;
 		} catch (error) {
 			console.error("Error when setting showtime:", error);
 			alert(
@@ -73,6 +93,17 @@ const Booking = () => {
 			setLoading(false);
 		}
 	}, [location.state, navigate]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await productComboService.get();
+				setCombos(response);
+			} catch (error) {
+				console.error("Error fetching combos:", error);
+			}
+		})();
+	}, []);
 
 	const handleClickSeat = (seat: SeatProps) => {
 		if (seat.is_sweetbox) {
@@ -126,6 +157,68 @@ const Booking = () => {
 		if (currentStep > 0) {
 			setCurrentStep(currentStep - 1);
 		}
+	};
+
+	const handleIncreaseQuantity = (product: ComboProps) => {
+		setSelectedProducts((prev) => {
+			const existingProductIndex = prev.findIndex(
+				(item) => item.id === product.id
+			);
+
+			if (existingProductIndex >= 0) {
+				const newProducts = [...prev];
+				newProducts[existingProductIndex] = {
+					...newProducts[existingProductIndex],
+					quantity: newProducts[existingProductIndex].quantity + 1,
+				};
+
+				return newProducts;
+			} else {
+				return [...prev, { ...product, quantity: 1 }];
+			}
+		});
+	};
+
+	const handleDecreaseQuantity = (product: ComboProps) => {
+		setSelectedProducts((prev) => {
+			const existingProductIndex = prev.findIndex(
+				(item) => item.id === product.id
+			);
+
+			if (existingProductIndex >= 0) {
+				const currentQuantity = prev[existingProductIndex].quantity;
+
+				if (currentQuantity > 1) {
+					const newProducts = [...prev];
+					newProducts[existingProductIndex] = {
+						...newProducts[existingProductIndex],
+						quantity: currentQuantity - 1,
+					};
+					return newProducts;
+				} else {
+					return prev.filter((_, index) => index !== existingProductIndex);
+				}
+			}
+
+			return prev;
+		});
+	};
+
+	const getProductQuantity = (productId: number) => {
+		const product = selectedProducts.find((item) => item.id === productId);
+		return product ? product.quantity : 0;
+	};
+
+	const getTotal = () => {
+		const seatTotal = selectedSeats.reduce(
+			(total, seat) => total + Number(seat.price),
+			0
+		);
+		const foodTotal = selectedProducts.reduce(
+			(total, product) => total + product.price * product.quantity,
+			0
+		);
+		return seatTotal + foodTotal;
 	};
 
 	const canProceed = () => {
@@ -223,39 +316,58 @@ const Booking = () => {
 			}
 			case 1:
 				return (
-					<div className={clsx(styles["food-selection"])}>
-						<h2 className={clsx(styles["section-title"])}>Chọn thức ăn</h2>
-						<p className={clsx(styles["optional-note"])}>
+					<>
+						<h2 className={clsx(styles["step-title"], "border-left-accent")}>
+							Chọn đồ ăn
+						</h2>
+						<p className={clsx(styles["step-note"])}>
 							Bước này là tùy chọn, bạn có thể bỏ qua
 						</p>
-						<div className={clsx(styles["food-grid"])}>
-							{[
-								{ id: 1, name: "Bắp rang", price: 50000, image: "popcorn.jpg" },
-								{ id: 2, name: "Coca Cola", price: 30000, image: "coke.jpg" },
-								{ id: 3, name: "Combo 1", price: 120000, image: "combo1.jpg" },
-							].map((food) => (
-								<div key={food.id} className={clsx(styles["food-item"])}>
-									<div className={clsx(styles["food-image"])}></div>
-									<div className={clsx(styles["food-info"])}>
-										<h3>{food.name}</h3>
-										<p>
-											{food.price.toLocaleString("it-IT", {
-												style: "currency",
-												currency: "VND",
-											})}
-										</p>
+						<div className={clsx(styles["products-list"])}>
+							{combos.map((product) => (
+								<div key={product.id} className={clsx(styles["products-item"])}>
+									<Image
+										src={product.image_url}
+										alt={product.name}
+										className={clsx(styles["products-image"])}
+									/>
+									<div className={clsx(styles["products-info"])}>
+										<div className={clsx(styles["products-detail"])}>
+											<h3 className={clsx(styles["products-name"])}>
+												{product.name}
+											</h3>
+											<p className={clsx(styles["products-description"])}>
+												{product.description}
+											</p>
+											<p className={clsx(styles["products-price"])}>
+												Giá: {product.price_label}
+											</p>
+										</div>
 									</div>
-									<div className={clsx(styles["food-quantity"])}></div>
+									<div className={clsx(styles["products-quantity"])}>
+										<button
+											className={clsx(styles["quantity-btn"])}
+											onClick={() => handleDecreaseQuantity(product)}
+											disabled={getProductQuantity(product.id) === 0}
+										>
+											-
+										</button>
+										<span className={clsx(styles["quantity-value"])}>
+											{getProductQuantity(product.id)}
+										</span>
+										<button
+											className={clsx(styles["quantity-btn"])}
+											onClick={() => handleIncreaseQuantity(product)}
+										>
+											+
+										</button>
+									</div>
 								</div>
 							))}
 						</div>
-					</div>
+					</>
 				);
 			case 2: {
-				const seatTotal = selectedSeats.length;
-				const foodTotal = 100;
-				const totalAmount = seatTotal + foodTotal;
-
 				return (
 					<div className={clsx(styles["payment"])}>
 						<h2 className={clsx(styles["section-title"])}>Thanh toán</h2>
@@ -265,7 +377,7 @@ const Booking = () => {
 							<div className={clsx(styles["summary-item-total"], styles.total)}>
 								<span>Tổng cộng:</span>
 								<span>
-									{totalAmount.toLocaleString("it-IT", {
+									{getTotal().toLocaleString("it-IT", {
 										style: "currency",
 										currency: "VND",
 									})}
@@ -277,23 +389,20 @@ const Booking = () => {
 							<h3>Phương thức thanh toán</h3>
 
 							<div className={clsx(styles["payment-options"])}>
-								{[
-									"Thẻ tín dụng/ghi nợ",
-									"Chuyển khoản ngân hàng",
-									"Ví điện tử",
-									"Tiền mặt",
-								].map((method) => (
-									<div
-										key={method}
-										className={clsx(styles["payment-option"], {
-											[styles.selected]: paymentMethod === method,
-										})}
-										onClick={() => setPaymentMethod(method)}
-									>
-										<div className={clsx(styles["radio-button"])}></div>
-										<span>{method}</span>
-									</div>
-								))}
+								{["Chuyển khoản ngân hàng", "Ví điện tử", "Tiền mặt"].map(
+									(method) => (
+										<div
+											key={method}
+											className={clsx(styles["payment-option"], {
+												[styles.selected]: paymentMethod === method,
+											})}
+											onClick={() => setPaymentMethod(method)}
+										>
+											<div className={clsx(styles["radio-button"])}></div>
+											<span>{method}</span>
+										</div>
+									)
+								)}
 							</div>
 						</div>
 					</div>
@@ -328,11 +437,6 @@ const Booking = () => {
 	};
 
 	const renderBookingSummary = () => {
-		const seatTotal = selectedSeats.reduce(
-			(total, seat) => total + Number(seat.price),
-			0
-		);
-
 		const groupedSeats: GroupedSeat[] = [];
 		const sweetBoxPairs: Record<
 			string,
@@ -428,40 +532,40 @@ const Booking = () => {
 				</div>
 
 				<div className={clsx(styles["summary-seats"])}>
-					<h4 className={clsx(styles["summary-seats-title"])}>
-						Ghế đã chọn ({groupedSeats.length})
-					</h4>
+					<h4 className={clsx(styles["summary-seats-title"])}>Ghế đã chọn</h4>
 
 					{groupedSeats.length > 0 ? (
 						<>
-							<ul className={clsx(styles["summary-seats-list"])}>
-								{groupedSeats.map((groupedSeat) => (
-									<li
-										key={groupedSeat.id}
-										className={clsx(styles["summary-seats-item"], {
-											[styles[groupedSeat.type]]: groupedSeat.type,
-										})}
-									>
-										{groupedSeat.display}
-										<Tooltip
-											title={`Xóa ghế ${groupedSeat.display}`}
-											arrow
-											placement="bottom"
+							{currentStep == 0 && (
+								<ul className={clsx(styles["summary-seats-list"])}>
+									{groupedSeats.map((groupedSeat) => (
+										<li
+											key={groupedSeat.id}
+											className={clsx(styles["summary-seats-item"], {
+												[styles[groupedSeat.type]]: groupedSeat.type,
+											})}
 										>
-											<button
-												className={clsx(styles["remove-button"])}
-												onClick={() => {
-													groupedSeat.seats.forEach((seat) =>
-														handleClickSeat(seat)
-													);
-												}}
+											{groupedSeat.display}
+											<Tooltip
+												title={`Xóa ghế ${groupedSeat.display}`}
+												arrow
+												placement="bottom"
 											>
-												&times;
-											</button>
-										</Tooltip>
-									</li>
-								))}
-							</ul>
+												<button
+													className={clsx(styles["remove-button"])}
+													onClick={() => {
+														groupedSeat.seats.forEach((seat) =>
+															handleClickSeat(seat)
+														);
+													}}
+												>
+													&times;
+												</button>
+											</Tooltip>
+										</li>
+									))}
+								</ul>
+							)}
 
 							<ul className={clsx(styles["summary-prices-list"])}>
 								{/* Normal seats */}
@@ -537,16 +641,6 @@ const Booking = () => {
 										</span>
 									</li>
 								)}
-
-								<div className={clsx(styles["summary-prices-total"])}>
-									<span>Tổng tiền:</span>
-									<span>
-										{seatTotal.toLocaleString("it-IT", {
-											style: "currency",
-											currency: "VND",
-										})}
-									</span>
-								</div>
 							</ul>
 						</>
 					) : (
@@ -554,8 +648,61 @@ const Booking = () => {
 					)}
 				</div>
 
+				{currentStep >= 1 && (
+					<div className={clsx(styles["summary-seats"], "mt-6")}>
+						<h4 className={clsx(styles["summary-seats-title"])}>
+							Đồ ăn đã chọn
+						</h4>
+						{Object.entries(selectedProducts).length > 0 ? (
+							<ul className={clsx(styles["summary-prices-list"])}>
+								{selectedProducts.map((product) => {
+									const quantity = getProductQuantity(product.id);
+									const price = product.price * quantity;
+									if (quantity > 0) {
+										return (
+											<li
+												className={clsx(styles["summary-prices-item"])}
+												key={product.id}
+											>
+												<span>
+													{product.name} ({quantity}):
+												</span>
+												<span>
+													{price.toLocaleString("it-IT", {
+														style: "currency",
+														currency: "VND",
+													})}
+												</span>
+											</li>
+										);
+									}
+									return null;
+								})}
+							</ul>
+						) : (
+							<p className={clsx(styles["empty"])}>
+								Chưa có đồ ăn nào được chọn
+							</p>
+						)}
+					</div>
+				)}
+
+				<div className={clsx(styles["summary-prices-total"])}>
+					<span>Tổng tiền:</span>
+					<span>
+						{getTotal().toLocaleString("it-IT", {
+							style: "currency",
+							currency: "VND",
+						})}
+					</span>
+				</div>
+
 				{/* Action buttons */}
-				<div className={clsx(styles["navigation-buttons"])}>
+				<div
+					className={clsx(styles["navigation-buttons"], {
+						[styles["navigation-buttons-end"]]: currentStep === 0,
+					})}
+				>
 					{currentStep > 0 && currentStep < 3 && (
 						<Button
 							className={clsx(styles["back-button"])}
