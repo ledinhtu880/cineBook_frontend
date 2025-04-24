@@ -9,7 +9,14 @@ import { cinemaService, cityService } from "@/services";
 
 import { formatDate, isToday } from "@/utils/datetime";
 import { CinemaProps, CityProps, MovieProps, ShowtimeProps } from "@/types";
-import { Button, Container, Image, Loading, Select, Tabs } from "@/components";
+import {
+	Container,
+	Image,
+	Loading,
+	Select,
+	Showtime,
+	Tabs,
+} from "@/components";
 
 interface Props extends MovieProps {
 	showtimes: ShowtimeProps[];
@@ -79,7 +86,6 @@ const CinemaDetail = () => {
 			try {
 				const response = await cinemaService.getShowtimese(selectedCinema.slug);
 				setMovies(response);
-				console.log(response);
 			} catch (error) {
 				console.error("Lỗi khi tải dữ liệu suất chiếu:", error);
 			} finally {
@@ -92,14 +98,14 @@ const CinemaDetail = () => {
 		(() => {
 			if (!movies.length) return;
 
-			const formattedDate = selectedDate.toISOString().split("T")[0];
+			const { formattedDateWithYear } = formatDate(selectedDate);
 
 			const filtered = movies
 				.map((movie: Props) => {
 					const movieCopy = { ...movie };
 
 					const filteredShowtimes = movie.showtimes.filter(
-						(showtime) => showtime.date === formattedDate
+						(showtime) => showtime.date === formattedDateWithYear
 					);
 
 					movieCopy.showtimes = filteredShowtimes;
@@ -141,19 +147,14 @@ const CinemaDetail = () => {
 		setExpandMovie(null);
 	};
 
-	const handleClick = (movie: MovieProps, showtime: ShowtimeProps) => {
-		const showtimeWithCinema = {
-			...showtime,
-			cinema: {
-				name: selectedCinema.name,
-			},
-		};
-
-		const movieWithShowtime = movie;
+	const handleClick = (movie: MovieProps, selectedShowtime: ShowtimeProps) => {
+		const cinemaName = selectedCinema.name;
+		const { showtimes, ...movieInfo } = movie;
+		const listShowtimes = showtimes;
 
 		checkAuthAndExecute(() => {
 			navigate(config.routes.booking.replace(":slug", movie.slug), {
-				state: { movieWithShowtime, showtimeWithCinema },
+				state: { movieInfo, selectedShowtime, listShowtimes, cinemaName },
 			});
 		});
 	};
@@ -294,42 +295,12 @@ const CinemaDetail = () => {
 										</div>
 										{expandMovie === movie.id && (
 											<>
-												<div className={clsx(styles["showtime-container"])}>
-													{movie.showtimes.length > 0 && (
-														<div className={clsx(styles["showtime-card"])}>
-															<span
-																className={clsx(
-																	styles["showtime-label"],
-																	"border-left-accent"
-																)}
-															>
-																Suất chiếu
-															</span>
-															<div className="flex gap-3">
-																{movie.showtimes.map((showtime) => (
-																	<Button
-																		key={showtime.id}
-																		className={clsx(styles["showtime-button"])}
-																		onClick={() => handleClick(movie, showtime)}
-																	>
-																		<div
-																			className={clsx(styles["showtime-time"])}
-																		>
-																			{showtime.start_time}
-																		</div>
-																		<div
-																			className={clsx(
-																				styles["showtime-room-label"]
-																			)}
-																		>
-																			{showtime.room.name}
-																		</div>
-																	</Button>
-																))}
-															</div>
-														</div>
-													)}
-												</div>
+												<Showtime
+													movie={movie}
+													showtimes={movie.showtimes}
+													handleClick={handleClick}
+													className="bg-zinc-100 border rounded-lg"
+												/>
 												<div className="h-[136px]"></div>
 											</>
 										)}

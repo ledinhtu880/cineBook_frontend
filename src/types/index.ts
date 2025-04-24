@@ -50,6 +50,7 @@ export interface MovieProps {
 	slug: string;
 	description: string;
 	is_now_showing: boolean;
+	showtimes?: ShowtimeProps[];
 }
 
 export interface CityProps {
@@ -66,6 +67,8 @@ export interface ShowtimeProps {
 	};
 	start_time: string;
 	end_time: string;
+	start_time_formatted: string;
+	end_time_formatted: string;
 	date: string;
 }
 

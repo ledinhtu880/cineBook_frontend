@@ -15,6 +15,7 @@ export { default as Menu } from "@/components/Menu";
 export { default as Modal } from "@/components/Modal";
 export { default as PageWrapper } from "@/components/PageWrapper";
 export { default as SeatLayout } from "@/components/SeatLayout";
+export { default as Showtime } from "@/components/Showtime";
 export { default as StatCard } from "@/components/StatCard";
 export { default as Select } from "@/components/Select";
 export { default as Table } from "@/components/Table";

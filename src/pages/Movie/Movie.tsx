@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
 	PlayArrow,
 	AccessTime,
@@ -10,10 +10,17 @@ import {
 import clsx from "clsx";
 
 import styles from "./Movie.module.scss";
+import config from "@/config";
 import MovieItem from "./MovieItem";
 import { getYoutubeEmbedUrl } from "@/utils";
 import { formatDate, isToday } from "@/utils/datetime";
-import { MovieProps, CityProps, CinemaProps } from "@/types";
+import {
+	MovieProps,
+	CityProps,
+	CinemaProps,
+	ShowtimeProps as ShowtimeDefaultProps,
+} from "@/types";
+import { useAuth } from "@/hooks";
 import { movieService, cityService } from "@/services";
 import {
 	Badge,
@@ -23,23 +30,42 @@ import {
 	Image,
 	Modal,
 	Select,
+	Showtime,
 	Tabs,
 } from "@/components";
 
+interface ShowtimeProps extends ShowtimeDefaultProps {
+	movie: {
+		id: number;
+		title: string;
+	};
+	cinema: {
+		id: number;
+		name: string;
+	};
+}
+
 const Movie = () => {
 	const { slug } = useParams();
+	const navigate = useNavigate();
 
 	const [loading, setLoading] = useState(true);
+	const { checkAuthAndExecute, LoginModalComponent } = useAuth();
 
 	const [dates, setDates] = useState<Date[]>([]);
 	const [cities, setCities] = useState<CityProps[]>([]);
 	const [movie, setMovie] = useState<MovieProps | null>(null);
 	const [ratedMovies, setRatedMovies] = useState<MovieProps[]>([]);
+	const [showtimes, setShowtimes] = useState<ShowtimeProps[]>([]);
 
 	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 	const [selectedCity, setSelectedCity] = useState<CityProps | null>(null);
 	const [selectedCinema, setSelectedCinema] = useState<CinemaProps | null>(
 		null
+	);
+
+	const [filteredShowtimes, setFilteredShowtimes] = useState<ShowtimeProps[]>(
+		[]
 	);
 
 	const [showTrailer, setShowTrailer] = useState(false);
@@ -92,8 +118,8 @@ const Movie = () => {
 	}, []);
 
 	useEffect(() => {
-		try {
-			(async () => {
+		(async () => {
+			try {
 				const data = await cityService.getWithCinemas();
 				setCities(data);
 
@@ -101,6 +127,21 @@ const Movie = () => {
 					setSelectedCity(data[0]);
 					setSelectedCinema(data[0].cinemas[0]);
 				}
+			} catch (error) {
+				console.error(
+					"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
+					error
+				);
+			}
+		})();
+	}, []);
+
+	useEffect(() => {
+		try {
+			(async () => {
+				if (!movie) return;
+				const data = await movieService.getShowtimese(movie.id);
+				setShowtimes(data);
 			})();
 		} catch (error) {
 			console.error(
@@ -108,12 +149,32 @@ const Movie = () => {
 				error
 			);
 		}
-	}, []);
+	}, [movie]);
+
+	useEffect(() => {
+		(async () => {
+			if (!movie) return;
+			if (!showtimes) return;
+
+			const { formattedDateWithYear } = formatDate(selectedDate);
+
+			const filtered = showtimes.filter(
+				(showtime) =>
+					showtime.movie.id === movie?.id &&
+					showtime.cinema.id === selectedCinema?.id &&
+					showtime.date == formattedDateWithYear
+			);
+
+			setFilteredShowtimes(filtered);
+		})();
+	}, [movie, showtimes, selectedCinema, selectedDate]);
 
 	const handleOpenTrailer = () => setShowTrailer(true);
 	const handleCloseTrailer = () => setShowTrailer(false);
 
-	const handleOpenBookingModal = () => setShowBookingModal(true);
+	const handleOpenBookingModal = () => {
+		checkAuthAndExecute(() => setShowBookingModal(true));
+	};
 	const handleCloseBookingModal = () => setShowBookingModal(false);
 
 	const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -124,6 +185,23 @@ const Movie = () => {
 
 	const handleClickCinema = (cinema: CinemaProps) => {
 		setSelectedCinema(cinema);
+	};
+
+	const handleClickShowtime = (
+		movie: MovieProps,
+		selectedShowtime: ShowtimeDefaultProps
+	) => {
+		if (!selectedCinema) return;
+
+		const movieInfo = movie;
+		const cinemaName = selectedCinema.name;
+		const listShowtimes = filteredShowtimes;
+
+		checkAuthAndExecute(() => {
+			navigate(config.routes.booking.replace(":slug", movie.slug), {
+				state: { movieInfo, selectedShowtime, listShowtimes, cinemaName },
+			});
+		});
 	};
 
 	const dateTabs = dates.map((date) => {
@@ -153,6 +231,7 @@ const Movie = () => {
 						src={movie.banner_url}
 						alt={movie.title}
 					/>
+					aaa
 					<div className={clsx(styles["overlay"])} />
 					<div className={clsx(styles["trailer-button"])}>
 						<button
@@ -284,7 +363,6 @@ const Movie = () => {
 					</Box>
 				</Modal>
 			)}
-
 			{showBookingModal && (
 				<Modal
 					isOpen={showBookingModal}
@@ -387,11 +465,20 @@ const Movie = () => {
 										white
 									/>
 								</div>
+								<div className="flex-1">
+									<Showtime
+										movie={movie}
+										showtimes={filteredShowtimes}
+										handleClick={handleClickShowtime}
+										relative
+									/>
+								</div>
 							</div>
 						</div>
 					</div>
 				</Modal>
 			)}
+			<LoginModalComponent />
 		</div>
 	);
 };

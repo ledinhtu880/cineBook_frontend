@@ -6,3 +6,10 @@ export const getYoutubeEmbedUrl = (url: string) => {
 		? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
 		: url;
 };
+
+export const numberFormat = (value: number) => {
+	return value.toLocaleString("it-IT", {
+		style: "currency",
+		currency: "VND",
+	});
+};

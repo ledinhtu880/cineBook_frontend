@@ -1,8 +1,6 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
-
-
 const showtimeService = {
 	get: async () => {
 		const response = await axios.get(`${API_URL}/admin/showtimes`);
@@ -19,7 +17,6 @@ const showtimeService = {
 	},
 
 	update: async (id: number, data: FormData) => {
-		// Thêm _method field để Laravel hiểu đây là PUT request
 		data.append("_method", "PUT");
 
 		const response = await axios.post(

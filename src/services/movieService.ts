@@ -96,6 +96,12 @@ const movieService = {
 
 		return data;
 	},
+
+	getShowtimese: async (movieId: number) => {
+		const response = await axios.get(`${API_URL}/movies/${movieId}/showtimes`);
+
+		return response.data.data;
+	},
 };
 
 export default movieService;

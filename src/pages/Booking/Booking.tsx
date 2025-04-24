@@ -5,10 +5,11 @@ import clsx from "clsx";
 import styles from "./Booking.module.scss";
 import {
 	SeatProps,
-	ShowtimeProps as Showtime,
+	ShowtimeProps as ShowtimeProps,
 	MovieProps as Movie,
 } from "@/types";
 import { productComboService } from "@/services";
+import { numberFormat } from "@/utils";
 import {
 	Button,
 	Container,
@@ -33,12 +34,6 @@ interface SelectedProductProps extends ComboProps {
 	quantity: number;
 }
 
-interface ShowtimeProps extends Showtime {
-	cinema: {
-		name: string;
-	};
-}
-
 interface MovieProps extends Movie {
 	showtimes: ShowtimeProps[];
 }
@@ -54,10 +49,15 @@ const Booking = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const [combos, setCombos] = useState<ComboProps[]>([]);
-	const [movie, setMovie] = useState<MovieProps>({} as MovieProps);
 	const [loading, setLoading] = useState(true);
 	const [currentStep, setCurrentStep] = useState(0);
+
+	const [movie, setMovie] = useState<MovieProps>({} as MovieProps);
+	const [cinemaName, setCinemaName] = useState<string>("");
+	const [combos, setCombos] = useState<ComboProps[]>([]);
+	const [showtimes, setShowtimes] = useState<ShowtimeProps[]>([]);
+
+	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [selectedSeats, setSelectedSeats] = useState<SeatProps[]>([]);
 	const [selectedProducts, setSelectedProducts] = useState<
 		SelectedProductProps[]
@@ -79,16 +79,23 @@ const Booking = () => {
 		}
 
 		try {
-			const { movieWithShowtime, showtimeWithCinema } = location.state;
+			const { movieInfo, selectedShowtime, listShowtimes, cinemaName } =
+				location.state;
 
-			setSelectedShowtime(showtimeWithCinema);
-			setMovie(movieWithShowtime);
-			document.title = "Đặt vé  " + movieWithShowtime.title;
+			setSelectedShowtime(selectedShowtime);
+			setShowtimes(listShowtimes);
+			setCinemaName(cinemaName);
+			setMovie(movieInfo);
+			document.title = "Đặt vé  " + movieInfo.title;
 		} catch (error) {
 			console.error("Error when setting showtime:", error);
-			alert(
-				"Đã xảy ra lỗi khi lấy thông tin suất chiếu. Vui lòng thử lại sau."
-			);
+			navigate("/", {
+				state: {
+					message:
+						"Đã xảy ra lỗi khi lấy thông tin suất chiếu. Vui lòng thử lại sau.",
+					severity: "error",
+				},
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -228,7 +235,7 @@ const Booking = () => {
 			case 1:
 				return true;
 			case 2:
-				return !!paymentMethod;
+				return !!paymentMethod && termsAccepted;
 			default:
 				return false;
 		}
@@ -272,18 +279,15 @@ const Booking = () => {
 		},
 	];
 
-	const timeTabs = movie.showtimes?.map?.((showtime: ShowtimeProps) => {
+	const timeTabs = showtimes.map?.((showtime: ShowtimeProps) => {
 		const showTime = {
 			...showtime,
-			cinema: {
-				name: selectedShowtime.cinema.name,
-			},
 		};
 
 		return {
 			key: showtime.id,
 			value: showTime,
-			primary: showtime.start_time,
+			primary: showtime.start_time_formatted,
 		};
 	});
 
@@ -373,41 +377,153 @@ const Booking = () => {
 			case 2: {
 				return (
 					<div className={clsx(styles["payment"])}>
-						<h2 className={clsx(styles["section-title"])}>Thanh toán</h2>
-
-						<div className={clsx(styles["order-summary"])}>
-							<h3>Tóm tắt đơn hàng</h3>
-							<div className={clsx(styles["summary-item-total"], styles.total)}>
-								<span>Tổng cộng:</span>
-								<span>
-									{getTotal().toLocaleString("it-IT", {
-										style: "currency",
-										currency: "VND",
-									})}
-								</span>
-							</div>
-						</div>
+						<h2 className={clsx(styles["step-title"], "border-left-accent")}>
+							Phương thức thanh toán
+						</h2>
 
 						<div className={clsx(styles["payment-methods"])}>
-							<h3>Phương thức thanh toán</h3>
-
 							<div className={clsx(styles["payment-options"])}>
-								{["Chuyển khoản ngân hàng", "Ví điện tử", "Tiền mặt"].map(
-									(method) => (
-										<div
-											key={method}
-											className={clsx(styles["payment-option"], {
-												[styles.selected]: paymentMethod === method,
-											})}
-											onClick={() => setPaymentMethod(method)}
-										>
+								{[
+									{
+										id: "bank_transfer",
+										name: "Chuyển khoản ngân hàng",
+										description:
+											"Chuyển khoản qua tài khoản ngân hàng của chúng tôi",
+										icon: "bank-icon.svg",
+									},
+									{
+										id: "e_wallet",
+										name: "Ví điện tử",
+										description:
+											"Thanh toán qua ví điện tử như MoMo, ZaloPay, VNPay",
+										icon: "wallet-icon.svg",
+									},
+									{
+										id: "cash",
+										name: "Tiền mặt",
+										description: "Đặt chỗ trước và thanh toán tại quầy",
+										icon: "cash-icon.svg",
+									},
+								].map((method) => (
+									<div
+										key={method.id}
+										className={clsx(styles["payment-option"], {
+											[styles.selected]: paymentMethod === method.name,
+										})}
+										onClick={() => setPaymentMethod(method.name)}
+									>
+										<div className={clsx(styles["payment-option-header"])}>
 											<div className={clsx(styles["radio-button"])}></div>
-											<span>{method}</span>
+											<span className={clsx(styles["payment-name"])}>
+												{method.name}
+											</span>
 										</div>
-									)
-								)}
+										<p className={clsx(styles["payment-description"])}>
+											{method.description}
+										</p>
+
+										{/* Hiển thị chi tiết khi phương thức được chọn */}
+										{paymentMethod === method.name && (
+											<div className={clsx(styles["payment-details"])}>
+												{method.id === "bank_transfer" && (
+													<div className={clsx(styles["bank-details"])}>
+														<p className={clsx(styles["payment-instruction"])}>
+															Vui lòng chuyển khoản với nội dung:{" "}
+															<strong>
+																BK{Math.floor(Math.random() * 10000)}
+															</strong>
+														</p>
+														<table className={clsx(styles["bank-info"])}>
+															<tbody>
+																<tr>
+																	<td>Ngân hàng:</td>
+																	<td>
+																		<strong>Vietcombank</strong>
+																	</td>
+																</tr>
+																<tr>
+																	<td>Số tài khoản:</td>
+																	<td>
+																		<strong>1234567890</strong>
+																	</td>
+																</tr>
+																<tr>
+																	<td>Chủ tài khoản:</td>
+																	<td>
+																		<strong>CÔNG TY TNHH RẠP CHIẾU PHIM</strong>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												)}
+
+												{method.id === "e_wallet" && (
+													<div className={clsx(styles["wallet-options"])}>
+														<p className={clsx(styles["payment-instruction"])}>
+															Chọn ví điện tử bạn muốn sử dụng:
+														</p>
+														<div className={clsx(styles["wallet-list"])}>
+															{["MoMo", "ZaloPay", "VNPay"].map((wallet) => (
+																<button
+																	key={wallet}
+																	className={clsx(styles["wallet-button"])}
+																	onClick={() => {
+																		// Handle wallet selection
+																		console.log(`Selected ${wallet}`);
+																	}}
+																>
+																	{wallet}
+																</button>
+															))}
+														</div>
+													</div>
+												)}
+
+												{method.id === "cash" && (
+													<div className={clsx(styles["cash-details"])}>
+														<p className={clsx(styles["payment-instruction"])}>
+															Vé của bạn sẽ được giữ trong vòng 30 phút. Vui
+															lòng đến quầy vé trước suất chiếu ít nhất 30 phút
+															để thanh toán và nhận vé.
+														</p>
+														<div className={clsx(styles["cash-warning"])}>
+															<span className={clsx(styles["warning-icon"])}>
+																⚠️
+															</span>
+															<p>
+																Lưu ý: Vé sẽ tự động hủy nếu bạn không đến đúng
+																giờ.
+															</p>
+														</div>
+													</div>
+												)}
+											</div>
+										)}
+									</div>
+								))}
 							</div>
 						</div>
+
+						{/* Nếu đã chọn phương thức, hiển thị điều khoản và điều kiện */}
+						{paymentMethod && (
+							<div className={clsx(styles["terms-section"])}>
+								<div className={clsx(styles["terms-checkbox"])}>
+									<input
+										type="checkbox"
+										id="accept-terms"
+										checked={termsAccepted}
+										onChange={(e) => setTermsAccepted(e.target.checked)}
+									/>
+									<label htmlFor="accept-terms">
+										Tôi đồng ý với{" "}
+										<a href="#" className={clsx(styles["terms-link"])}>
+											điều khoản và điều kiện
+										</a>
+									</label>
+								</div>
+							</div>
+						)}
 					</div>
 				);
 			}
@@ -518,13 +634,13 @@ const Booking = () => {
 						<span className={clsx(styles["summary-item-label"])}>
 							Suất chiếu:&nbsp;
 						</span>
-						{selectedShowtime.start_time}
+						{selectedShowtime.start_time_formatted} - {selectedShowtime.date}
 					</p>
 					<p className={clsx(styles["summary-item"])}>
 						<span className={clsx(styles["summary-item-label"])}>
 							Rạp:&nbsp;
 						</span>
-						{selectedShowtime.cinema.name}
+						{cinemaName}
 					</p>
 					<p className={clsx(styles["summary-item"])}>
 						<span className={clsx(styles["summary-item-label"])}>
@@ -586,13 +702,11 @@ const Booking = () => {
 											):
 										</span>
 										<span>
-											{selectedSeats
-												.filter((seat) => seat.seat_type === "normal")
-												.reduce((acc, seat) => acc + Number(seat.price), 0)
-												.toLocaleString("it-IT", {
-													style: "currency",
-													currency: "VND",
-												})}
+											{numberFormat(
+												selectedSeats
+													.filter((seat) => seat.seat_type === "normal")
+													.reduce((acc, seat) => acc + Number(seat.price), 0)
+											)}
 										</span>
 									</li>
 								)}
@@ -610,13 +724,11 @@ const Booking = () => {
 											):
 										</span>
 										<span>
-											{selectedSeats
-												.filter((seat) => seat.seat_type === "vip")
-												.reduce((acc, seat) => acc + Number(seat.price), 0)
-												.toLocaleString("it-IT", {
-													style: "currency",
-													currency: "VND",
-												})}
+											{numberFormat(
+												selectedSeats
+													.filter((seat) => seat.seat_type === "vip")
+													.reduce((acc, seat) => acc + Number(seat.price), 0)
+											)}
 										</span>
 									</li>
 								)}
@@ -634,13 +746,11 @@ const Booking = () => {
 											):
 										</span>
 										<span>
-											{selectedSeats
-												.filter((seat) => seat.seat_type === "sweetbox")
-												.reduce((acc, seat) => acc + Number(seat.price), 0)
-												.toLocaleString("it-IT", {
-													style: "currency",
-													currency: "VND",
-												})}
+											{numberFormat(
+												selectedSeats
+													.filter((seat) => seat.seat_type === "sweetbox")
+													.reduce((acc, seat) => acc + Number(seat.price), 0)
+											)}
 										</span>
 									</li>
 								)}
@@ -670,12 +780,7 @@ const Booking = () => {
 												<span>
 													{product.name} ({quantity}):
 												</span>
-												<span>
-													{price.toLocaleString("it-IT", {
-														style: "currency",
-														currency: "VND",
-													})}
-												</span>
+												<span>{numberFormat(price)}</span>
 											</li>
 										);
 									}
@@ -692,12 +797,7 @@ const Booking = () => {
 
 				<div className={clsx(styles["summary-prices-total"])}>
 					<span>Tổng tiền:</span>
-					<span>
-						{getTotal().toLocaleString("it-IT", {
-							style: "currency",
-							currency: "VND",
-						})}
-					</span>
+					<span>{numberFormat(getTotal())}</span>
 				</div>
 
 				{/* Action buttons */}

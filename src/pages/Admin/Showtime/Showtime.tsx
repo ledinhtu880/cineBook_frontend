@@ -7,10 +7,6 @@ import { useDebounce } from "@/hooks";
 import { Column, ApiError } from "@/types";
 import { showtimeService } from "@/services";
 import {
-	formateDateWithYear as formatDate,
-	formatTime,
-} from "@/utils/datetime";
-import {
 	Card,
 	Container,
 	PageWrapper,
@@ -19,7 +15,7 @@ import {
 	Select,
 } from "@/components";
 
-interface ShowtimeData {
+interface ShowtimeProps {
 	id: number;
 	movie: {
 		id: number;
@@ -35,6 +31,9 @@ interface ShowtimeData {
 	time: {
 		start_time: string;
 		end_time: string;
+		start_time_formatted: string;
+		end_time_formatted: string;
+		date: string;
 	};
 }
 
@@ -61,12 +60,12 @@ const ShowtimeStatus = ({ startTime, endTime }: ShowtimeStatusProps) => {
 	);
 };
 
-const columns: Column<ShowtimeData>[] = [
+const columns: Column<ShowtimeProps>[] = [
 	{
 		title: "Thông tin phim",
 		key: "movie",
 		render: (record) => {
-			const movie = record as ShowtimeData["movie"];
+			const movie = record as ShowtimeProps["movie"];
 			return (
 				<div className={clsx(styles["movie-info"])}>
 					<img
@@ -86,7 +85,7 @@ const columns: Column<ShowtimeData>[] = [
 		title: "Thông tin rạp",
 		key: "room",
 		render: (record) => {
-			const room = record as ShowtimeData["room"];
+			const room = record as ShowtimeProps["room"];
 			return (
 				<div className={clsx(styles["cinema-info"])}>
 					<div className="font-medium">{room.cinema_name}</div>
@@ -99,14 +98,14 @@ const columns: Column<ShowtimeData>[] = [
 		title: "Thời gian chiếu",
 		key: "time",
 		render: (record) => {
-			const time = record as ShowtimeData["time"];
+			const time = record as ShowtimeProps["time"];
 			return (
 				<div className={clsx(styles["showtime-info"])}>
 					<ShowtimeStatus startTime={time.start_time} endTime={time.end_time} />
 					<div className="mt-2">
-						<div>{formatDate(time.start_time)}</div>
+						<div>{time.date}</div>
 						<div className="text-sm text-gray-500">
-							{formatTime(time.start_time)} - {formatTime(time.end_time)}
+							{time.start_time_formatted} - {time.end_time_formatted}
 						</div>
 					</div>
 				</div>
@@ -117,7 +116,7 @@ const columns: Column<ShowtimeData>[] = [
 
 const Showtime = () => {
 	const { showSnackbar } = useSnackbar();
-	const [showtimes, setShowtimes] = useState<ShowtimeData[]>([]);
+	const [showtimes, setShowtimes] = useState<ShowtimeProps[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [selectedCinema, setSelectedCinema] = useState<string>("");
@@ -130,7 +129,6 @@ const Showtime = () => {
 		[showtimes]
 	);
 
-	// Sửa cách lấy unique movies để tránh trùng lặp
 	const uniqueMovies = useMemo(
 		() =>
 			Array.from(
@@ -158,7 +156,7 @@ const Showtime = () => {
 
 		if (selectedDate) {
 			filtered = filtered.filter(
-				(showtime) => formatDate(showtime.time.start_time) === selectedDate
+				(showtime) => showtime.time.date === selectedDate
 			);
 		}
 
@@ -178,9 +176,7 @@ const Showtime = () => {
 	}, [showtimes, selectedDate, selectedCinema, selectedMovie, debouncedValue]);
 
 	const uniqueDates = useMemo(() => {
-		const dates = [
-			...new Set(showtimes.map((s) => formatDate(s.time.start_time))),
-		];
+		const dates = [...new Set(showtimes.map((s) => s.time.date))];
 		return dates.sort();
 	}, [showtimes]);
 
@@ -208,7 +204,7 @@ const Showtime = () => {
 	}, [showSnackbar]);
 
 	const handleDelete = useCallback(
-		async (record: ShowtimeData) => {
+		async (record: ShowtimeProps) => {
 			try {
 				await showtimeService.delete(record.id);
 				showSnackbar("Xóa suất chiếu thành công", "success");
@@ -349,7 +345,7 @@ const Showtime = () => {
 				) : (
 					<>
 						{filteredShowtimes.length > 0 ? (
-							<Table<ShowtimeData>
+							<Table<ShowtimeProps>
 								columns={columns}
 								data={filteredShowtimes}
 								onDelete={handleDelete}

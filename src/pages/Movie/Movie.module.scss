@@ -206,7 +206,7 @@
 		}
 	}
 	.modal-right {
-		@apply flex-1 border-l border-neutral-300;
+		@apply flex flex-col flex-1 border-l border-neutral-300;
 
 		.date-tabs {
 			@apply border-b border-neutral-300 px-6 py-3;

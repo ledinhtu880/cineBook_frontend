@@ -1,0 +1,27 @@
+.showtime-container {
+	@apply w-full absolute left-0 z-10;
+
+	&.position {
+		@apply relative;
+	}
+
+	.showtime-card {
+		@apply gap-3 flex-col flex p-4;
+	}
+
+	.showtime-label {
+		@apply ps-4;
+	}
+
+	.showtime-button {
+		@apply border border-zinc-200 bg-white hover:bg-zinc-100;
+	}
+
+	.showtime-time {
+		@apply font-bold;
+	}
+
+	.showtime-room-label {
+		@apply text-sm mt-1 text-gray-800;
+	}
+}
