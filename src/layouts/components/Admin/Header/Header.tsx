@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
-import { User, authService } from "@/services/";
+import { authService } from "@/services/";
+import { UserProps } from "@/types/";
 import { Button, Image } from "@/components";
 
 interface HeaderProps {
@@ -13,7 +14,7 @@ interface HeaderProps {
 
 const Header = ({ onCollapse }: HeaderProps) => {
 	const [isCollapse, setIsCollapse] = useState(false);
-	const [userData, setUserData] = useState<User | null>(null);
+	const [userData, setUserData] = useState<UserProps | null>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const navigate = useNavigate();
 

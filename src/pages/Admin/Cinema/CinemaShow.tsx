@@ -61,9 +61,11 @@ const Cinema = () => {
 	const handleDelete = useCallback(
 		async (record: RoomProps) => {
 			try {
-				await roomService.delete(record.id);
-				setRooms((prev) => prev.filter((room) => room.id !== record.id));
-				showSnackbar("Xóa phòng chiếu thành công", "success");
+				const response = await roomService.delete(record.id);
+				if (response.status == "success") {
+					setRooms((prev) => prev.filter((room) => room.id !== record.id));
+					showSnackbar(response.message, "success");
+				}
 			} catch (error) {
 				console.error("Error when delete room: ", error);
 			}

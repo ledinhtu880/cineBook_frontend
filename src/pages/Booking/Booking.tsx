@@ -8,7 +8,7 @@ import {
 	ShowtimeProps as ShowtimeProps,
 	MovieProps as Movie,
 } from "@/types";
-import { productComboService } from "@/services";
+import { productComboService, authService, bookingService } from "@/services";
 import { numberFormat } from "@/utils";
 import {
 	Button,
@@ -59,9 +59,9 @@ const Booking = () => {
 
 	const [termsAccepted, setTermsAccepted] = useState(false);
 	const [selectedSeats, setSelectedSeats] = useState<SeatProps[]>([]);
-	const [selectedProducts, setSelectedProducts] = useState<
-		SelectedProductProps[]
-	>([]);
+	const [selectedCombos, setselectedCombos] = useState<SelectedProductProps[]>(
+		[]
+	);
 	const [selectedShowtime, setSelectedShowtime] = useState<ShowtimeProps>(
 		{} as ShowtimeProps
 	);
@@ -140,7 +140,6 @@ const Booking = () => {
 				}
 			}
 		} else {
-			// Xử lý cho ghế thường
 			if (selectedSeats.some((s) => s.id === seat.id)) {
 				setSelectedSeats(selectedSeats.filter((s) => s.id !== seat.id));
 			} else {
@@ -156,7 +155,52 @@ const Booking = () => {
 
 	const handleNext = () => {
 		if (canProceed() && currentStep < steps.length - 1) {
-			setCurrentStep(currentStep + 1);
+			if (currentStep === 2) {
+				handleBookingSubmission();
+			} else {
+				setCurrentStep(currentStep + 1);
+			}
+		}
+	};
+
+	const handleBookingSubmission = async () => {
+		try {
+			const currentUser = await authService.getCurrentUser();
+
+			if (!currentUser) {
+				navigate("/login", {
+					state: {
+						message: "Vui lòng đăng nhập để đặt vé",
+						severity: "error",
+						returnUrl: location.pathname,
+					},
+				});
+				return;
+			}
+
+			// Chuẩn bị dữ liệu cần gửi lên server
+			const bookingData = {
+				user_id: currentUser.id,
+				showtime_id: selectedShowtime.id,
+				seats: selectedSeats.map((seat) => ({
+					id: seat.id,
+					price: seat.price,
+				})),
+				combos: selectedCombos.map((combo) => ({
+					id: combo.id,
+					quantity: combo.quantity,
+					price: combo.price,
+				})),
+				payment_method: "bank_transfer",
+				total_amount: getTotal(),
+				booking_time: new Date().toISOString(),
+			};
+
+			const response = await bookingService.create(bookingData);
+			if (response.status == "success") setCurrentStep(currentStep + 1);
+		} catch (error) {
+			console.error("Lỗi khi đặt vé:", error);
+			alert("Đã xảy ra lỗi khi đặt vé. Vui lòng thử lại sau.");
 		}
 	};
 
@@ -167,7 +211,7 @@ const Booking = () => {
 	};
 
 	const handleIncreaseQuantity = (product: ComboProps) => {
-		setSelectedProducts((prev) => {
+		setselectedCombos((prev) => {
 			const existingProductIndex = prev.findIndex(
 				(item) => item.id === product.id
 			);
@@ -187,7 +231,7 @@ const Booking = () => {
 	};
 
 	const handleDecreaseQuantity = (product: ComboProps) => {
-		setSelectedProducts((prev) => {
+		setselectedCombos((prev) => {
 			const existingProductIndex = prev.findIndex(
 				(item) => item.id === product.id
 			);
@@ -212,7 +256,7 @@ const Booking = () => {
 	};
 
 	const getProductQuantity = (productId: number) => {
-		const product = selectedProducts.find((item) => item.id === productId);
+		const product = selectedCombos.find((item) => item.id === productId);
 		return product ? product.quantity : 0;
 	};
 
@@ -221,7 +265,7 @@ const Booking = () => {
 			(total, seat) => total + Number(seat.price),
 			0
 		);
-		const foodTotal = selectedProducts.reduce(
+		const foodTotal = selectedCombos.reduce(
 			(total, product) => total + product.price * product.quantity,
 			0
 		);
@@ -516,10 +560,10 @@ const Booking = () => {
 										onChange={(e) => setTermsAccepted(e.target.checked)}
 									/>
 									<label htmlFor="accept-terms">
-										Tôi đồng ý với{" "}
-										<a href="#" className={clsx(styles["terms-link"])}>
+										Tôi đồng ý với
+										{/* <a href="#" className={clsx(styles["terms-link"])}>
 											điều khoản và điều kiện
-										</a>
+										</a> */}
 									</label>
 								</div>
 							</div>
@@ -766,9 +810,9 @@ const Booking = () => {
 						<h4 className={clsx(styles["summary-seats-title"])}>
 							Đồ ăn đã chọn
 						</h4>
-						{Object.entries(selectedProducts).length > 0 ? (
+						{Object.entries(selectedCombos).length > 0 ? (
 							<ul className={clsx(styles["summary-prices-list"])}>
-								{selectedProducts.map((product) => {
+								{selectedCombos.map((product) => {
 									const quantity = getProductQuantity(product.id);
 									const price = product.price * quantity;
 									if (quantity > 0) {

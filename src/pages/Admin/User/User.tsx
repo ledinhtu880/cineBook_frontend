@@ -1,19 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { Column, ApiError } from "@/types/";
+import { Column, ApiError, UserProps } from "@/types/";
 import { useDebounce } from "@/hooks";
 import { userService } from "@/services/";
 import { useSnackbar } from "@/context";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
-interface UserData {
-	id: number;
-	name: string;
-	email: string;
-	string_role: string;
-}
-
-const columns: Column<UserData>[] = [
+const columns: Column<UserProps>[] = [
 	{ key: "id", title: "#" },
 	{ key: "name", title: "Tên người dùng" },
 	{ key: "email", title: "Email" },
@@ -21,7 +14,7 @@ const columns: Column<UserData>[] = [
 ];
 const User = () => {
 	const { showSnackbar } = useSnackbar();
-	const [users, setUsers] = useState<UserData[]>([]);
+	const [users, setUsers] = useState<UserProps[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [searchKeyword, setSearchKeyword] = useState("");
 	const debouncedValue = useDebounce(searchKeyword, 250);
@@ -54,7 +47,7 @@ const User = () => {
 				{loading ? (
 					<Loading />
 				) : (
-					<Table<UserData>
+					<Table<UserProps>
 						columns={columns}
 						data={filteredUsers}
 						showPath="/admin/users"

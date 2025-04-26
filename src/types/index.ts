@@ -28,10 +28,30 @@ export interface ValidationErrors {
 	[key: string]: string;
 }
 
+export interface RegisterFormProps {
+	first_name: string;
+	last_name: string;
+	email: string;
+	phone: string;
+	city_id: string | number;
+	password: string;
+	password_confirmation: string;
+}
+
 export interface CarouselProps {
 	title: string;
 	fetchData: () => Promise<MovieProps[]>;
 	hasBackground?: boolean;
+}
+
+export interface UserProps {
+	id: number;
+	first_name: string;
+	last_name: string;
+	string_role: string;
+	name: string;
+	email: string;
+	role: boolean;
 }
 
 export interface MovieProps {
@@ -72,16 +92,6 @@ export interface ShowtimeProps {
 	date: string;
 }
 
-export interface RegisterFormProps {
-	first_name: string;
-	last_name: string;
-	email: string;
-	phone: string;
-	city_id: string | number;
-	password: string;
-	password_confirmation: string;
-}
-
 export interface CinemaProps {
 	id: number;
 	name: string;
@@ -113,5 +123,5 @@ export interface SeatProps {
 	seat_code: string;
 	seat_type: "normal" | "vip" | "sweetbox";
 	is_sweetbox: boolean;
-	price: number;
+	price?: number;
 }

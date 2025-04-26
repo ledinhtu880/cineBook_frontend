@@ -1,27 +1,19 @@
 import axios from "axios";
 
-import { RegisterFormProps } from "@/types/";
+import { RegisterFormProps, UserProps } from "@/types/";
 
 const API_URL = import.meta.env.VITE_API_URL;
-export interface User {
-	id: number;
-	first_name: string;
-	last_name: string;
-	name: string;
-	email: string;
-	role: boolean;
-}
 
 interface LoginResponse {
 	status: string;
 	message: string;
 	data: {
-		user: User;
+		user: UserProps;
 		token: string;
 	};
 }
 
-let userCache: User | null = null;
+let userCache: UserProps | null = null;
 
 const getTokenFromStorage = (): string | null => {
 	return localStorage.getItem("token");

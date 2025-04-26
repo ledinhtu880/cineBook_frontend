@@ -23,7 +23,7 @@ const cinemaService = {
 				"Content-Type": "multipart/form-data",
 			},
 		});
-		return response.data.data;
+		return response.data;
 	},
 
 	update: async (id: number, data: FormData) => {
@@ -34,12 +34,12 @@ const cinemaService = {
 				"Content-Type": "multipart/form-data",
 			},
 		});
-		return response.data.data;
+		return response.data;
 	},
 
 	delete: async (id: number) => {
 		const response = await axios.delete(`${API_URL}/admin/cinemas/${id}`);
-		return response.data.data;
+		return response.data;
 	},
 
 	show: async (id: number) => {
@@ -62,7 +62,7 @@ const cinemaService = {
 				},
 			}
 		);
-		return response.data.data;
+		return response.data;
 	},
 
 	getCinemaBySlug: async (slug: string) => {

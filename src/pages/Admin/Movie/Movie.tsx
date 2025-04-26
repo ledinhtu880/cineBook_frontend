@@ -40,9 +40,11 @@ const Movie = () => {
 	const handleDelete = useCallback(
 		async (record: MovieProps) => {
 			try {
-				await movieService.delete(record.id);
-				setMovies((prev) => prev.filter((movie) => movie.id !== record.id));
-				showSnackbar("Xóa phim thành công", "success");
+				const response = await movieService.delete(record.id);
+				if (response.status === "success") {
+					setMovies((prev) => prev.filter((movie) => movie.id !== record.id));
+					showSnackbar(response.message, "success");
+				}
 			} catch (error) {
 				console.error(error);
 			}

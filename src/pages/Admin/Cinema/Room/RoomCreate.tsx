@@ -220,11 +220,19 @@ const RoomCreate = () => {
 				}
 			});
 
-			await cinemaService.createRoom(cinema.id, formDataToSend);
-			showSnackbar(`Tạo rạp phòng chiếu phim thành công`, "success");
-			navigate(
-				config.routes.admin_cinemas_detail.replace(":id", cinema.id.toString())
+			const response = await cinemaService.createRoom(
+				cinema.id,
+				formDataToSend
 			);
+			if (response.status == "success") {
+				showSnackbar(response.message, "success");
+				navigate(
+					config.routes.admin_cinemas_detail.replace(
+						":id",
+						cinema.id.toString()
+					)
+				);
+			}
 		} catch (error) {
 			console.error("Error submitting form:", error);
 		} finally {

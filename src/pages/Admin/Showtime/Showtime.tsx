@@ -206,9 +206,11 @@ const Showtime = () => {
 	const handleDelete = useCallback(
 		async (record: ShowtimeProps) => {
 			try {
-				await showtimeService.delete(record.id);
-				showSnackbar("Xóa suất chiếu thành công", "success");
-				setShowtimes((prev) => prev.filter((item) => item.id !== record.id));
+				const response = await showtimeService.delete(record.id);
+				if (response.status == "success") {
+					showSnackbar(response.message, "success");
+					setShowtimes((prev) => prev.filter((item) => item.id !== record.id));
+				}
 			} catch (error) {
 				console.error("Error deleting showtime:", error);
 				showSnackbar("Xóa suất chiếu thất bại", "error");

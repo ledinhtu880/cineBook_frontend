@@ -62,9 +62,13 @@ const Cinema = () => {
 	const handleDelete = useCallback(
 		async (record: CinemaProps) => {
 			try {
-				await cinemaService.delete(record.id);
-				setCinemas((prev) => prev.filter((cinema) => cinema.id !== record.id));
-				showSnackbar("Xóa phim thành công", "success");
+				const response = await cinemaService.delete(record.id);
+				if (response.status === "success") {
+					setCinemas((prev) =>
+						prev.filter((cinema) => cinema.id !== record.id)
+					);
+					showSnackbar(response.message, "success");
+				}
 			} catch (error) {
 				console.error("Error when delete cinema: ", error);
 			}
