@@ -1,35 +1,58 @@
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import clsx from "clsx";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 import styles from "./Home.module.scss";
 import { movieService } from "@/services";
+import { MovieProps } from "@/types";
 import { Image, Carousel } from "@/components";
 
 const Home = () => {
+	const [topRatedMovies, setTopRatedMovies] = useState<MovieProps[]>([]);
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await movieService.getTopRatedNowShowingMovies({
+					limit: 5,
+					sort: "rating",
+					order: "desc",
+				});
+				setTopRatedMovies(response);
+			} catch (error) {
+				console.error("Failed to fetch top-rated movies:", error);
+			}
+		})();
+	}, []);
+
 	return (
 		<div className={clsx(styles.wrapper)}>
 			{/* Start: Slider */}
 			<div className={clsx(styles.slider)}>
-				<button className={clsx(styles.sliderControl, styles.prev)}>
-					<ChevronLeft />
-				</button>
-
-				<div className={clsx(styles.sliderTrack)}>
-					<div className={clsx(styles.sliderSlide)}>
-						<Image
-							src="https://vcdn1-giaitri.vnecdn.net/2025/03/19/jisoo-1-1742349532-1742349698-5135-1742349805.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=hGqSXJnPiHy3r6XbGozF2Q"
-							alt="Title"
-							className={clsx(styles.sliderImage)}
-						/>
-					</div>
-				</div>
-
-				<button className={clsx(styles.sliderControl, styles.next)}>
-					<i className="fas fa-chevron-right" />
-					<ChevronRight />
-				</button>
+				<Swiper
+					modules={[Navigation, Autoplay, Pagination]}
+					spaceBetween={0}
+					slidesPerView={1}
+					navigation
+					pagination={{ clickable: true }}
+					className={clsx(styles.swiper)}
+				>
+					{topRatedMovies.map((banner) => (
+						<SwiperSlide key={banner.id}>
+							<Image
+								src={banner.banner_url}
+								alt={banner.title}
+								className={clsx(styles.sliderImage)}
+							/>
+						</SwiperSlide>
+					))}
+				</Swiper>
 			</div>
-			{/* Start: Slider */}
+			{/* End: Slider */}
 
 			{/* Start: Now Showing */}
 			<Carousel

@@ -6,7 +6,6 @@ import {
 	Cinema,
 	CinemaDetail,
 	Admin,
-	NotFoundPage,
 	Movie,
 	Booking,
 } from "@/pages";
@@ -35,11 +34,6 @@ const publicRoutes = [
 		title: "Lịch chiếu phim của rạp",
 	},
 	{ path: config.routes.cinema, component: Cinema, title: "Rạp chiếu" },
-	{
-		path: config.routes.not_found,
-		component: NotFoundPage,
-		title: "Không tìm thấy trang",
-	},
 ];
 
 // Đăng nhập mới xem được

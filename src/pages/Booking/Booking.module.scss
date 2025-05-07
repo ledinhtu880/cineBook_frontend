@@ -63,6 +63,10 @@
 .step-container {
 	@apply w-2/3 bg-white rounded-lg shadow-lg p-5;
 
+	&.step-container-full {
+		@apply flex-1;
+	}
+
 	.date-tabs {
 		@apply my-6 mx-12;
 	}
@@ -160,7 +164,7 @@
 			}
 
 			.payment-name {
-				@apply text-lg font-medium;
+				@apply text-lg font-medium flex justify-start items-center gap-1;
 			}
 
 			.payment-description {
@@ -194,6 +198,9 @@
 
 		.wallet-button {
 			@apply px-4 py-2 border border-gray-300 rounded-lg hover:border-primary hover:text-primary transition-colors;
+		}
+		.wallet-button-selected {
+			@apply border-primary text-primary;
 		}
 
 		.cash-warning {
@@ -310,6 +317,109 @@
 
 		.next-button {
 			@apply content-end;
+		}
+	}
+}
+
+.confirmation {
+	@apply flex flex-col items-center p-8 bg-white rounded-lg shadow-lg mx-auto;
+
+	.success-icon {
+		@apply flex items-center justify-center w-20 h-20 bg-green-500 text-white text-5xl mb-6 rounded-full;
+	}
+
+	.confirmation-title {
+		@apply text-3xl font-bold mb-6 text-gray-800 text-center;
+	}
+
+	.confirmation-details {
+		@apply w-full flex flex-col gap-6;
+	}
+
+	.booking-info {
+		@apply w-full;
+
+		.booking-code {
+			@apply flex items-center justify-center gap-2 mb-6 p-4 border border-dashed border-gray-300 rounded-md bg-gray-100;
+
+			strong {
+				@apply text-xl text-red-500;
+			}
+		}
+
+		.movie-info {
+			h3 {
+				@apply text-2xl font-bold mb-4 text-primary;
+			}
+		}
+
+		.movie-details {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+			gap: 0.75rem;
+		}
+
+		.info-item {
+			@apply flex flex-col mb-2;
+
+			&.total-amount {
+				@apply mt-4 pt-4 border-t border-gray-200 text-xl font-medium;
+
+				.info-value {
+					@apply text-red-500 text-xl;
+				}
+			}
+
+			.info-label {
+				@apply font-semibold text-sm text-gray-500 mb-1;
+			}
+
+			.info-value {
+				@apply font-medium;
+			}
+		}
+
+		.combos-info {
+			@apply mt-6 p-4 bg-gray-100 rounded-md;
+
+			h4 {
+				@apply font-medium mb-3;
+			}
+
+			ul {
+				li {
+					@apply py-2;
+				}
+			}
+		}
+
+		.payment-info {
+			@apply mt-6;
+		}
+	}
+
+	.instructions {
+		@apply flex flex-col gap-4 w-full mt-4;
+
+		.instruction-item {
+			@apply flex items-center gap-4 p-4 bg-blue-100/30 rounded-md;
+
+			.instruction-icon {
+				@apply text-2xl;
+			}
+
+			p {
+				@apply m-0 text-blue-800;
+			}
+		}
+	}
+
+	.confirmation-actions {
+		@apply flex gap-4 mt-8;
+
+		.download-button,
+		.home-button {
+			min-width: 150px;
 		}
 	}
 }

@@ -19,32 +19,9 @@
 }
 
 .slider {
-	@apply relative overflow-hidden container mx-auto my-[48px];
+	@apply container mx-auto my-[48px] w-full;
 
-	&Track {
-		@apply flex transition-transform duration-300;
-	}
-
-	&Slide {
-		@apply flex-shrink-0 w-full;
-	}
-
-	&Image {
+	.sliderImage {
 		@apply w-full h-[500px] object-cover;
-	}
-
-	&Control {
-		@apply absolute top-1/2 -translate-y-1/2 w-10 h-10 
-               flex items-center justify-center 
-               bg-black/50 text-white rounded-full 
-               transition-opacity hover:bg-black/70;
-
-		&.prev {
-			@apply left-4;
-		}
-
-		&.next {
-			@apply right-4;
-		}
 	}
 }

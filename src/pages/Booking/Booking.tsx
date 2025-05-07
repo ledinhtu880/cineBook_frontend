@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Booking.module.scss";
+import config from "@/config";
 import {
 	SeatProps,
 	ShowtimeProps as ShowtimeProps,
 	MovieProps as Movie,
 } from "@/types";
-import { productComboService, authService, bookingService } from "@/services";
+import {
+	productComboService,
+	authService,
+	bookingService,
+	showtimeService,
+} from "@/services";
 import { numberFormat } from "@/utils";
 import {
 	Button,
@@ -48,8 +54,10 @@ interface GroupedSeat {
 const Booking = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 
 	const [loading, setLoading] = useState(true);
+	const [isProcessing, setIsProcessing] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 
 	const [movie, setMovie] = useState<MovieProps>({} as MovieProps);
@@ -65,9 +73,25 @@ const Booking = () => {
 	const [selectedShowtime, setSelectedShowtime] = useState<ShowtimeProps>(
 		{} as ShowtimeProps
 	);
+	const [selectedWallet, setSelectedWallet] = useState<string>("");
 	const [paymentMethod, setPaymentMethod] = useState<string>("");
 
 	useEffect(() => {
+		if (currentStep === 0 && !searchParams.get("orderCode")) {
+			localStorage.removeItem("booking_data");
+		}
+	}, [currentStep, searchParams]);
+
+	useEffect(() => {
+		const bookingId = searchParams.get("orderCode");
+		const status = searchParams.get("status");
+		const paymentSuccess = status === "PAID";
+
+		if (bookingId && (paymentSuccess || status === "FAILED")) {
+			handleReturnFromPayment(parseInt(bookingId), paymentSuccess);
+			return;
+		}
+
 		if (!location.state) {
 			navigate("/", {
 				state: {
@@ -78,28 +102,33 @@ const Booking = () => {
 			return;
 		}
 
-		try {
-			const { movieInfo, selectedShowtime, listShowtimes, cinemaName } =
-				location.state;
+		(async () => {
+			try {
+				const { movieInfo, _showtimeId, listShowtimes, cinemaName } =
+					location.state;
 
-			setSelectedShowtime(selectedShowtime);
-			setShowtimes(listShowtimes);
-			setCinemaName(cinemaName);
-			setMovie(movieInfo);
-			document.title = "Đặt vé  " + movieInfo.title;
-		} catch (error) {
-			console.error("Error when setting showtime:", error);
-			navigate("/", {
-				state: {
-					message:
-						"Đã xảy ra lỗi khi lấy thông tin suất chiếu. Vui lòng thử lại sau.",
-					severity: "error",
-				},
-			});
-		} finally {
-			setLoading(false);
-		}
-	}, [location.state, navigate]);
+				setShowtimes(listShowtimes);
+				setCinemaName(cinemaName);
+				setMovie(movieInfo);
+				document.title = "Đặt vé " + movieInfo.title;
+
+				const response = await showtimeService.show(_showtimeId);
+				setSelectedShowtime(response);
+			} catch (error) {
+				console.error("Error when setting showtime:", error);
+				navigate("/", {
+					state: {
+						message:
+							"Đã xảy ra lỗi khi lấy thông tin suất chiếu. Vui lòng thử lại sau.",
+						severity: "error",
+					},
+				});
+			} finally {
+				setLoading(false);
+			}
+		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [location.state, searchParams, navigate]);
 
 	useEffect(() => {
 		(async () => {
@@ -112,7 +141,50 @@ const Booking = () => {
 		})();
 	}, []);
 
+	const handleReturnFromPayment = async (
+		bookingId: number,
+		isSuccess: boolean
+	) => {
+		try {
+			const savedBookingData = localStorage.getItem("booking_data");
+
+			if (!savedBookingData) {
+				navigate("/", {
+					state: {
+						message: "Không tìm thấy thông tin đặt vé. Vui lòng thử lại.",
+						severity: "error",
+					},
+				});
+				return;
+			}
+
+			const parsedData = JSON.parse(savedBookingData);
+
+			// Khôi phục dữ liệu từ localStorage
+			setMovie(parsedData.movieInfo);
+			setSelectedShowtime(parsedData.selectedShowtime);
+			setSelectedSeats(parsedData.selectedSeats);
+			setselectedCombos(parsedData.selectedCombos);
+			setPaymentMethod(parsedData.paymentMethod);
+			setCinemaName(parsedData.cinemaName);
+
+			if (isSuccess) {
+				setCurrentStep(3);
+				document.title = `Đặt vé thành công - ${parsedData.movieInfo.title}`;
+				await bookingService.update(bookingId);
+			}
+		} catch (error) {
+			console.error("Lỗi khi khôi phục dữ liệu đặt vé:", error);
+		} finally {
+			if (isSuccess) {
+				localStorage.removeItem("booking_data");
+			}
+			setLoading(false);
+		}
+	};
+
 	const handleClickSeat = (seat: SeatProps) => {
+		if (seat.status == "booked") return;
 		if (seat.is_sweetbox) {
 			const seatNumber = parseInt(seat.seat_code.slice(1));
 			const partnerSeatNumber =
@@ -164,6 +236,8 @@ const Booking = () => {
 	};
 
 	const handleBookingSubmission = async () => {
+		setIsProcessing(true);
+
 		try {
 			const currentUser = await authService.getCurrentUser();
 
@@ -178,7 +252,6 @@ const Booking = () => {
 				return;
 			}
 
-			// Chuẩn bị dữ liệu cần gửi lên server
 			const bookingData = {
 				user_id: currentUser.id,
 				showtime_id: selectedShowtime.id,
@@ -191,13 +264,29 @@ const Booking = () => {
 					quantity: combo.quantity,
 					price: combo.price,
 				})),
-				payment_method: "bank_transfer",
+				payment_method: paymentMethod,
 				total_amount: getTotal(),
 				booking_time: new Date().toISOString(),
+				returnUrl: window.location.href,
+				cancelUrl: config.routes.home,
 			};
 
+			localStorage.setItem(
+				"booking_data",
+				JSON.stringify({
+					movieInfo: movie,
+					selectedShowtime,
+					selectedSeats,
+					selectedCombos,
+					paymentMethod,
+					cinemaName,
+				})
+			);
+
 			const response = await bookingService.create(bookingData);
-			if (response.status == "success") setCurrentStep(currentStep + 1);
+			if (response.status == "success") {
+				window.open(response.checkoutUrl, "_blank");
+			}
 		} catch (error) {
 			console.error("Lỗi khi đặt vé:", error);
 			alert("Đã xảy ra lỗi khi đặt vé. Vui lòng thử lại sau.");
@@ -206,6 +295,7 @@ const Booking = () => {
 
 	const handleBack = () => {
 		if (currentStep > 0) {
+			if (currentStep == 1) setselectedCombos([]);
 			setCurrentStep(currentStep - 1);
 		}
 	};
@@ -433,28 +523,22 @@ const Booking = () => {
 										name: "Chuyển khoản ngân hàng",
 										description:
 											"Chuyển khoản qua tài khoản ngân hàng của chúng tôi",
-										icon: "bank-icon.svg",
 									},
 									{
 										id: "e_wallet",
 										name: "Ví điện tử",
-										description:
-											"Thanh toán qua ví điện tử như MoMo, ZaloPay, VNPay",
-										icon: "wallet-icon.svg",
-									},
-									{
-										id: "cash",
-										name: "Tiền mặt",
-										description: "Đặt chỗ trước và thanh toán tại quầy",
-										icon: "cash-icon.svg",
+										description: "Thanh toán qua ví điện tử như VNPay, PayOS",
 									},
 								].map((method) => (
 									<div
 										key={method.id}
 										className={clsx(styles["payment-option"], {
-											[styles.selected]: paymentMethod === method.name,
+											[styles.selected]: paymentMethod === method.id,
 										})}
-										onClick={() => setPaymentMethod(method.name)}
+										onClick={() => {
+											setSelectedWallet("");
+											setPaymentMethod(method.id);
+										}}
 									>
 										<div className={clsx(styles["payment-option-header"])}>
 											<div className={clsx(styles["radio-button"])}></div>
@@ -466,8 +550,7 @@ const Booking = () => {
 											{method.description}
 										</p>
 
-										{/* Hiển thị chi tiết khi phương thức được chọn */}
-										{paymentMethod === method.name && (
+										{paymentMethod === method.id && (
 											<div className={clsx(styles["payment-details"])}>
 												{method.id === "bank_transfer" && (
 													<div className={clsx(styles["bank-details"])}>
@@ -482,19 +565,19 @@ const Booking = () => {
 																<tr>
 																	<td>Ngân hàng:</td>
 																	<td>
-																		<strong>Vietcombank</strong>
+																		<strong>MB Bank</strong>
 																	</td>
 																</tr>
 																<tr>
 																	<td>Số tài khoản:</td>
 																	<td>
-																		<strong>1234567890</strong>
+																		<strong>0865176605</strong>
 																	</td>
 																</tr>
 																<tr>
 																	<td>Chủ tài khoản:</td>
 																	<td>
-																		<strong>CÔNG TY TNHH RẠP CHIẾU PHIM</strong>
+																		<strong>Lê Đình Tú</strong>
 																	</td>
 																</tr>
 															</tbody>
@@ -508,13 +591,16 @@ const Booking = () => {
 															Chọn ví điện tử bạn muốn sử dụng:
 														</p>
 														<div className={clsx(styles["wallet-list"])}>
-															{["MoMo", "ZaloPay", "VNPay"].map((wallet) => (
+															{["ZaloPay", "PayOS"].map((wallet) => (
 																<button
 																	key={wallet}
-																	className={clsx(styles["wallet-button"])}
-																	onClick={() => {
-																		// Handle wallet selection
-																		console.log(`Selected ${wallet}`);
+																	className={clsx(styles["wallet-button"], {
+																		[styles["wallet-button-selected"]]:
+																			selectedWallet === wallet,
+																	})}
+																	onClick={(event) => {
+																		event.stopPropagation();
+																		setSelectedWallet(wallet);
 																	}}
 																>
 																	{wallet}
@@ -560,10 +646,10 @@ const Booking = () => {
 										onChange={(e) => setTermsAccepted(e.target.checked)}
 									/>
 									<label htmlFor="accept-terms">
-										Tôi đồng ý với
-										{/* <a href="#" className={clsx(styles["terms-link"])}>
+										Tôi đồng ý với&nbsp;
+										<a href="#" className={clsx(styles["terms-link"])}>
 											điều khoản và điều kiện
-										</a> */}
+										</a>
 									</label>
 								</div>
 							</div>
@@ -575,22 +661,138 @@ const Booking = () => {
 				return (
 					<div className={clsx(styles["confirmation"])}>
 						<div className={clsx(styles["success-icon"])}>✓</div>
-						<h2>Đặt vé thành công!</h2>
-						<p>
-							Mã đặt vé của bạn:
-							<strong>BK{Math.floor(Math.random() * 10000)}</strong>
-						</p>
-						<p>Chúng tôi đã gửi thông tin đặt vé vào email của bạn.</p>
-						<p>Vui lòng đến rạp trước giờ chiếu 15-30 phút để nhận vé.</p>
+						<h2 className={clsx(styles["confirmation-title"])}>
+							Đặt vé thành công!
+						</h2>
 
-						<div className={clsx(styles["ticket-details"])}>
-							<h3>Thông tin vé</h3>
-							<p>
-								<strong>Ghế:</strong> {selectedSeats.join(", ")}
-							</p>
-							<p>
-								<strong>Phương thức thanh toán:</strong> {paymentMethod}
-							</p>
+						<div className={clsx(styles["confirmation-details"])}>
+							<div className={clsx(styles["booking-info"])}>
+								<div className={clsx(styles["booking-code"])}>
+									<span>Mã đặt vé:</span>
+									<strong>{searchParams.get("orderCode")}</strong>
+								</div>
+
+								<div className={clsx(styles["movie-info"])}>
+									<h3>{movie.title}</h3>
+									<div className={clsx(styles["movie-details"])}>
+										<div className={clsx(styles["info-item"])}>
+											<span className={clsx(styles["info-label"])}>
+												Rạp chiếu:
+											</span>
+											<span className={clsx(styles["info-value"])}>
+												{cinemaName}
+											</span>
+										</div>
+										<div className={clsx(styles["info-item"])}>
+											<span className={clsx(styles["info-label"])}>
+												Phòng chiếu:
+											</span>
+											<span className={clsx(styles["info-value"])}>
+												{selectedShowtime.room.name}
+											</span>
+										</div>
+										<div className={clsx(styles["info-item"])}>
+											<span className={clsx(styles["info-label"])}>
+												Ngày chiếu:
+											</span>
+											<span className={clsx(styles["info-value"])}>
+												{selectedShowtime.date}
+											</span>
+										</div>
+										<div className={clsx(styles["info-item"])}>
+											<span className={clsx(styles["info-label"])}>
+												Giờ chiếu:
+											</span>
+											<span className={clsx(styles["info-value"])}>
+												{selectedShowtime.start_time_formatted} -{" "}
+												{selectedShowtime.end_time_formatted}
+											</span>
+										</div>
+										<div className={clsx(styles["info-item"])}>
+											<span className={clsx(styles["info-label"])}>Ghế:</span>
+											<span
+												className={clsx(
+													styles["info-value"],
+													styles["seat-list"]
+												)}
+											>
+												{selectedSeats.map((seat) => seat.seat_code).join(", ")}
+											</span>
+										</div>
+									</div>
+								</div>
+
+								{selectedCombos.length > 0 && (
+									<div className={clsx(styles["combos-info"])}>
+										<h4>Đồ ăn & đồ uống</h4>
+										<ul>
+											{selectedCombos.map((combo) => (
+												<li key={combo.id}>
+													{combo.name} x{combo.quantity}
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+
+								<div className={clsx(styles["payment-info"])}>
+									<div className={clsx(styles["info-item"])}>
+										<span className={clsx(styles["info-label"])}>
+											Phương thức thanh toán:
+										</span>
+										<span className={clsx(styles["info-value"])}>
+											{paymentMethod === "bank_transfer"
+												? "Chuyển khoản ngân hàng"
+												: paymentMethod === "e_wallet"
+												? `Ví điện tử ${
+														selectedWallet ? "(" + selectedWallet + ")" : ""
+												  }`
+												: "Không xác định"}
+										</span>
+									</div>
+									<div
+										className={clsx(
+											styles["info-item"],
+											styles["total-amount"]
+										)}
+									>
+										<span className={clsx(styles["info-label"])}>
+											Tổng thanh toán:
+										</span>
+										<span className={clsx(styles["info-value"])}>
+											{numberFormat(getTotal())}
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className={clsx(styles["instructions"])}>
+								<div className={clsx(styles["instruction-item"])}>
+									<div className={clsx(styles["instruction-icon"])}>📧</div>
+									<p>Thông tin đặt vé đã được gửi vào email của bạn</p>
+								</div>
+								<div className={clsx(styles["instruction-item"])}>
+									<div className={clsx(styles["instruction-icon"])}>⏰</div>
+									<p>Vui lòng đến rạp trước giờ chiếu 15-30 phút để nhận vé</p>
+								</div>
+								<div className={clsx(styles["instruction-item"])}>
+									<div className={clsx(styles["instruction-icon"])}>🎟️</div>
+									<p>Xuất trình mã đặt vé hoặc email xác nhận tại quầy vé</p>
+								</div>
+							</div>
+						</div>
+
+						<div className={clsx(styles["confirmation-actions"])}>
+							<Button
+								className={clsx(styles["download-button"])}
+								outline
+								onClick={() => window.print()}
+							>
+								In vé
+							</Button>
+							<Button to="/" primary className={clsx(styles["home-button"])}>
+								Về trang chủ
+							</Button>
 						</div>
 					</div>
 				);
@@ -863,7 +1065,7 @@ const Booking = () => {
 						<Button
 							className={clsx(styles["next-button"])}
 							onClick={handleNext}
-							disabled={!canProceed()}
+							disabled={!canProceed() || isProcessing}
 							primary
 						>
 							{currentStep === 2 ? "Xác nhận đặt vé" : "Tiếp tục"}
@@ -904,7 +1106,11 @@ const Booking = () => {
 				))}
 			</div>
 			<div className={clsx(styles["content"])}>
-				<div className={clsx(styles["step-container"])}>
+				<div
+					className={clsx(styles["step-container"], {
+						[styles["step-container-full"]]: currentStep === 3,
+					})}
+				>
 					{renderStepContent()}
 				</div>
 

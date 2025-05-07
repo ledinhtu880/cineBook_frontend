@@ -193,13 +193,16 @@ const Movie = () => {
 	) => {
 		if (!selectedCinema) return;
 
+		const _showtimeId = selectedShowtime.id;
 		const movieInfo = movie;
 		const cinemaName = selectedCinema.name;
 		const listShowtimes = filteredShowtimes;
 
+		console.log("Showtime tai Movie: ", _showtimeId);
+
 		checkAuthAndExecute(() => {
 			navigate(config.routes.booking.replace(":slug", movie.slug), {
-				state: { movieInfo, selectedShowtime, listShowtimes, cinemaName },
+				state: { movieInfo, _showtimeId, listShowtimes, cinemaName },
 			});
 		});
 	};
@@ -478,6 +481,7 @@ const Movie = () => {
 					</div>
 				</Modal>
 			)}
+
 			<LoginModalComponent />
 		</div>
 	);

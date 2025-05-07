@@ -7,6 +7,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import { publicRoutes, adminRoutes, privateRoutes } from "./routes";
 import ProtectedUserRoute from "@/components/ProtectedUserRoute";
 import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import { NotFoundPage } from "./pages";
 
 const App = () => {
 	const { open, message, severity, closeSnackbar } = useSnackbar();
@@ -52,6 +53,15 @@ const App = () => {
 							}
 						/>
 					))}
+
+					<Route
+						path="*"
+						element={
+							<DefaultLayout>
+								<NotFoundPage />
+							</DefaultLayout>
+						}
+					/>
 				</Routes>
 			</Router>
 

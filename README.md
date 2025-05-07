@@ -1,54 +1,190 @@
-# React + TypeScript + Vite
+# Graduation Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Introduction
 
-Currently, two official plugins are available:
+This project is a web application developed as part of the 8th semester graduation project. It consists of a frontend built with React + TypeScript + Vite and a backend component. The application aims to [brief description of what the application does - e.g., "provide a platform for managing student projects" or "create an interactive learning environment"].
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Directory Structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+graduationProject/
+├── frontend/              # React + TypeScript + Vite frontend
+│   ├── public/            # Static files
+│   ├── src/               # Source code
+│   │   ├── components/    # Reusable React components
+│   │   ├── pages/         # Page components
+│   │   ├── assets/        # Images, fonts, etc.
+│   │   ├── styles/        # CSS/SCSS files
+│   │   ├── utils/         # Utility functions
+│   │   ├── services/      # API service connections
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── context/       # React context providers
+│   │   ├── types/         # TypeScript type definitions
+│   │   ├── App.tsx        # Main App component
+│   │   └── main.tsx       # Application entry point
+│   ├── index.html         # HTML template
+│   ├── vite.config.ts     # Vite configuration
+│   ├── tsconfig.json      # TypeScript configuration
+│   └── package.json       # Frontend dependencies
+│
+├── backend/               # Backend application
+    ├── src/               # Source code
+    ├── config/            # Configuration files
+    ├── controllers/       # Request handlers
+    ├── models/            # Data models
+    ├── routes/            # API route definitions
+    ├── services/          # Business logic
+    ├── utils/             # Utility functions
+    └── package.json       # Backend dependencies
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup and Running the Application
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+- Node.js (v16 or later)
+- npm or yarn
+- PHP (v8.0 or later)
+- Composer
+- [Any other specific dependencies]
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+
+   ```
+   cd frontend
+   ```
+
+2. Install dependencies:
+
+   ```
+   npm install
+   ```
+
+   or with yarn:
+
+   ```
+   yarn install
+   ```
+
+3. Run the development server:
+
+   ```
+   npm run dev
+   ```
+
+   or with yarn:
+
+   ```
+   yarn dev
+   ```
+
+4. The application will be available at `http://localhost:5173`
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+
+   ```
+   cd backend
+   ```
+
+2. Install PHP dependencies using Composer:
+
+   ```
+   composer install
+   ```
+
+3. Set up environment file:
+
+   ```
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. Configure your database in the `.env` file, then run migrations:
+
+   ```
+   php artisan migrate
+   ```
+
+5. Start the Laravel development server:
+
+   ```
+   php artisan serve
+   ```
+
+6. The API will be available at `http://localhost:8000`
+
+## Building for Production
+
+### Frontend
+
 ```
+cd frontend
+npm run build
+```
+
+The build artifacts will be stored in the `frontend/dist/` directory.
+
+### Backend
+
+```
+cd backend
+php artisan config:cache
+php artisan route:cache
+php artisan serve --env=production
+```
+
+## Coding Conventions
+
+### General
+
+- Use consistent indentation (2 spaces)
+- Follow meaningful naming conventions (camelCase for variables and functions, PascalCase for components and classes)
+- Write clear, descriptive variable and function names
+- Include comments for complex logic
+- Keep functions focused and small
+
+### Frontend
+
+- Components should be organized in separate files
+- Use functional components with hooks instead of class components
+- Prefer TypeScript interfaces for prop types
+- Use CSS modules or styled-components for styling
+- Keep components reusable and follow the single-responsibility principle
+
+### Backend
+
+- Follow RESTful API design principles
+- Implement proper error handling
+- Use async/await for asynchronous operations
+- Implement middleware for common functionalities
+- Keep business logic in service layers
+
+## Testing
+
+### Frontend
+
+```
+cd frontend
+npm run test
+```
+
+### Backend
+
+```
+cd backend
+php artisan test
+```
+
+## Contributing
+
+1. Follow the coding conventions outlined above
+2. Write tests for new features
+3. Update documentation when necessary
+
+## License
+
+[Specify license information if applicable]

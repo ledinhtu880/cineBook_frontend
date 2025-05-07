@@ -148,13 +148,14 @@ const CinemaDetail = () => {
 	};
 
 	const handleClick = (movie: MovieProps, selectedShowtime: ShowtimeProps) => {
-		const cinemaName = selectedCinema.name;
 		const { showtimes, ...movieInfo } = movie;
+		const cinemaName = selectedCinema.name;
+		const _showtimeId = selectedShowtime.id;
 		const listShowtimes = showtimes;
 
 		checkAuthAndExecute(() => {
 			navigate(config.routes.booking.replace(":slug", movie.slug), {
-				state: { movieInfo, selectedShowtime, listShowtimes, cinemaName },
+				state: { movieInfo, _showtimeId, listShowtimes, cinemaName },
 			});
 		});
 	};

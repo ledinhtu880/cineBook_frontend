@@ -9,6 +9,16 @@ interface BookingData {
 	payment_method: string;
 	total_amount: number;
 	booking_time: string;
+	returnUrl: string;
+	cancelUrl: string;
+}
+
+interface CheckoutData {
+	orderCode: number;
+	amount: number;
+	description: string;
+	returnUrl: string;
+	cancelUrl: string;
 }
 
 const bookingService = {
@@ -16,6 +26,49 @@ const bookingService = {
 		const token = localStorage.getItem("token");
 
 		const response = await axios.post(`${API_URL}/bookings`, data, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response.data;
+	},
+
+	update: async (orderCode: number) => {
+		const token = localStorage.getItem("token");
+
+		const response = await axios.post(`${API_URL}/bookings/${orderCode}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response.data;
+	},
+
+	createPaymentLink: async (data: CheckoutData) => {
+		const token = localStorage.getItem("token");
+
+		const response = await axios.post(
+			`${API_URL}/payment/create-payment-link`,
+			data,
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+
+		return response.data;
+	},
+
+	getInfoPayment: async (orderCode: number) => {
+		const token = localStorage.getItem("token");
+
+		const response = await axios.get(`${API_URL}/payment/${orderCode}`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
