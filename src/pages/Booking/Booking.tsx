@@ -76,6 +76,13 @@ const Booking = () => {
 	const [selectedWallet, setSelectedWallet] = useState<string>("");
 	const [paymentMethod, setPaymentMethod] = useState<string>("");
 
+	const extractBookingId = (orderCode: string | null): number | null => {
+		if (!orderCode) return null;
+
+		// Loại bỏ 6 số đầu và chuyển thành số
+		return parseInt(orderCode.slice(6));
+	};
+
 	useEffect(() => {
 		if (currentStep === 0 && !searchParams.get("orderCode")) {
 			localStorage.removeItem("booking_data");
@@ -83,12 +90,25 @@ const Booking = () => {
 	}, [currentStep, searchParams]);
 
 	useEffect(() => {
-		const bookingId = searchParams.get("orderCode");
+		const orderCode = searchParams.get("orderCode");
 		const status = searchParams.get("status");
 		const paymentSuccess = status === "PAID";
 
-		if (bookingId && (paymentSuccess || status === "FAILED")) {
-			handleReturnFromPayment(parseInt(bookingId), paymentSuccess);
+		if (orderCode && (paymentSuccess || status === "FAILED")) {
+			// Lấy bookingId bằng cách loại bỏ 6 số đầu của orderCode
+			const bookingId = extractBookingId(orderCode);
+
+			if (bookingId !== null) {
+				handleReturnFromPayment(bookingId, paymentSuccess);
+			} else {
+				console.error("Không thể trích xuất bookingId từ orderCode");
+				navigate("/", {
+					state: {
+						message: "Có lỗi xảy ra khi xử lý thanh toán",
+						severity: "error",
+					},
+				});
+			}
 			return;
 		}
 

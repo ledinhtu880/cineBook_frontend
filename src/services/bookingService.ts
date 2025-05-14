@@ -48,23 +48,6 @@ const bookingService = {
 		return response.data;
 	},
 
-	createPaymentLink: async (data: CheckoutData) => {
-		const token = localStorage.getItem("token");
-
-		const response = await axios.post(
-			`${API_URL}/payment/create-payment-link`,
-			data,
-			{
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-			}
-		);
-
-		return response.data;
-	},
-
 	getInfoPayment: async (orderCode: number) => {
 		const token = localStorage.getItem("token");
 

@@ -1,5 +1,5 @@
 .wrapper {
-	@apply flex items-center justify-center gap-3 rounded-md border border-transparent transition-colors;
+	@apply flex items-center justify-center gap-1 rounded-md border border-transparent transition-colors;
 
 	&.primary {
 		@apply text-white bg-primary hover:bg-[--primary-hover];

@@ -198,8 +198,6 @@ const Movie = () => {
 		const cinemaName = selectedCinema.name;
 		const listShowtimes = filteredShowtimes;
 
-		console.log("Showtime tai Movie: ", _showtimeId);
-
 		checkAuthAndExecute(() => {
 			navigate(config.routes.booking.replace(":slug", movie.slug), {
 				state: { movieInfo, _showtimeId, listShowtimes, cinemaName },
