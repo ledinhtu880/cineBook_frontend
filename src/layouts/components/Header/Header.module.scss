@@ -1,9 +1,3 @@
-.btn-sm {
-	span {
-		@apply text-sm;
-	}
-}
-
 .header {
 	@apply sticky top-0 z-50 w-full border-b bg-white shadow-sm py-2;
 }
@@ -14,7 +8,7 @@
 .left-section,
 .mid-section,
 .right-section {
-	@apply flex space-x-6;
+	@apply flex space-x-4;
 }
 
 .logo {
@@ -24,4 +18,26 @@
 
 .btn {
 	@apply text-black px-0 hover:text-primary;
+}
+
+.input-search-wrapper {
+	@apply flex items-center bg-gray-100 rounded-full overflow-hidden pr-2;
+}
+
+.input-search {
+	@apply border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 h-9;
+}
+
+.btn-search {
+	@apply w-10 h-10 text-primary rounded-full hover:bg-gray-100;
+}
+
+.btn-sm {
+	span {
+		@apply text-sm;
+	}
+}
+
+.btn-group {
+	@apply flex space-x-4 ms-0;
 }

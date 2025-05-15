@@ -8,6 +8,7 @@ import {
 	Admin,
 	Movie,
 	Booking,
+	Search,
 } from "@/pages";
 
 // Không đăng nhập vẫn xem được
@@ -34,6 +35,7 @@ const publicRoutes = [
 		title: "Lịch chiếu phim của rạp",
 	},
 	{ path: config.routes.cinema, component: Cinema, title: "Rạp chiếu" },
+	{ path: config.routes.search, component: Search, title: "Tìm kiếm" },
 ];
 
 // Đăng nhập mới xem được

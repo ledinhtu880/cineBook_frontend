@@ -5,4 +5,5 @@ export { default as Cinema, CinemaDetail } from "./Cinema";
 export { default as NotFoundPage } from "./NotFoundPage";
 export { default as Movie } from "./Movie";
 export { default as Booking } from "./Booking";
+export { default as Search } from "./Search";
 export * as Admin from "./Admin";

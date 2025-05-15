@@ -124,5 +124,10 @@ export interface SeatProps {
 	seat_type: "normal" | "vip" | "sweetbox";
 	is_sweetbox: boolean;
 	price?: number;
-	status: "available" | "booked";
+	status?: "available" | "booked";
+}
+
+export interface GenreProps {
+	id: number;
+	name: string;
 }

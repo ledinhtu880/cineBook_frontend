@@ -1,8 +1,8 @@
 const routes = {
-	// #region Chung chung
 	home: "/",
 	now_showing: "/phim-dang-chieu",
 	coming_soon: "/phim-sap-chieu",
+	search: "/tim-kiem",
 	cinema: "/rap",
 	forgot_password: "/quen-mat-khau",
 	not_found: "*",
@@ -10,7 +10,6 @@ const routes = {
 
 	movie_detail: "/phim/:slug",
 	cinema_detail: "/rap/:slug",
-	//#endregion
 
 	// #region Quản trị viên
 	admin_dashboard: "/admin/dashboard",
