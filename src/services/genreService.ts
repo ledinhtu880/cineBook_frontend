@@ -10,7 +10,7 @@ const genreService = {
 	get: async () => {
 		if (genresCache) return genresCache;
 
-		const response = await axios.get(`${API_URL}/cities/`);
+		const response = await axios.get(`${API_URL}/genres/`);
 		const data = response.data.data;
 		genresCache = data;
 		return data;

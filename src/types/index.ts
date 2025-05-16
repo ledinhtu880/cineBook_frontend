@@ -61,7 +61,8 @@ export interface MovieProps {
 	release_date_label: string;
 	country: string;
 	rating: string;
-	genres: string;
+	genres: GenreProps[];
+	genres_list?: string;
 	banner_url: string;
 	poster_url: string;
 	duration: string;
@@ -130,4 +131,5 @@ export interface SeatProps {
 export interface GenreProps {
 	id: number;
 	name: string;
+	slug: string;
 }

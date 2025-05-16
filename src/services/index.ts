@@ -2,6 +2,7 @@ export { default as bookingService } from "./bookingService";
 export { default as authService } from "./authService";
 export { default as movieService } from "./movieService";
 export { default as userService } from "./userService";
+export { default as genreService } from "./genreService";
 export { default as cityService } from "./cityService";
 export { default as cinemaService } from "./cinemaService";
 export { default as roomService } from "./roomService";

@@ -1,233 +1,266 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { FilterAlt, Favorite, PlayArrow, Star } from "@mui/icons-material";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import {
+	FilterAlt,
+	PlayArrow,
+	Search as SearchIcon,
+} from "@mui/icons-material";
+import clsx from "clsx";
 
-import { Badge, Button, Container, Input } from "@/components";
-import { movieService } from "@/services";
-import { MovieProps } from "@/types";
-
-// Danh sách thể loại
-const genres = [
-	"ACTION",
-	"ADVENTURE",
-	"ANIMATION",
-	"COMEDY",
-	"CRIME",
-	"DOCUMENTARY",
-	"DRAMA",
-	"FAMILY",
-	"FANTASY",
-	"HORROR",
-	"MYSTERY",
-	"ROMANCE",
-	"SCI-FI",
-	"THRILLER",
-	"WAR",
-];
+import styles from "./Search.module.scss";
+import { Badge, Button, Container, Input, Image, Loading } from "@/components";
+import { movieService, genreService } from "@/services";
+import { MovieProps, GenreProps } from "@/types";
 
 const Search = () => {
-	const [searchParams] = useSearchParams();
-	const [searchValue, setSearchValue] = useState(searchParams.get("q") || "");
+	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	// Ưu tiên lấy "q" từ URL, nếu không có thì lấy "q"
+	const [searchValue, setSearchValue] = useState(
+		searchParams.get("q") || searchParams.get("q") || ""
+	);
+
+	const [loading, setLoading] = useState(true);
 	const [movies, setMovies] = useState<MovieProps[]>([]);
+	const [genres, setGenres] = useState<GenreProps[]>([]);
+	const [selectedGenres, setSelectedGenres] = useState<GenreProps[]>([]);
 
 	useEffect(() => {
-		try {
-			(async () => {
-				const response = await movieService.getNowShowingMovies();
+		(async () => {
+			setLoading(true);
 
-				const filteredMovies = response.filter((movie: MovieProps) =>
-					movie.title.toLowerCase().includes(searchValue.toLowerCase())
+			try {
+				// Lấy genres trước
+				const genresResponse = await genreService.get();
+				setGenres(genresResponse);
+
+				// Sau đó lấy thông tin tìm kiếm từ URL
+				const keyword = searchParams.get("q") || "";
+				const genreSlugs = searchParams.getAll("g") || [];
+
+				setSearchValue(keyword);
+
+				// Áp dụng các genres được chọn
+				const newSelectedGenres = genresResponse.filter((genre: GenreProps) =>
+					genreSlugs.includes(genre.slug)
 				);
-				setMovies(filteredMovies);
-			})();
-		} catch (error) {
-			console.error("Có lỗi xảy ra khi lấy dữ liệu phim:", error);
+				setSelectedGenres(newSelectedGenres);
+
+				// Gọi API search chỉ một lần
+				const moviesResponse = await movieService.search({
+					q: keyword,
+					g: genreSlugs,
+				});
+				setMovies(moviesResponse);
+			} catch (error) {
+				console.error("Có lỗi xảy ra khi tải dữ liệu:", error);
+				setMovies([]);
+			} finally {
+				setLoading(false);
+			}
+		})();
+	}, [searchParams]);
+
+	// Xử lý submit form tìm kiếm
+	const handleSearch = (e: React.FormEvent) => {
+		e.preventDefault();
+		updateSearchParams();
+	};
+
+	// Xử lý thay đổi giá trị input
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
+	};
+
+	// Hàm cập nhật URL params
+	const updateSearchParams = () => {
+		const newParams = new URLSearchParams();
+
+		if (searchValue) {
+			newParams.set("q", searchValue);
 		}
-	}, [searchValue]);
+
+		// Thêm các tham số khác nếu có
+		if (selectedGenres.length) {
+			selectedGenres.map((genre) => {
+				newParams.append("g", genre.slug.toString());
+			});
+		}
+
+		// Cập nhật URL với các tham số mới
+		setSearchParams(newParams);
+	};
+
+	// Xử lý khi chọn thể loại phim
+	const handleGenreSelect = (selectedGenre: GenreProps) => {
+		const isSelected = selectedGenres.some(
+			(genre) => genre.id === selectedGenre.id
+		);
+
+		if (isSelected) {
+			setSelectedGenres(
+				selectedGenres.filter((genre) => genre.id !== selectedGenre.id)
+			);
+		} else {
+			setSelectedGenres([...selectedGenres, selectedGenre]);
+		}
+	};
+
+	// Áp dụng bộ lọc thể loại
+	const applyGenreFilters = () => {
+		updateSearchParams();
+	};
 
 	return (
-		<Container className="py-4">
+		<Container className={clsx(styles["wrapper"])}>
 			{/* Start: Search Header */}
-			<div className="mb-8 text-center">
-				<div className="relative max-w-xl mx-auto">
+			<header className={clsx(styles["header"])}>
+				<form onSubmit={handleSearch} className={clsx(styles["search-form"])}>
 					<Input
 						type="text"
 						placeholder="Tìm kiếm phim..."
-						defaultValue={searchValue}
-						className="bg-white border-gray-300 text-gray-800 rounded-md pl-4 pr-10 py-2 w-full"
+						value={searchValue}
+						onChange={handleChange}
+						className={clsx(styles["search-input"])}
 					/>
-					<button className="absolute right-3 top-1/2 transform -translate-y-1/2">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="20"
-							height="20"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							className="text-gray-500"
-						>
-							<circle cx="11" cy="11" r="8"></circle>
-							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-						</svg>
+					<button type="submit" className={clsx(styles["search-input-btn"])}>
+						<SearchIcon />
 					</button>
-				</div>
-			</div>
+				</form>
+			</header>
 			{/* End: Search Header */}
 
 			{/* Start: Search Content */}
-
-			<div className="flex flex-col md:flex-row gap-6">
+			<div className={clsx(styles["content"])}>
 				{/* Filter Section */}
-				<div className="w-full md:w-64 shrink-0">
-					<div className="bg-gray-100 rounded-lg p-4 border border-gray-200">
-						<div className="flex items-center gap-2 mb-4 font-bold text-[#144184]">
-							<FilterAlt className="h-5 w-5" />
+				<div className={clsx(styles["filter-container"])}>
+					<div className={clsx(styles["filter"])}>
+						<div className={clsx(styles["filter-header"])}>
+							<FilterAlt />
 							<span>Bộ lọc tìm kiếm</span>
 						</div>
 
 						{/* Genres */}
-						<div className="mb-6">
-							<h3 className="text-sm font-bold mb-3 text-gray-700">GENRES</h3>
-							<div className="space-y-2">
+						<div>
+							<h3 className={clsx(styles["filter-title"])}>Thể loại</h3>
+							<ul className={clsx(styles["filter-list"])}>
 								{genres.map((genre) => (
-									<div key={genre} className="flex items-center space-x-2">
+									<li key={genre.id} className={styles["filter-item"]}>
 										<input
 											type="checkbox"
-											name=""
-											id=""
-											className="border-gray-400 data-[state=checked]:bg-[#144184] data-[state=checked]:border-[#144184]"
+											id={`genre-${genre.id}`}
+											className={styles["filter-checkbox"]}
+											checked={selectedGenres.some((g) => g.id === genre.id)}
+											onChange={() => handleGenreSelect(genre)}
 										/>
 										<label
-											htmlFor={genre}
-											className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+											className={styles["filter-label"]}
+											htmlFor={`genre-${genre.id}`}
 										>
-											{genre}
+											{genre.name}
 										</label>
-									</div>
+									</li>
 								))}
-							</div>
-						</div>
-
-						{/* Release Date */}
-						<div>
-							<h3 className="text-sm font-bold mb-3 text-gray-700">
-								RELEASE DATE
-							</h3>
-							<div className="space-y-3">
-								<div>
-									<p className="text-xs mb-1">FROM</p>
-									<div className="bg-white border border-gray-300 rounded text-sm p-2 text-gray-500">
-										Click to select a date
-									</div>
-								</div>
-								<div>
-									<p className="text-xs mb-1">TO</p>
-									<div className="bg-white border border-gray-300 rounded text-sm p-2 text-gray-500">
-										Click to select a date
-									</div>
-								</div>
-							</div>
+							</ul>
+							<Button
+								onClick={applyGenreFilters}
+								className={clsx(styles["btn-apply"])}
+							>
+								Áp dụng bộ lọc
+							</Button>
 						</div>
 					</div>
 				</div>
 
 				{/* Results Section */}
-				<div className="flex-1">
-					<h1 className="text-2xl font-bold mb-6">
-						Kết quả tìm kiếm cho{" "}
-						<strong className="text-[#144184]">
-							&quot;{searchValue}&quot;
-						</strong>
-					</h1>
+				<div className={clsx(styles["results-container"])}>
+					{searchParams.get("q") && (
+						<h1 className={clsx(styles["results-title"])}>
+							Kết quả tìm kiếm cho
+							<strong className="text-primary">
+								&nbsp;&quot;{searchParams.get("q")}&quot;
+							</strong>
+						</h1>
+					)}
 
-					<div className="space-y-8">
-						{movies.map((movie) => (
-							<div
-								key={movie.id}
-								className="flex flex-col md:flex-row gap-4 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm"
-							>
-								{/* Movie Poster */}
-								<div className="w-full md:w-48 object-cover shrink-0">
-									<img
-										src={movie.poster_url || "/placeholder.svg"}
-										alt={movie.title}
-										className="w-full h-full object-cover"
-									/>
-								</div>
+					<ul className={clsx(styles["movie-list"])}>
+						{loading ? (
+							<Loading />
+						) : movies.length > 0 ? (
+							movies.map((movie) => (
+								<div key={movie.id} className={clsx(styles["movie-item"])}>
+									{/* Movie Poster */}
+									<div className={clsx(styles["movie-poster"])}>
+										<Image
+											src={movie.poster_url || "/placeholder.svg"}
+											alt={movie.title}
+										/>
+									</div>
 
-								{/* Movie Details */}
-								<div className="flex-1 p-4">
-									<div className="flex flex-col h-full">
-										<div>
-											<h2 className="text-xl font-bold mb-1">{movie.title}</h2>
-											<div className="flex items-center gap-2 mb-2">
-												<Badge className="bg-red-600 text-white text-xs">
-													{movie.age_rating}
-												</Badge>
-												<span className="text-sm text-gray-500">
-													{movie.duration_label}
-												</span>
-											</div>
-											<p className="text-sm text-gray-600 mb-3 line-clamp-2">
-												{movie.description}
-											</p>
-
-											{/* Genres */}
-											<div className="flex flex-wrap gap-2 mb-3">
-												{movie.genres.split(",").map((genre) => (
-													<Badge
-														key={genre}
-														className="border-gray-800 text-gray-700 border p-3"
-													>
-														{genre}
+									{/* Movie Details */}
+									<div className={clsx(styles["movie-container"])}>
+										<div className={clsx(styles["movie-details"])}>
+											<div>
+												<h2 className={clsx(styles["movie-title"])}>
+													{movie.title}
+												</h2>
+												<div className={clsx(styles["movie-meta"])}>
+													<Badge className={clsx(styles["movie-age-rating"])}>
+														{movie.age_rating}
 													</Badge>
-												))}
-											</div>
-
-											<p className="text-sm text-gray-500 mb-1">
-												<span className="font-medium">Release Date:</span>{" "}
-												{movie.release_date_label}
-											</p>
-
-											{/* Ratings */}
-											<div className="flex items-center gap-4 mb-4">
-												<div className="flex items-center gap-2">
-													<Star className="h-5 w-5 text-yellow-500" />
-													<span>{movie.rating}</span>
+													<span className={clsx(styles["movie-duration"])}>
+														{movie.duration_label}
+													</span>
 												</div>
-											</div>
-										</div>
+												<p className={clsx(styles["movie-description"])}>
+													{movie.description}
+												</p>
 
-										{/* Actions */}
-										<div className="mt-auto flex flex-wrap gap-3">
-											<Button
-												text
-												size="small"
-												className="flex items-center gap-1 border-gray-300 text-gray-700"
-											>
-												<Favorite className="h-4 w-4" />
-												<span>Like</span>
-											</Button>
-											<Button
-												text
-												size="small"
-												className="flex items-center gap-1 border-gray-300 text-gray-700"
-											>
-												<PlayArrow className="h-4 w-4" />
-												<span>Watch Trailer</span>
-											</Button>
-											<Button className="ml-auto bg-[#144184] hover:bg-[#144184]/90 text-white">
-												Đặt vé
-											</Button>
+												{/* Genres */}
+												<div className={clsx(styles["movie-genres"])}>
+													{movie.genres.map((genre) => (
+														<Badge
+															key={genre.id}
+															className="border-gray-800 text-gray-700 border p-1"
+														>
+															{genre.name.trim()}
+														</Badge>
+													))}
+												</div>
+
+												<p className={clsx(styles["movie-release-date"])}>
+													<span>Ngày chiếu:&nbsp;</span>
+													{movie.release_date_label}
+												</p>
+											</div>
+
+											{/* Actions */}
+											<div className={clsx(styles["movie-actions"])}>
+												<Button outline leftIcon={<PlayArrow />} size="small">
+													<span>Xem Trailer</span>
+												</Button>
+												<Button
+													primary
+													onClick={() =>
+														navigate(`/phim/${movie.slug || movie.id}`)
+													}
+												>
+													{movie.is_now_showing
+														? "Đặt vé"
+														: "Xem thông tin phim"}
+												</Button>
+											</div>
 										</div>
 									</div>
 								</div>
+							))
+						) : (
+							<div className="text-center py-10">
+								<p className="text-gray-500">Không tìm thấy kết quả phù hợp</p>
 							</div>
-						))}
-					</div>
+						)}
+					</ul>
 				</div>
 			</div>
 			{/* End: Search Content */}

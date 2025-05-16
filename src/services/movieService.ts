@@ -6,6 +6,8 @@ interface MovieQueryParams {
 	limit?: number;
 	sort?: string;
 	order?: "asc" | "desc";
+	q?: string;
+	g?: string[];
 }
 
 let nowShowingCache: MovieProps | null = null;
@@ -52,6 +54,13 @@ const movieService = {
 		comingSoonCache = data;
 
 		return data;
+	},
+
+	search: async (params: MovieQueryParams) => {
+		const response = await axios.get(`${API_URL}/movies/`, {
+			params,
+		});
+		return response.data.data;
 	},
 
 	create: async (data: FormData) => {

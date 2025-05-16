@@ -83,14 +83,14 @@ const Cinema = () => {
 							<div className={clsx(styles["cinema-info"])}>
 								<h2 className={clsx(styles["cinema-name"])}>{cinema.name}</h2>
 								<p className={clsx(styles["cinema-value"])}>
-									<LocationOn className={clsx(styles["icon"])} />{" "}
+									<LocationOn className={clsx(styles["icon"])} />
 									{cinema.address}
 								</p>
 								<p className={clsx(styles["cinema-value"])}>
 									<Phone className={clsx(styles["icon"])} /> {cinema.phone}
 								</p>
 								<p className={clsx(styles["cinema-value"])}>
-									<AccessTime className={clsx(styles["icon"])} />{" "}
+									<AccessTime className={clsx(styles["icon"])} />
 									{cinema.opening_hours}
 								</p>
 								<div>

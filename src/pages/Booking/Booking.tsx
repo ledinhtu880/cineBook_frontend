@@ -575,7 +575,7 @@ const Booking = () => {
 												{method.id === "bank_transfer" && (
 													<div className={clsx(styles["bank-details"])}>
 														<p className={clsx(styles["payment-instruction"])}>
-															Vui lòng chuyển khoản với nội dung:{" "}
+															Vui lòng chuyển khoản với nội dung:
 															<strong>
 																BK{Math.floor(Math.random() * 10000)}
 															</strong>
@@ -724,7 +724,7 @@ const Booking = () => {
 												Giờ chiếu:
 											</span>
 											<span className={clsx(styles["info-value"])}>
-												{selectedShowtime.start_time_formatted} -{" "}
+												{selectedShowtime.start_time_formatted} -
 												{selectedShowtime.end_time_formatted}
 											</span>
 										</div>
@@ -877,7 +877,7 @@ const Booking = () => {
 				<h3 className={clsx(styles["summary-title"])}>
 					Thông tin đặt vé
 					<CountdownTimer
-						initialTime={4200}
+						initialTime={30}
 						onTimeEnd={() => {
 							navigate("/", {
 								state: {

@@ -1,0 +1,126 @@
+.wrapper {
+	@apply py-4;
+}
+
+.header {
+	@apply mb-8 text-center;
+}
+
+.search-form {
+	@apply relative w-full max-w-xl mx-auto;
+}
+
+.search-input {
+	@apply bg-white border-gray-300 text-gray-800 rounded-md pl-4 pr-10 py-2;
+}
+
+.search-input-btn {
+	@apply absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-primary;
+
+	svg {
+		@apply text-gray-500;
+	}
+}
+
+.content {
+	@apply flex flex-col md:flex-row gap-6;
+}
+
+.filter-container {
+	@apply w-full md:w-64 shrink-0;
+}
+.filter {
+	@apply bg-white rounded-lg p-4 border border-gray-200;
+}
+
+.filter-header {
+	@apply flex items-center gap-2 mb-4 font-bold text-primary;
+}
+
+.filter-title {
+	@apply text-sm text-gray-700 font-bold mb-3 uppercase;
+}
+
+.filter-list {
+	@apply space-y-2;
+}
+
+.filter-item {
+	@apply flex items-center space-x-2;
+
+	.filter-checkbox {
+		@apply border-gray-400 data-[state=checked]:bg-primary data-[state=checked]:border-primary;
+	}
+
+	.filter-label {
+		@apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+	}
+}
+
+.btn-apply {
+	@apply w-full mt-4 bg-primary text-white text-sm;
+}
+
+.results-container {
+	@apply flex-1;
+}
+
+.results-title {
+	@apply text-2xl font-bold mb-6;
+}
+
+.movie-list {
+	@apply space-y-8;
+}
+
+.movie-item {
+	@apply flex flex-col md:flex-row gap-4 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all;
+}
+
+.movie-poster {
+	@apply w-full md:w-48 h-64 md:h-auto object-cover shrink-0;
+}
+
+.movie-container {
+	@apply flex-1 p-4;
+}
+
+.movie-details {
+	@apply flex flex-col h-full;
+}
+
+.movie-title {
+	@apply text-xl font-bold mb-1;
+}
+
+.movie-meta {
+	@apply flex items-center gap-2 mb-2;
+}
+
+.movie-age-rating {
+	@apply bg-red-600 text-white text-xs;
+}
+
+.movie-duration {
+	@apply text-sm text-gray-500;
+}
+
+.movie-description {
+	@apply text-sm text-gray-600 mb-3 line-clamp-3;
+}
+
+.movie-genres {
+	@apply flex flex-wrap gap-2 mb-3;
+}
+
+.movie-release-date {
+	@apply text-sm text-gray-500 mb-1;
+
+	span {
+		@apply font-medium text-primary;
+	}
+}
+
+.movie-actions {
+	@apply mt-auto flex justify-between items-center gap-3;
+}

@@ -18,6 +18,7 @@ import {
 	MovieProps,
 	CityProps,
 	CinemaProps,
+	GenreProps,
 	ShowtimeProps as ShowtimeDefaultProps,
 } from "@/types";
 import { useAuth } from "@/hooks";
@@ -187,6 +188,10 @@ const Movie = () => {
 		setSelectedCinema(cinema);
 	};
 
+	const handleClickGenre = (genre: GenreProps) => {
+		navigate(`${config.routes.search}?g=${genre.slug}`);
+	};
+
 	const handleClickShowtime = (
 		movie: MovieProps,
 		selectedShowtime: ShowtimeDefaultProps
@@ -294,10 +299,7 @@ const Movie = () => {
 										Thể loại:&nbsp;
 									</span>
 									<ul className={clsx(styles["genre-list"])}>
-										{movie.genres.split(",").map((genre, index) => (
-											<li key={index}>
-												<a className={clsx(styles["genre-item"])}>{genre}</a>
-											</li>
+										{movie.genres.map((genre) => (
 										))}
 									</ul>
 								</div>
@@ -391,7 +393,7 @@ const Movie = () => {
 								</p>
 								<p className={clsx(styles["modal-header-info"])}>
 									<span>Thể loại:&nbsp;</span>
-									{movie.genres}
+									{movie.genres_list}
 								</p>
 								<p className={clsx(styles["modal-header-info"])}>
 									<span>Quốc gia:&nbsp;</span>

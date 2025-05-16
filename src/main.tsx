@@ -5,11 +5,9 @@ import { GlobalStyles } from "@/components";
 import { SnackbarProvider } from "./context/SnackbarContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
-	// <StrictMode>
 	<GlobalStyles>
 		<SnackbarProvider>
 			<App />
 		</SnackbarProvider>
 	</GlobalStyles>
-	// </StrictMode>
 );
