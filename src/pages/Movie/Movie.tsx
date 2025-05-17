@@ -300,6 +300,13 @@ const Movie = () => {
 									</span>
 									<ul className={clsx(styles["genre-list"])}>
 										{movie.genres.map((genre) => (
+											<li
+												key={genre.id}
+												className={clsx(styles["genre-item"])}
+												onClick={() => handleClickGenre(genre)}
+											>
+												{genre.name}
+											</li>
 										))}
 									</ul>
 								</div>

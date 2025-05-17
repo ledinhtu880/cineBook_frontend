@@ -1,7 +1,7 @@
 import { memo } from "react";
 import clsx from "clsx";
 
-import styles from "./Movie.module.scss";
+import styles from "./MovieItem.module.scss";
 import { MovieProps } from "@/types";
 import { Badge, Button, Image, Tooltip } from "@/components";
 interface MovieCardProps {
@@ -10,6 +10,8 @@ interface MovieCardProps {
 }
 
 const MovieCard = ({ movie, onClick }: MovieCardProps) => {
+	console.log(movie.genres_list);
+
 	return (
 		<div className={clsx(styles.card)} onClick={onClick}>
 			<div className={clsx(styles.poster)}>
@@ -27,8 +29,8 @@ const MovieCard = ({ movie, onClick }: MovieCardProps) => {
 				<div className={clsx(styles.text)}>
 					Thời gian: {movie.duration_label}
 				</div>
-				<Tooltip title={movie.genres} arrow placement="bottom">
-					<p className={clsx(styles.text)}>Thể loại: {movie.genres}</p>
+				<Tooltip title={movie.genres_list} arrow placement="bottom">
+					<p className={clsx(styles.text)}>Thể loại: {movie?.genres_list}</p>
 				</Tooltip>
 			</div>
 			<Button primary>Xem chi tiết</Button>

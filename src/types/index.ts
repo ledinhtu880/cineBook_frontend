@@ -62,7 +62,7 @@ export interface MovieProps {
 	country: string;
 	rating: string;
 	genres: GenreProps[];
-	genres_list?: string;
+	genres_list: string;
 	banner_url: string;
 	poster_url: string;
 	duration: string;

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import config from "@/config";
 import { MovieProps } from "@/types";
 import { movieService } from "@/services";
-import { Movie, Loading } from "@/components";
+import { MovieItem, Loading } from "@/components";
 
 const NowShowing = () => {
 	const [movies, setMovies] = useState<MovieProps[]>([]);
@@ -36,7 +36,7 @@ const NowShowing = () => {
 		return <Loading absolute />;
 	}
 
-	return <Movie movies={movies} handleClick={handleClick} />;
+	return <MovieItem movies={movies} handleClick={handleClick} />;
 };
 
 export default NowShowing;

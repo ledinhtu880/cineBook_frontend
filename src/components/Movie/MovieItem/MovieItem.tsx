@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
-import styles from "./Movie.module.scss";
+import styles from "./MovieItem.module.scss";
 import config from "@/config";
 import { MovieProps } from "@/types";
 import { MovieCard, Container } from "@/components";
@@ -14,7 +14,7 @@ interface Props {
 
 type MovieTab = "now-showing" | "coming-soon";
 
-const Movie: React.FC<Props> = ({ movies, handleClick }) => {
+const MovieItem: React.FC<Props> = ({ movies, handleClick }) => {
 	const navigate = useNavigate();
 	const nowShowingUrl = config.routes.now_showing;
 	const comingSoonUrl = config.routes.coming_soon;
@@ -95,4 +95,4 @@ const Movie: React.FC<Props> = ({ movies, handleClick }) => {
 	);
 };
 
-export default Movie;
+export default MovieItem;

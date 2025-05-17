@@ -1,2 +1,1 @@
-export { default as Movie } from "./Movie";
-export { default as MovieCard } from "./MovieCard";
+export { MovieItem as MovieItem, MovieCard as MovieCard } from "./MovieItem";
