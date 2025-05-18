@@ -42,14 +42,14 @@ const Input: React.FC<InputProps> = ({
 	// Render input file tùy chỉnh
 	if (type === "file") {
 		return (
-			<div className={styles["wrapper"]}>
+			<div className={clsx(styles["wrapper"])}>
 				{label && id && <Label htmlFor={id}>{label}</Label>}
-				<div className={styles["input-wrapper"]}>
+				<div className={clsx(styles["input-wrapper"])}>
 					<input
 						ref={fileInputRef}
 						type="file"
 						id={id}
-						className={styles["hidden-input"]}
+						className={clsx(styles["hidden-input"])}
 						onChange={handleFileInputChange}
 						{...passProps}
 					/>
@@ -71,7 +71,7 @@ const Input: React.FC<InputProps> = ({
 
 	// Render input thông thường
 	return (
-		<div className={styles["wrapper"]}>
+		<div className={clsx(styles["wrapper"])}>
 			{label && id && <Label htmlFor={id}>{label}</Label>}
 			<input
 				className={classes}

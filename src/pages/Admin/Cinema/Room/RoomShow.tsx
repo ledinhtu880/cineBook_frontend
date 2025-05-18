@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import clsx from "clsx";
 
 import styles from "./Room.module.scss";
 import { RoomProps, SeatProps } from "@/types";
@@ -40,8 +41,8 @@ const RoomShow = () => {
 	return (
 		<PageWrapper title={`Chi tiết phòng ${room.name}`}>
 			<Card title={`${room.cinema_name} - ${room.name}`}>
-				<div className={styles.wrapper}>
-					<div className={styles.info}>
+				<div className={clsx(styles.wrapper)}>
+					<div className={clsx(styles.info)}>
 						<StatCard label="Tổng số ghế" value={room.seats.length} />
 						<StatCard label="Ghế thường" value={normalSeats} />
 						<StatCard label="Ghế VIP" value={vipSeats} />

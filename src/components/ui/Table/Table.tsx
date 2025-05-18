@@ -273,10 +273,10 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 				>
 					{selectedRecord && (
 						<>
-							<div className={styles["modal-body"]}>
-								<div className={styles["warning-message"]}>
-									<div className={styles["warning-icon-wrapper"]}>
-										<Warning className={styles["warning-icon"]} />
+							<div className={clsx(styles["modal-body"])}>
+								<div className={clsx(styles["warning-message"])}>
+									<div className={clsx(styles["warning-icon-wrapper"])}>
+										<Warning className={clsx(styles["warning-icon"])} />
 									</div>
 									<h3>Bạn có chắc chắn?</h3>
 									<p>
@@ -286,7 +286,7 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 									</p>
 								</div>
 							</div>
-							<div className={styles["modal-footer"]}>
+							<div className={clsx(styles["modal-footer"])}>
 								<Button
 									onClick={() => {
 										onDelete?.(selectedRecord);

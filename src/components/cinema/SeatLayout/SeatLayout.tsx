@@ -50,9 +50,9 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({
 	const sortedRows = Object.keys(groupedSeats).sort();
 
 	return (
-		<div className={styles.layout}>
-			<div className={styles.screen}>Màn hình</div>
-			<div className={styles["seats-container"]}>
+		<div className={clsx(styles.layout)}>
+			<div className={clsx(styles.screen)}>Màn hình</div>
+			<div className={clsx(styles["seats-container"])}>
 				{sortedRows.map((row) => {
 					const sortedRowSeats = groupedSeats[row].sort((a, b) => {
 						const aCol = parseInt(a.seat_code.slice(1));
@@ -66,8 +66,8 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({
 						: {};
 
 					return (
-						<div key={row} className={styles["seat-row"]}>
-							<div className={styles["row-label"]}>{row}</div>
+						<div key={row} className={clsx(styles["seat-row"])}>
+							<div className={clsx(styles["row-label"])}>{row}</div>
 							{hasSweetBox ? (
 								<>
 									{Object.values(sweetboxPairs).map((pairSeats) => {
@@ -100,7 +100,7 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({
 															}
 														}}
 													>
-														<span className={styles["seat-label"]}>
+														<span className={clsx(styles["seat-label"])}>
 															{firstSeat.seat_code}-
 															{secondSeat.seat_code.slice(1)}
 														</span>
@@ -125,7 +125,7 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({
 											seat.seat_type === "vip" ? "Ghế VIP" : "Ghế thường"
 										}`}
 									>
-										<span className={styles["seat-label"]}>
+										<span className={clsx(styles["seat-label"])}>
 											{seat.seat_code}
 										</span>
 									</div>
@@ -137,24 +137,24 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({
 			</div>
 
 			{/* Add legend */}
-			<div className={styles.legend}>
-				<div className={styles["legend-item"]}>
+			<div className={clsx(styles.legend)}>
+				<div className={clsx(styles["legend-item"])}>
 					<div className={clsx(styles["legend-color"], styles.normal)}></div>
 					<span>Ghế thường</span>
 				</div>
-				<div className={styles["legend-item"]}>
+				<div className={clsx(styles["legend-item"])}>
 					<div className={clsx(styles["legend-color"], styles.vip)}></div>
 					<span>Ghế VIP</span>
 				</div>
 				{isSweetBox && (
-					<div className={styles["legend-item"]}>
+					<div className={clsx(styles["legend-item"])}>
 						<div
 							className={clsx(styles["legend-color"], styles.sweetbox)}
 						></div>
 						<span>Ghế đôi</span>
 					</div>
 				)}
-				<div className={styles["legend-item"]}>
+				<div className={clsx(styles["legend-item"])}>
 					<div className={clsx(styles["legend-color"], styles.booked)}></div>
 					<span>Ghế đã được đặt</span>
 				</div>

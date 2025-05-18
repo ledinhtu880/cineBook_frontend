@@ -8,20 +8,30 @@ import {
 import clsx from "clsx";
 
 import styles from "./Search.module.scss";
-import { Badge, Button, Container, Input, Image, Loading } from "@/components";
+import { getYoutubeEmbedUrl } from "@/utils";
+import type { MovieProps, GenreProps } from "@/types";
 import { movieService, genreService } from "@/services";
-import { MovieProps, GenreProps } from "@/types";
+import {
+	Badge,
+	Box,
+	Button,
+	Container,
+	Input,
+	Image,
+	Loading,
+	Modal,
+} from "@/components";
 
 const Search = () => {
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 
-	// Ưu tiên lấy "q" từ URL, nếu không có thì lấy "q"
 	const [searchValue, setSearchValue] = useState(
 		searchParams.get("q") || searchParams.get("q") || ""
 	);
 
 	const [loading, setLoading] = useState(true);
+	const [showTrailer, setShowTrailer] = useState(false);
 	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [genres, setGenres] = useState<GenreProps[]>([]);
 	const [selectedGenres, setSelectedGenres] = useState<GenreProps[]>([]);
@@ -31,23 +41,19 @@ const Search = () => {
 			setLoading(true);
 
 			try {
-				// Lấy genres trước
 				const genresResponse = await genreService.get();
 				setGenres(genresResponse);
 
-				// Sau đó lấy thông tin tìm kiếm từ URL
 				const keyword = searchParams.get("q") || "";
 				const genreSlugs = searchParams.getAll("g") || [];
 
 				setSearchValue(keyword);
 
-				// Áp dụng các genres được chọn
 				const newSelectedGenres = genresResponse.filter((genre: GenreProps) =>
 					genreSlugs.includes(genre.slug)
 				);
 				setSelectedGenres(newSelectedGenres);
 
-				// Gọi API search chỉ một lần
 				const moviesResponse = await movieService.search({
 					q: keyword,
 					g: genreSlugs,
@@ -62,18 +68,15 @@ const Search = () => {
 		})();
 	}, [searchParams]);
 
-	// Xử lý submit form tìm kiếm
 	const handleSearch = (e: React.FormEvent) => {
 		e.preventDefault();
 		updateSearchParams();
 	};
 
-	// Xử lý thay đổi giá trị input
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
 
-	// Hàm cập nhật URL params
 	const updateSearchParams = () => {
 		const newParams = new URLSearchParams();
 
@@ -81,18 +84,15 @@ const Search = () => {
 			newParams.set("q", searchValue);
 		}
 
-		// Thêm các tham số khác nếu có
 		if (selectedGenres.length) {
 			selectedGenres.map((genre) => {
 				newParams.append("g", genre.slug.toString());
 			});
 		}
 
-		// Cập nhật URL với các tham số mới
 		setSearchParams(newParams);
 	};
 
-	// Xử lý khi chọn thể loại phim
 	const handleGenreSelect = (selectedGenre: GenreProps) => {
 		const isSelected = selectedGenres.some(
 			(genre) => genre.id === selectedGenre.id
@@ -107,7 +107,13 @@ const Search = () => {
 		}
 	};
 
-	// Áp dụng bộ lọc thể loại
+	const handleOpenTrailer = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		setShowTrailer(true);
+	};
+
+	const handleCloseTrailer = () => setShowTrailer(false);
+
 	const applyGenreFilters = () => {
 		updateSearchParams();
 	};
@@ -146,16 +152,16 @@ const Search = () => {
 							<h3 className={clsx(styles["filter-title"])}>Thể loại</h3>
 							<ul className={clsx(styles["filter-list"])}>
 								{genres.map((genre) => (
-									<li key={genre.id} className={styles["filter-item"]}>
+									<li key={genre.id} className={clsx(styles["filter-item"])}>
 										<input
 											type="checkbox"
 											id={`genre-${genre.id}`}
-											className={styles["filter-checkbox"]}
+											className={clsx(styles["filter-checkbox"])}
 											checked={selectedGenres.some((g) => g.id === genre.id)}
 											onChange={() => handleGenreSelect(genre)}
 										/>
 										<label
-											className={styles["filter-label"]}
+											className={clsx(styles["filter-label"])}
 											htmlFor={`genre-${genre.id}`}
 										>
 											{genre.name}
@@ -237,7 +243,12 @@ const Search = () => {
 
 											{/* Actions */}
 											<div className={clsx(styles["movie-actions"])}>
-												<Button outline leftIcon={<PlayArrow />} size="small">
+												<Button
+													outline
+													leftIcon={<PlayArrow />}
+													size="small"
+													onClick={handleOpenTrailer}
+												>
 													<span>Xem Trailer</span>
 												</Button>
 												<Button
@@ -250,6 +261,27 @@ const Search = () => {
 														? "Đặt vé"
 														: "Xem thông tin phim"}
 												</Button>
+
+												{showTrailer && (
+													<Modal
+														isOpen={showTrailer}
+														onClose={handleCloseTrailer}
+														aria-labelledby="movie-trailer"
+														width={1000}
+														height={563}
+													>
+														<Box>
+															<iframe
+																src={getYoutubeEmbedUrl(movie.trailer_url)}
+																title={`${movie.title} Trailer`}
+																width="100%"
+																height="100%"
+																allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+																allowFullScreen
+															/>
+														</Box>
+													</Modal>
+												)}
 											</div>
 										</div>
 									</div>

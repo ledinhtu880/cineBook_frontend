@@ -62,7 +62,7 @@ const Header = ({ onCollapse }: HeaderProps) => {
 			<div className={clsx(styles["header-wrapper"])}>
 				<div className={clsx(styles["header-left"])}>
 					<Button
-						className={styles["btn-collapse"]}
+						className={clsx(styles["btn-collapse"])}
 						size="no-padding"
 						outline
 						onClick={onCollapse}

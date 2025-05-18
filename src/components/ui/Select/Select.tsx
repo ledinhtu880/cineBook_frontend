@@ -31,7 +31,7 @@ const Input: React.FC<SelectProps> = ({
 	);
 
 	return (
-		<div className={styles["wrapper"]}>
+		<div className={clsx(styles["wrapper"])}>
 			{/* Render label nếu có */}
 			{label && id && <Label htmlFor={id}>{label}</Label>}
 			<select className={classes} {...passProps} id={id}>

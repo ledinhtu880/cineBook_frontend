@@ -7,6 +7,7 @@ import { publicRoutes } from "@/routes";
 import { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
 import Header from "@/layouts/components/Header";
+import Footer from "@/layouts/components/Footer";
 
 function DefaultLayout({ children }: { children: React.ReactNode }) {
 	const location = useLocation();
@@ -37,6 +38,8 @@ function DefaultLayout({ children }: { children: React.ReactNode }) {
 			<Header />
 
 			<section className={clsx(styles.wrapper)}>{children}</section>
+
+			<Footer />
 		</>
 	);
 }

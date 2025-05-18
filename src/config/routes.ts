@@ -7,6 +7,7 @@ const routes = {
 	forgot_password: "/quen-mat-khau",
 	not_found: "*",
 	booking: "/dat-ve/:slug",
+	profile: "/tai-khoan",
 
 	movie_detail: "/phim/:slug",
 	cinema_detail: "/rap/:slug",

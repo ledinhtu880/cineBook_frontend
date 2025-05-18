@@ -34,11 +34,11 @@ const RegisterSuccessModal = ({
 				className={clsx(styles["form-img"])}
 				src="https://www.galaxycine.vn/_next/static/media/icon-login.fbbf1b2d.svg"
 			/>
-			<h5 className={styles.title}>Đăng ký thành công</h5>
-			<div className={clsx(styles.circle)}>
+			<h5 className={clsx(styles.title)}>Đăng ký thành công</h5>
+			<div className={clsx(clsx(styles.circle))}>
 				<Check fontSize="large" />
 			</div>
-			<p className={styles.welcome}>Chào mừng bạn đến với CineBook</p>
+			<p className={clsx(styles.welcome)}>Chào mừng bạn đến với CineBook</p>
 		</Modal>
 	);
 };

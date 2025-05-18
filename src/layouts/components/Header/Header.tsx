@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Person, Search } from "@mui/icons-material";
+import { Person, Search, KeyboardArrowDown } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
@@ -10,6 +10,7 @@ import { Button, Container, Input } from "@/components";
 
 const Header = () => {
 	const navigate = useNavigate();
+	const dropdownRef = useRef<HTMLDivElement>(null);
 
 	const {
 		isLoggedIn,
@@ -17,10 +18,12 @@ const Header = () => {
 		setIsRegisterOpen,
 		handleLogout,
 		LoginModalComponent,
+		user,
 	} = useAuth();
 
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
@@ -34,24 +37,51 @@ const Header = () => {
 		}
 	};
 
+	const toggleDropdown = () => {
+		setIsDropdownOpen(!isDropdownOpen);
+	};
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsDropdownOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
 	return (
 		<>
 			<header className={clsx(styles.header)}>
 				<Container>
 					<nav className={clsx(styles.nav)}>
 						<div className={clsx(styles["left-section"])}>
-							<Link to={config.routes.home} className={styles.logo}>
+							<Link to={config.routes.home} className={clsx(styles.logo)}>
 								🎬 CineBook
 							</Link>
 						</div>
 						<div className={clsx(styles["mid-section"])}>
-							<Button className={styles.btn} to={config.routes.now_showing}>
+							<Button
+								className={clsx(styles.btn)}
+								to={config.routes.now_showing}
+							>
 								Phim đang chiếu
 							</Button>
-							<Button className={styles.btn} to={config.routes.coming_soon}>
+							<Button
+								className={clsx(styles.btn)}
+								to={config.routes.coming_soon}
+							>
 								Phim sắp chiếu
 							</Button>
-							<Button className={styles.btn} to={config.routes.cinema}>
+							<Button className={clsx(styles.btn)} to={config.routes.cinema}>
 								Hệ thống rạp
 							</Button>
 						</div>
@@ -78,13 +108,39 @@ const Header = () => {
 								</Button>
 							)}
 							{isLoggedIn ? (
-								<Button
-									className={clsx(styles["btn-sm"])}
-									outline
-									onClick={handleLogout}
+								<div
+									className={clsx(styles["user-dropdown"])}
+									ref={dropdownRef}
 								>
-									Đăng xuất
-								</Button>
+									<div
+										className={clsx(styles["user-button"])}
+										onClick={toggleDropdown}
+									>
+										<Person className={clsx(styles["user-icon"])} />
+										<span className={clsx(styles["username"])}>
+											{user?.name}
+										</span>
+										<KeyboardArrowDown
+											className={clsx(styles["dropdown-arrow"])}
+										/>
+									</div>
+									{isDropdownOpen && (
+										<div className={clsx(styles["dropdown-menu"])}>
+											<Link
+												to={config.routes.profile}
+												className={clsx(styles["dropdown-item"])}
+											>
+												Tài khoản
+											</Link>
+											<button
+												onClick={handleLogout}
+												className={clsx(styles["dropdown-item"])}
+											>
+												Đăng xuất
+											</button>
+										</div>
+									)}
+								</div>
 							) : (
 								<div className={clsx(styles["btn-group"])}>
 									<Button

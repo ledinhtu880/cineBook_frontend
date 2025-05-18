@@ -92,19 +92,19 @@ const PreviewModal = ({
 			<DialogTitle>
 				<div className="flex justify-between items-center">
 					<span>Xem trước sơ đồ phòng chiếu</span>
-					<div className={styles.legend}>
-						<div className={styles["legend-item"]}>
+					<div className={clsx(styles.legend)}>
+						<div className={clsx(styles["legend-item"])}>
 							<div
 								className={clsx(styles["legend-color"], styles.normal)}
 							></div>
 							<span>Ghế thường</span>
 						</div>
-						<div className={styles["legend-item"]}>
+						<div className={clsx(styles["legend-item"])}>
 							<div className={clsx(styles["legend-color"], styles.vip)}></div>
 							<span>Ghế VIP</span>
 						</div>
 						{sweetboxRows > 0 && (
-							<div className={styles["legend-item"]}>
+							<div className={clsx(styles["legend-item"])}>
 								<div
 									className={clsx(styles["legend-color"], styles.sweetbox)}
 								></div>
@@ -261,7 +261,7 @@ const RoomCreate = () => {
 
 	return (
 		<PageWrapper title={`Thêm phòng chiếu - ${cinema.name}`}>
-			<Card title={`Thêm phòng chiếu`}>
+			<Card title="Thêm phòng chiếu">
 				<form className={clsx(styles["form-wrapper"])} onSubmit={handleSubmit}>
 					<input type="hidden" id="cinema_id" value={cinema.id} />
 					<div className={clsx(styles["form-body"])}>

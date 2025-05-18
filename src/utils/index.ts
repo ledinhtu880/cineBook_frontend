@@ -13,3 +13,9 @@ export const numberFormat = (value: number) => {
 		currency: "VND",
 	});
 };
+
+export const getFirstLetter = (name: string | undefined) => {
+	if (!name) return "";
+	const nameArray = name.split(" ");
+	return nameArray[nameArray.length - 1].charAt(0).toUpperCase();
+};

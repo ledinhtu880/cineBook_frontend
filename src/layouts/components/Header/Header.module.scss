@@ -8,7 +8,7 @@
 .left-section,
 .mid-section,
 .right-section {
-	@apply flex space-x-4;
+	@apply flex items-center space-x-4;
 }
 
 .logo {
@@ -40,4 +40,37 @@
 
 .btn-group {
 	@apply flex space-x-4 ms-0;
+}
+// ...existing code...
+
+.user-dropdown {
+	@apply relative;
+}
+
+.user-button {
+	@apply flex items-center space-x-1 cursor-pointer py-1 px-2 rounded-full hover:bg-gray-100;
+}
+
+.user-icon {
+	@apply text-primary text-base mr-1;
+}
+
+.username {
+	@apply text-sm font-medium max-w-[100px] truncate;
+}
+
+.dropdown-arrow {
+	@apply text-gray-500 text-base;
+}
+
+.dropdown-menu {
+	@apply absolute right-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden border z-50 cursor-pointer;
+}
+
+.dropdown-item {
+	@apply block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors;
+
+	&:not(:last-child) {
+		@apply border-b;
+	}
 }

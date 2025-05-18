@@ -237,7 +237,6 @@ const Movie = () => {
 						src={movie.banner_url}
 						alt={movie.title}
 					/>
-					aaa
 					<div className={clsx(styles["overlay"])} />
 					<div className={clsx(styles["trailer-button"])}>
 						<button

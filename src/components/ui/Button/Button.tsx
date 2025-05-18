@@ -87,9 +87,9 @@ const Button: React.FC<ButtonProps> = ({
 			{...(to ? { to } : href ? { href } : {})}
 			{...passProps}
 		>
-			{leftIcon && <span className={styles.icon}>{leftIcon}</span>}
-			<span className={styles.title}>{children}</span>
-			{rightIcon && <span className={styles.icon}>{rightIcon}</span>}
+			{leftIcon && <span className={clsx(styles.icon)}>{leftIcon}</span>}
+			<span className={clsx(styles.title)}>{children}</span>
+			{rightIcon && <span className={clsx(styles.icon)}>{rightIcon}</span>}
 		</Comp>
 	);
 };

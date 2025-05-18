@@ -13,15 +13,20 @@ interface BookingData {
 	cancelUrl: string;
 }
 
-interface CheckoutData {
-	orderCode: number;
-	amount: number;
-	description: string;
-	returnUrl: string;
-	cancelUrl: string;
-}
-
 const bookingService = {
+	get: async () => {
+		const token = localStorage.getItem("token");
+
+		const response = await axios.get(`${API_URL}/bookings`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		return response.data;
+	},
+
 	create: async (data: BookingData) => {
 		const token = localStorage.getItem("token");
 
@@ -39,19 +44,6 @@ const bookingService = {
 		const token = localStorage.getItem("token");
 
 		const response = await axios.post(`${API_URL}/bookings/${orderCode}`, {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${token}`,
-			},
-		});
-
-		return response.data;
-	},
-
-	getInfoPayment: async (orderCode: number) => {
-		const token = localStorage.getItem("token");
-
-		const response = await axios.get(`${API_URL}/payment/${orderCode}`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,

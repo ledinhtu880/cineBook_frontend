@@ -49,6 +49,8 @@ export interface UserProps {
 	first_name: string;
 	last_name: string;
 	string_role: string;
+	phone?: string;
+	city?: CityProps;
 	name: string;
 	email: string;
 	role: boolean;

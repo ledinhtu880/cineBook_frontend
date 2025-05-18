@@ -5,12 +5,12 @@ import {
 	LoginModal,
 	RegisterModal,
 	RegisterSuccessModal,
-} from "@/components/Auth/";
+} from "@/components/auth/";
+import { UserProps } from "@/types";
 
 export const useAuth = () => {
 	const navigate = useNavigate();
 
-	// States
 	const [isLoggedIn, setIsLoggedIn] = useState(
 		localStorage.getItem("token") ? true : false
 	);
@@ -21,30 +21,55 @@ export const useAuth = () => {
 		null
 	);
 
-	// Kiểm tra token khi component mount
+	const [user, setUser] = useState<UserProps | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	const fetchCurrentUser = useCallback(async () => {
+		if (isLoggedIn) {
+			try {
+				setLoading(true);
+				const userData = await authService.getCurrentUser();
+				if (userData) {
+					setUser(userData);
+				}
+			} catch (error) {
+				console.error("Failed to fetch user data:", error);
+			} finally {
+				setLoading(false);
+			}
+		} else {
+			setUser(null);
+			setLoading(false);
+		}
+	}, [isLoggedIn]);
+
 	useEffect(() => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			setIsLoggedIn(true);
+		} else {
+			setLoading(false);
 		}
 	}, []);
 
-	// Xử lý đăng nhập thành công
+	useEffect(() => {
+		fetchCurrentUser();
+	}, [isLoggedIn, fetchCurrentUser]);
+
 	const handleLoginSuccess = useCallback(() => {
 		setIsLoginOpen(false);
 		setIsLoggedIn(true);
 
-		// Nếu có callback đang chờ, thực hiện nó
 		if (pendingCallback) {
 			pendingCallback();
 			setPendingCallback(null);
 		}
 	}, [pendingCallback]);
 
-	// Xử lý đăng xuất
 	const handleLogout = useCallback(() => {
 		authService.logout();
 		setIsLoggedIn(false);
+		setUser(null);
 		// Redirect to home page after logout
 		navigate("/", {
 			state: {
@@ -52,6 +77,8 @@ export const useAuth = () => {
 				severity: "info",
 			},
 		});
+
+		window.location.reload();
 	}, [navigate]);
 
 	// Chuyển từ form đăng nhập sang đăng ký
@@ -82,10 +109,8 @@ export const useAuth = () => {
 	const checkAuthAndExecute = useCallback(
 		(callback: () => void) => {
 			if (isLoggedIn) {
-				// Nếu đã đăng nhập, thực thi callback ngay lập tức
 				callback();
 			} else {
-				// Nếu chưa đăng nhập, lưu callback để thực thi sau khi đăng nhập
 				setPendingCallback(() => callback);
 				setIsLoginOpen(true);
 			}
@@ -144,5 +169,8 @@ export const useAuth = () => {
 		handleRegisterSuccessClose,
 		checkAuthAndExecute,
 		LoginModalComponent,
+		user,
+		loading,
+		fetchCurrentUser,
 	};
 };

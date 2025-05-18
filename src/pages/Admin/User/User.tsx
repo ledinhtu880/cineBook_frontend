@@ -43,7 +43,7 @@ const User = () => {
 
 	return (
 		<PageWrapper title="Quản lý người dùng">
-			<Card title="Danh sách người dùng" action onSearch={setSearchKeyword}>
+			<Card title="Danh sách người dùng" onSearch={setSearchKeyword}>
 				{loading ? (
 					<Loading />
 				) : (

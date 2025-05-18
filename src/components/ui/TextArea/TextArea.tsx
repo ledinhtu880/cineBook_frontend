@@ -23,7 +23,7 @@ const TextArea: React.FC<InputProps> = ({
 
 	// Render input thông thường
 	return (
-		<div className={styles["wrapper"]}>
+		<div className={clsx(styles["wrapper"])}>
 			{label && id && <Label htmlFor={id}>{label}</Label>}
 			<textarea className={classes} {...passProps} id={id}>
 				{value}

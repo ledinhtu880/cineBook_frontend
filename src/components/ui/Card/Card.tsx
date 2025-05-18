@@ -7,24 +7,26 @@ import { Input, Button } from "@/components";
 
 interface CardProps {
 	title?: string;
-	action?: boolean;
+	actionButton?: React.ReactNode;
 	children?: React.ReactNode;
 	addLabel?: string;
 	addPath?: string;
-	onAdd?: () => void;
 	searchLabel?: string;
 	searchValue?: string;
+	className?: string;
+	onAdd?: () => void;
 	onSearch?: (value: string) => void;
 }
 
 const Card = ({
 	title,
-	action,
+	actionButton,
 	children,
 	addLabel,
 	addPath,
 	searchLabel,
 	searchValue,
+	className,
 	onAdd,
 	onSearch,
 }: CardProps) => {
@@ -37,14 +39,16 @@ const Card = ({
 		}
 	};
 
+	const classes = clsx(clsx(styles["card"]), className);
+
 	return (
-		<div className={clsx(styles["card"])}>
+		<div className={classes}>
 			{/* Start: Card Header */}
 			{title && (
 				<div className={clsx(styles["card-header"])}>
 					<h3 className={clsx(styles["card-title"])}>{title}</h3>
 
-					{(action || onAdd || addLabel || onSearch) && (
+					{(actionButton || onAdd || addLabel || onSearch) && (
 						<div className={clsx(styles["card-header-actions"])}>
 							{/* Search */}
 							{onSearch && (
@@ -65,6 +69,9 @@ const Card = ({
 									{addLabel}
 								</Button>
 							) : null}
+
+							{/* Action Button */}
+							{actionButton && <>{actionButton}</>}
 						</div>
 					)}
 				</div>

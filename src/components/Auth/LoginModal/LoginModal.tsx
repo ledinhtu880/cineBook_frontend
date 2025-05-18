@@ -90,12 +90,12 @@ const LoginModal = ({
 						className={clsx(styles["form-img"])}
 						src="https://www.galaxycine.vn/_next/static/media/icon-login.fbbf1b2d.svg"
 					/>
-					<h5 className={styles.title}>Đăng nhập</h5>
+					<h5 className={clsx(styles.title)}>Đăng nhập</h5>
 				</>
 			)}
 			<form className={clsx(styles["form-wrapper"])} onSubmit={handleSubmit}>
 				{errors.general && (
-					<span className={styles["form-error"]}>{errors.general}</span>
+					<span className={clsx(styles["form-error"])}>{errors.general}</span>
 				)}
 				<Input
 					label="Email"

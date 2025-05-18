@@ -9,6 +9,7 @@ import {
 	Movie,
 	Booking,
 	Search,
+	Profile,
 } from "@/pages";
 
 // Không đăng nhập vẫn xem được
@@ -43,6 +44,11 @@ const privateRoutes = [
 	{
 		path: config.routes.booking,
 		component: Booking,
+		title: "Đặt vé",
+	},
+	{
+		path: config.routes.profile,
+		component: Profile,
 		title: "Đặt vé",
 	},
 ];

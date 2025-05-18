@@ -1,0 +1,11 @@
+.wrapper {
+	@apply px-4 py-8 relative;
+}
+
+.header {
+	@apply flex flex-wrap gap-6 items-center mb-8;
+}
+
+.header-title {
+	@apply text-2xl font-medium ps-4;
+}
