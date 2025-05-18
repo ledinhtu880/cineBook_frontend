@@ -68,7 +68,7 @@ const Home = () => {
 				title="Phim sắp chiếu"
 				fetchData={movieService.getComingSoonMovies}
 			/>
-			{/* End: Coming son */}
+			{/* End: Coming soon */}
 		</div>
 	);
 };

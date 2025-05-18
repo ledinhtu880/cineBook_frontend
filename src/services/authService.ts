@@ -57,18 +57,14 @@ const authService = {
 	logout: async () => {
 		try {
 			const token = localStorage.getItem("token");
-			// Gọi API để vô hiệu hóa token
 			if (token) {
 				await axios.post(`${API_URL}/auth/logout`);
 			}
 		} finally {
-			// Xóa dữ liệu khỏi localStorage
 			localStorage.removeItem("token");
 
-			// Xóa user khỏi memory cache
 			userCache = null;
 
-			// Xóa token khỏi axios headers
 			delete axios.defaults.headers.common["Authorization"];
 		}
 	},

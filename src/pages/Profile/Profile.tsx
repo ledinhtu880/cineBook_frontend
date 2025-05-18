@@ -36,13 +36,8 @@ interface BookingProps {
 }
 
 export default function Profile() {
-	const {
-		isLoggedIn,
-		setIsLoginOpen,
-		LoginModalComponent,
-		user,
-		handleLogout,
-	} = useAuth();
+	const { isLoggedIn, setIsLoginOpen, renderLoginModals, user, handleLogout } =
+		useAuth();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -134,7 +129,7 @@ export default function Profile() {
 
 	if (!isLoggedIn) {
 		setIsLoginOpen(true);
-		return <LoginModalComponent />;
+		return renderLoginModals(true);
 	}
 
 	if (loading) {

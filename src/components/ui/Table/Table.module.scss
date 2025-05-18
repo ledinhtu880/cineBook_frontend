@@ -6,7 +6,7 @@
 	@apply border-y border-gray-200 bg-gray-50;
 }
 .table-heading {
-	@apply px-6 py-3 text-xs font-medium text-gray-500;
+	@apply px-6 py-3 text-xs font-medium text-gray-500 text-nowrap;
 }
 
 .table-body {

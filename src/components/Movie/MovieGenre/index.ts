@@ -1,1 +1,1 @@
-export { default as MovieBadge } from "./MovieGenre";
+export { default as MovieGenre } from "./MovieGenre";

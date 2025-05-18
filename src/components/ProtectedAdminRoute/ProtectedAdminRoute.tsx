@@ -1,20 +1,25 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useAuth } from "@/hooks";
 import { Loading } from "@/components";
 
 const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
-	const { isLoggedIn, user, loading, setIsLoginOpen, LoginModalComponent } =
+	const { isLoggedIn, user, loading, setIsLoginOpen, renderLoginModals } =
 		useAuth();
+
+	useEffect(() => {
+		if (!loading && !isLoggedIn) {
+			setIsLoginOpen(true);
+		}
+	}, [loading, isLoggedIn, setIsLoginOpen]);
 
 	if (loading) {
 		return <Loading absolute />;
 	}
 
 	if (!isLoggedIn) {
-		setIsLoginOpen(true);
-		return <LoginModalComponent />;
+		return renderLoginModals(false);
 	}
 
 	if (!user?.role) {

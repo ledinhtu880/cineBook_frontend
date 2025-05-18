@@ -43,6 +43,13 @@ const RegisterModal = ({
 			const fetchCities = async () => {
 				const data = await cityService.get();
 				setCities(data);
+				if (data.length > 0) {
+					// Cập nhật formData với city_id của thành phố đầu tiên
+					setFormData((prev) => ({
+						...prev,
+						city_id: data[0].id,
+					}));
+				}
 			};
 			fetchCities();
 		} catch (error) {
@@ -157,10 +164,8 @@ const RegisterModal = ({
 					name="city_id"
 					error={errors.city_id}
 					onChange={handleChange}
+					value={formData.city_id || ""}
 				>
-					<option value="" disabled>
-						Chọn thành phố
-					</option>
 					{cities.map((city) => (
 						<option key={city.id} value={city.id}>
 							{city.name}
@@ -177,7 +182,7 @@ const RegisterModal = ({
 					onChange={handleChange}
 				/>
 				<Input
-					label="Mật khẩu"
+					label="Xác nhận mật khẩu"
 					id="password_confirmation"
 					name="password_confirmation"
 					type="password"

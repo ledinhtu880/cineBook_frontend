@@ -290,11 +290,11 @@ const Showtime = () => {
 				<div className={clsx(styles["results-summary"])}>
 					{!loading && (
 						<div>
-							Tìm thấy
+							Tìm thấy&nbsp;
 							<span className={clsx(styles["highlight"])}>
 								{filteredShowtimes.length}
 							</span>
-							suất chiếu
+							&nbsp; suất chiếu
 							{searchKeyword.trim() && (
 								<span>
 									với từ khóa

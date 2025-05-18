@@ -21,7 +21,7 @@ import {
 	Image,
 	Loading,
 	Modal,
-	MovieBadge,
+	MovieGenre,
 } from "@/components";
 
 const Search = () => {
@@ -238,8 +238,7 @@ const Search = () => {
 												</p>
 
 												{/* Genres */}
-
-												<MovieBadge
+												<MovieGenre
 													movie={movie}
 													handleClick={handleClickGenre}
 												/>

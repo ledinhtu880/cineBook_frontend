@@ -44,7 +44,7 @@ const CinemaDetail = () => {
 	);
 
 	const [filteredMovies, setFilteredMovies] = useState<Props[]>([]);
-	const { checkAuthAndExecute, LoginModalComponent } = useAuth();
+	const { checkAuthAndExecute, renderLoginModals } = useAuth();
 
 	useEffect(() => {
 		(() => {
@@ -321,7 +321,7 @@ const CinemaDetail = () => {
 					</div>
 				</div>
 			</Container>
-			<LoginModalComponent />
+			{renderLoginModals(true)}
 		</>
 	);
 };

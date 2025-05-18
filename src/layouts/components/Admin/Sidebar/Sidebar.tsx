@@ -4,15 +4,13 @@ import {
 	Movie,
 	Theaters,
 	Schedule,
-	ConfirmationNumber,
 	People,
 } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Sidebar.module.scss";
-import images from "@/assets/images";
 import config from "@/config";
-import { Image, Menu } from "@/components";
+import { Menu } from "@/components";
 
 interface SidebarProps {
 	isCollapse: boolean;
@@ -41,11 +39,6 @@ const Sidebar = ({ isCollapse }: SidebarProps) => {
 			title: "Suất chiếu",
 		},
 		{
-			to: config.routes.admin_bookings,
-			icon: ConfirmationNumber,
-			title: "Đặt vé",
-		},
-		{
 			to: config.routes.admin_users,
 			icon: People,
 			title: "Người dùng",
@@ -54,8 +47,8 @@ const Sidebar = ({ isCollapse }: SidebarProps) => {
 
 	return (
 		<aside className={clsx(styles.wrapper, { [styles.collapse]: isCollapse })}>
-			<Link to={config.routes.admin_dashboard} tabIndex={-1}>
-				<Image src={images.logo} alt="Logo" className={clsx(styles["logo"])} />
+			<Link to={config.routes.admin_dashboard} className={clsx(styles.logo)}>
+				🎬 CineBook
 			</Link>
 			<div className={clsx(styles["menu-wrapper"], "no-scrollbar")}>
 				<Menu title="Menu" data={menuList} isCollapse={isCollapse} />

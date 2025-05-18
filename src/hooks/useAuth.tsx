@@ -70,7 +70,6 @@ export const useAuth = () => {
 		authService.logout();
 		setIsLoggedIn(false);
 		setUser(null);
-		// Redirect to home page after logout
 		navigate("/", {
 			state: {
 				message: "Bạn đã đăng xuất khỏi hệ thống",
@@ -119,26 +118,37 @@ export const useAuth = () => {
 	);
 
 	// Trả về JSX cho LoginModal
-	const LoginModalComponent = useCallback(
-		() => (
+	const renderLoginModals = useCallback(
+		(isHaveRegister = true) => (
 			<>
-				<LoginModal
-					isOpen={isLoginOpen}
-					onClose={() => setIsLoginOpen(false)}
-					onLoginSuccess={handleLoginSuccess}
-					onOpenRegister={switchToRegister}
-				/>
-				<RegisterModal
-					isOpen={isRegisterOpen}
-					onClose={() => setIsRegisterOpen(false)}
-					onOpenLogin={switchToLogin}
-					onRegisterSuccess={handleRegisterSuccess}
-				/>
-				<RegisterSuccessModal
-					isOpen={isRegisterSuccessOpen}
-					onClose={() => setIsRegisterSuccessOpen(false)}
-					onRegisterSuccess={handleRegisterSuccessClose}
-				/>
+				{isHaveRegister ? (
+					<>
+						<LoginModal
+							isOpen={isLoginOpen}
+							onClose={() => setIsLoginOpen(false)}
+							onLoginSuccess={handleLoginSuccess}
+							onOpenRegister={switchToRegister}
+						/>
+						<RegisterModal
+							isOpen={isRegisterOpen}
+							onClose={() => setIsRegisterOpen(false)}
+							onOpenLogin={switchToLogin}
+							onRegisterSuccess={handleRegisterSuccess}
+						/>
+						<RegisterSuccessModal
+							isOpen={isRegisterSuccessOpen}
+							onClose={() => setIsRegisterSuccessOpen(false)}
+							onRegisterSuccess={handleRegisterSuccessClose}
+						/>
+					</>
+				) : (
+					<LoginModal
+						isOpen={isLoginOpen}
+						onClose={() => setIsLoginOpen(false)}
+						onLoginSuccess={handleLoginSuccess}
+						isHaveRegister={false}
+					/>
+				)}
 			</>
 		),
 		[
@@ -168,7 +178,7 @@ export const useAuth = () => {
 		handleRegisterSuccess,
 		handleRegisterSuccessClose,
 		checkAuthAndExecute,
-		LoginModalComponent,
+		renderLoginModals,
 		user,
 		loading,
 		fetchCurrentUser,

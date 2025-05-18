@@ -30,7 +30,7 @@ import {
 	Loading,
 	Image,
 	Modal,
-	MovieBadge,
+	MovieGenre,
 	Select,
 	Showtime,
 	Tabs,
@@ -52,7 +52,7 @@ const Movie = () => {
 	const navigate = useNavigate();
 
 	const [loading, setLoading] = useState(true);
-	const { checkAuthAndExecute, LoginModalComponent } = useAuth();
+	const { checkAuthAndExecute, renderLoginModals } = useAuth();
 
 	const [dates, setDates] = useState<Date[]>([]);
 	const [cities, setCities] = useState<CityProps[]>([]);
@@ -311,7 +311,7 @@ const Movie = () => {
 									<span className={clsx(styles["meta-label"])}>
 										Thể loại:&nbsp;
 									</span>
-									<MovieBadge movie={movie} handleClick={handleClickGenre} />
+									<MovieGenre movie={movie} handleClick={handleClickGenre} />
 								</div>
 							</div>
 							<div>
@@ -491,8 +491,7 @@ const Movie = () => {
 					</div>
 				</Modal>
 			)}
-
-			<LoginModalComponent />
+			{renderLoginModals(true)}
 		</div>
 	);
 };

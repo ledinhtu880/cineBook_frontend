@@ -202,7 +202,7 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 				<div className="flex items-center justify-between px-4 py-3 bg-white border-t">
 					<div className="flex items-center gap-2">
 						<span className="text-sm text-gray-700">
-							Đang hiển thị {startIndex + 1} đến
+							Đang hiển thị {startIndex + 1} đến{" "}
 							{Math.min(endIndex, data.length)} trong tổng số {data.length} mục
 						</span>
 					</div>

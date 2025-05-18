@@ -17,7 +17,7 @@ const Header = () => {
 		setIsLoginOpen,
 		setIsRegisterOpen,
 		handleLogout,
-		LoginModalComponent,
+		renderLoginModals,
 		user,
 	} = useAuth();
 
@@ -164,8 +164,7 @@ const Header = () => {
 					</nav>
 				</Container>
 			</header>
-
-			<LoginModalComponent />
+			{renderLoginModals(true)}
 		</>
 	);
 };

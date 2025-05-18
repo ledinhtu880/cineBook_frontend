@@ -11,7 +11,7 @@ const columns: Column<MovieProps>[] = [
 	{ key: "title", title: "Tên", width: 250, tooltip: true },
 	{ key: "duration_label", title: "Thời lượng", width: 130, align: "left" },
 	{
-		key: "genres",
+		key: "genres_list",
 		title: "Thể loại",
 		width: 250,
 		align: "left",
