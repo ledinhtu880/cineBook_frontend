@@ -10,7 +10,7 @@ import clsx from "clsx";
 
 import styles from "./Room.module.scss";
 import config from "@/config";
-import { CinemaProps, SeatProps } from "@/types";
+import type { CinemaProps, SeatProps } from "@/types";
 import { useSnackbar } from "@/context";
 import * as Form from "@utils/validation";
 import { cinemaService } from "@/services";

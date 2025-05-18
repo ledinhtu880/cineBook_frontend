@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { ApiError, Column } from "@/types";
-import { cinemaService } from "@/services";
 import { useSnackbar } from "@/context";
+import { cinemaService } from "@/services";
+import type { ApiError, Column } from "@/types";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
 interface CinemaProps {

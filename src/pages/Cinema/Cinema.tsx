@@ -4,7 +4,7 @@ import { LocationOn, Phone, AccessTime } from "@mui/icons-material";
 import clsx from "clsx";
 
 import styles from "./Cinema.module.scss";
-import { CinemaProps, CityProps } from "@/types";
+import type { CinemaProps, CityProps } from "@/types";
 import { cityService } from "@/services";
 import { Container, Select, Loading, Image, Button } from "@/components";
 import config from "@/config";

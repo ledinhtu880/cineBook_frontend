@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Room.module.scss";
-import { RoomProps, SeatProps } from "@/types";
+import type { RoomProps, SeatProps } from "@/types";
 import { roomService } from "@/services";
 import { Card, Loading, PageWrapper, SeatLayout, StatCard } from "@/components";
 

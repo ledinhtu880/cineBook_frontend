@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
-import { authService } from "@/services/";
-import { UserProps } from "@/types/";
+import { authService } from "@/services";
+import type { UserProps } from "@/types";
 import { Button, Image } from "@/components";
 
 interface HeaderProps {

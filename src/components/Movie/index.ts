@@ -1,1 +1,2 @@
-export { MovieItem as MovieItem, MovieCard as MovieCard } from "./MovieItem";
+export * from "./MovieItem";
+export * from "./MovieGenre";

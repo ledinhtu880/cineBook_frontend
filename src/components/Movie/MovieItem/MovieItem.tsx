@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import styles from "./MovieItem.module.scss";
 import config from "@/config";
-import { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 import { MovieCard, Container } from "@/components";
 
 interface Props {

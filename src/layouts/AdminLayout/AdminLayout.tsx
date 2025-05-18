@@ -3,10 +3,10 @@ import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./AdminLayout.module.scss";
-import { LocationState } from "@/types";
+import type { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
-import { adminRoutes } from "@routes/index";
-import { Header, Sidebar } from "@layouts/components/Admin";
+import { adminRoutes } from "@/routes";
+import { Header, Sidebar } from "@/layouts/components/Admin";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
 	const location = useLocation();

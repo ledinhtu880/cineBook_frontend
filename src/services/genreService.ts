@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { GenreProps } from "@/types";
+import type { GenreProps } from "@/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

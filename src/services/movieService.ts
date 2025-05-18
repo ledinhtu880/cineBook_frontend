@@ -1,6 +1,6 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
-import { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 
 interface MovieQueryParams {
 	limit?: number;
@@ -11,7 +11,6 @@ interface MovieQueryParams {
 }
 
 let nowShowingCache: MovieProps | null = null;
-let sortingNowShowingCache: MovieProps | null = null;
 let comingSoonCache: MovieProps | null = null;
 let movieBySlugCache: MovieProps | null = null;
 
@@ -33,16 +32,11 @@ const movieService = {
 	},
 
 	getTopRatedNowShowingMovies: async (params?: MovieQueryParams) => {
-		if (sortingNowShowingCache) return sortingNowShowingCache;
-
 		const response = await axios.get(`${API_URL}/movies/now-showing`, {
 			params,
 		});
 
-		const data = response.data.data;
-		sortingNowShowingCache = data;
-
-		return data;
+		return response.data.data;
 	},
 
 	getComingSoonMovies: async () => {

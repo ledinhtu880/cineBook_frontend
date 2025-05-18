@@ -6,7 +6,7 @@ import {
 	RegisterModal,
 	RegisterSuccessModal,
 } from "@/components/auth/";
-import { UserProps } from "@/types";
+import type { UserProps } from "@/types";
 
 export const useAuth = () => {
 	const navigate = useNavigate();

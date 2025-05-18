@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import styles from "./Showtime.module.scss";
 import { useDebounce } from "@/hooks";
-import { Column, ApiError } from "@/types";
+import type { Column, ApiError } from "@/types";
 import { showtimeService } from "@/services";
 import {
 	Card,

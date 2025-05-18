@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 import styles from "./Showtime.module.scss";
-import { MovieProps, ShowtimeProps } from "@/types";
+import type { MovieProps, ShowtimeProps } from "@/types";
 import { Button } from "@/components";
 
 interface Props {

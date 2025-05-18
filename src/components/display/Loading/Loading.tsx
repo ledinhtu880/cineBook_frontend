@@ -6,13 +6,15 @@ import styles from "./Loading.module.scss";
 interface LoadingProps {
 	className?: string;
 	absolute?: boolean;
+	full?: boolean;
 }
 
-const Loading: React.FC<LoadingProps> = ({ className, absolute }) => {
+const Loading: React.FC<LoadingProps> = ({ className, absolute, full }) => {
 	const classes = clsx(
 		styles.loading,
 		{
 			[styles["abs-center"]]: absolute,
+			[styles["full"]]: full,
 		},
 		className
 	);

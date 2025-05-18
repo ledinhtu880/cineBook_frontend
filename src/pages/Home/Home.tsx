@@ -9,11 +9,12 @@ import "swiper/css/pagination";
 
 import styles from "./Home.module.scss";
 import { movieService } from "@/services";
-import { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 import { Image, Carousel } from "@/components";
 
 const Home = () => {
 	const [topRatedMovies, setTopRatedMovies] = useState<MovieProps[]>([]);
+
 	useEffect(() => {
 		(async () => {
 			try {

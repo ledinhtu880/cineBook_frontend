@@ -6,7 +6,7 @@ import styles from "./Movie.module.scss";
 import config from "@/config";
 import { useSnackbar } from "@/context";
 import * as Form from "@utils/validation";
-import { ValidationErrors, ApiError } from "@/types";
+import type { ValidationErrors, ApiError } from "@/types";
 import { TextArea, Select, Button, Input, Image } from "@/components";
 
 export interface MovieFormData extends Form.FormValues {

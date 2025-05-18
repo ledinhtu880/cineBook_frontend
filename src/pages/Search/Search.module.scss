@@ -67,6 +67,10 @@
 
 .results-title {
 	@apply text-2xl font-bold mb-6;
+
+	strong {
+		@apply text-primary;
+	}
 }
 
 .movie-list {
@@ -111,6 +115,10 @@
 
 .movie-genres {
 	@apply flex flex-wrap gap-2 mb-3;
+}
+
+.movie-badge {
+	@apply border-gray-800 text-gray-700 border p-1;
 }
 
 .movie-release-date {

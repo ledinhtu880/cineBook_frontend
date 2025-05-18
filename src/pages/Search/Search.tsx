@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
 	FilterAlt,
@@ -8,6 +8,7 @@ import {
 import clsx from "clsx";
 
 import styles from "./Search.module.scss";
+import config from "@/config";
 import { getYoutubeEmbedUrl } from "@/utils";
 import type { MovieProps, GenreProps } from "@/types";
 import { movieService, genreService } from "@/services";
@@ -20,6 +21,7 @@ import {
 	Image,
 	Loading,
 	Modal,
+	MovieBadge,
 } from "@/components";
 
 const Search = () => {
@@ -38,8 +40,6 @@ const Search = () => {
 
 	useEffect(() => {
 		(async () => {
-			setLoading(true);
-
 			try {
 				const genresResponse = await genreService.get();
 				setGenres(genresResponse);
@@ -68,16 +68,7 @@ const Search = () => {
 		})();
 	}, [searchParams]);
 
-	const handleSearch = (e: React.FormEvent) => {
-		e.preventDefault();
-		updateSearchParams();
-	};
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(e.target.value);
-	};
-
-	const updateSearchParams = () => {
+	const updateSearchParams = useCallback(() => {
 		const newParams = new URLSearchParams();
 
 		if (searchValue) {
@@ -85,38 +76,65 @@ const Search = () => {
 		}
 
 		if (selectedGenres.length) {
-			selectedGenres.map((genre) => {
+			selectedGenres.forEach((genre) => {
 				newParams.append("g", genre.slug.toString());
 			});
 		}
 
 		setSearchParams(newParams);
+	}, [searchValue, selectedGenres, setSearchParams]);
+
+	const handleClickGenre = useCallback(
+		(genre: GenreProps) => {
+			navigate(`${config.routes.search}?g=${genre.slug}`);
+		},
+		[navigate]
+	);
+
+	const handleSearch = useCallback(
+		(e: React.FormEvent) => {
+			e.preventDefault();
+			updateSearchParams();
+		},
+		[updateSearchParams]
+	);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearchValue(e.target.value);
 	};
 
-	const handleGenreSelect = (selectedGenre: GenreProps) => {
-		const isSelected = selectedGenres.some(
-			(genre) => genre.id === selectedGenre.id
-		);
-
-		if (isSelected) {
-			setSelectedGenres(
-				selectedGenres.filter((genre) => genre.id !== selectedGenre.id)
+	const handleGenreSelect = useCallback((selectedGenre: GenreProps) => {
+		setSelectedGenres((prevGenres) => {
+			const isSelected = prevGenres.some(
+				(genre) => genre.id === selectedGenre.id
 			);
-		} else {
-			setSelectedGenres([...selectedGenres, selectedGenre]);
-		}
-	};
 
-	const handleOpenTrailer = (e: React.MouseEvent) => {
+			if (isSelected) {
+				return prevGenres.filter((genre) => genre.id !== selectedGenre.id);
+			} else {
+				return [...prevGenres, selectedGenre];
+			}
+		});
+	}, []);
+
+	const handleOpenTrailer = useCallback((e: React.MouseEvent) => {
 		e.stopPropagation();
 		setShowTrailer(true);
-	};
+	}, []);
 
-	const handleCloseTrailer = () => setShowTrailer(false);
+	const handleCloseTrailer = useCallback(() => setShowTrailer(false), []);
 
-	const applyGenreFilters = () => {
+	const applyGenreFilters = useCallback(() => {
 		updateSearchParams();
-	};
+	}, [updateSearchParams]);
+
+	if (loading) {
+		return (
+			<Container className={clsx(styles["wrapper"])}>
+				<Loading absolute />
+			</Container>
+		);
+	}
 
 	return (
 		<Container className={clsx(styles["wrapper"])}>
@@ -184,16 +202,12 @@ const Search = () => {
 					{searchParams.get("q") && (
 						<h1 className={clsx(styles["results-title"])}>
 							Kết quả tìm kiếm cho
-							<strong className="text-primary">
-								&nbsp;&quot;{searchParams.get("q")}&quot;
-							</strong>
+							<strong>&nbsp;&quot;{searchParams.get("q")}&quot;</strong>
 						</h1>
 					)}
 
 					<ul className={clsx(styles["movie-list"])}>
-						{loading ? (
-							<Loading />
-						) : movies.length > 0 ? (
+						{movies.length > 0 ? (
 							movies.map((movie) => (
 								<div key={movie.id} className={clsx(styles["movie-item"])}>
 									{/* Movie Poster */}
@@ -224,16 +238,11 @@ const Search = () => {
 												</p>
 
 												{/* Genres */}
-												<div className={clsx(styles["movie-genres"])}>
-													{movie.genres.map((genre) => (
-														<Badge
-															key={genre.id}
-															className="border-gray-800 text-gray-700 border p-1"
-														>
-															{genre.name.trim()}
-														</Badge>
-													))}
-												</div>
+
+												<MovieBadge
+													movie={movie}
+													handleClick={handleClickGenre}
+												/>
 
 												<p className={clsx(styles["movie-release-date"])}>
 													<span>Ngày chiếu:&nbsp;</span>

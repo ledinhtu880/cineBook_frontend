@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { roomService, cinemaService } from "@/services/";
+import { roomService, cinemaService } from "@/services";
 import { useSnackbar } from "@/context";
-import { ApiError, Column, RoomProps, CinemaProps } from "@/types/";
+import type { ApiError, Column, RoomProps, CinemaProps } from "@/types";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
 const columns: Column<RoomProps>[] = [

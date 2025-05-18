@@ -10,7 +10,7 @@ import {
 import clsx from "clsx";
 
 import styles from "./Table.module.scss";
-import { Column } from "@/types/";
+import type { Column } from "@/types";
 import { Tooltip, Button, Modal } from "@/components";
 
 interface TableProps<T extends { id: number; name?: string; title?: string }> {

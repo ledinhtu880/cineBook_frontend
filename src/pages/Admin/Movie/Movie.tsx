@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 
 import { useDebounce } from "@/hooks";
 import { useSnackbar } from "@/context";
-import { movieService } from "@/services/";
-import { ApiError, Column, MovieProps } from "@/types/";
+import { movieService } from "@/services";
+import type { ApiError, Column, MovieProps } from "@/types";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 
 const columns: Column<MovieProps>[] = [
@@ -34,7 +34,7 @@ const Movie = () => {
 	const filteredMovies = movies.filter(
 		(movie) =>
 			movie.title.toLowerCase().includes(debouncedValue.toLowerCase()) ||
-			movie.genres.toLowerCase().includes(debouncedValue.toLowerCase())
+			movie.genres_list.toLowerCase().includes(debouncedValue.toLowerCase())
 	);
 
 	const handleDelete = useCallback(

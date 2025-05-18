@@ -72,18 +72,6 @@
 	@apply font-medium;
 }
 
-.genre-list {
-	@apply ml-2 flex flex-wrap gap-1 flex-1;
-}
-
-.genre-item {
-	@apply text-black text-sm inline-flex h-8 border border-gray-300 rounded-lg px-4 py-2 capitalize not-italic items-center;
-
-	&:hover {
-		@apply border-primary cursor-pointer;
-	}
-}
-
 .description {
 	@apply mt-10;
 

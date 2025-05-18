@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import styles from "../Auth.module.scss";
-import {
+import type {
 	ValidationErrors,
 	ApiError,
 	RegisterFormProps,
 	CityProps,
 } from "@/types";
 import { validateRegisterForm } from "@/utils/authValidation";
-import { authService, cityService } from "@/services/";
+import { authService, cityService } from "@/services";
 import { Input, Select, Modal, Button, Image } from "@/components";
 
 interface RegisterModalProps {

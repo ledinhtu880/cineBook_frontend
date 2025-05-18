@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { RegisterFormProps, UserProps } from "@/types/";
+import type { RegisterFormProps, UserProps } from "@/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

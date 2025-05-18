@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-import { Column, ApiError, UserProps } from "@/types/";
+import type { Column, ApiError, UserProps } from "@/types";
 import { useDebounce } from "@/hooks";
-import { userService } from "@/services/";
+import { userService } from "@/services";
 import { useSnackbar } from "@/context";
 import { PageWrapper, Loading, Table, Card } from "@/components";
 

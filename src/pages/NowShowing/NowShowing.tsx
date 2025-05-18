@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import config from "@/config";
-import { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 import { movieService } from "@/services";
 import { MovieItem, Loading } from "@/components";
 

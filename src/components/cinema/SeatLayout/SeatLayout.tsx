@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 import styles from "./SeatLayout.module.scss";
-import { SeatProps } from "@/types";
+import type { SeatProps } from "@/types";
 import { Tooltip } from "@/components";
 
 interface SeatLayoutProps {

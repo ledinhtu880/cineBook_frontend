@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import styles from "./DefaultLayout.module.scss";
 import { publicRoutes } from "@/routes";
-import { LocationState } from "@/types";
+import type { LocationState } from "@/types";
 import { useSnackbar } from "@/context";
 import Header from "@/layouts/components/Header";
 import Footer from "@/layouts/components/Footer";
@@ -18,7 +18,6 @@ function DefaultLayout({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		if (state?.message) {
 			showSnackbar(state.message, state.severity);
-			// Clear state sau khi đã show message
 			navigate(location.pathname, { replace: true });
 		}
 	}, [showSnackbar, state, navigate, location.pathname]);

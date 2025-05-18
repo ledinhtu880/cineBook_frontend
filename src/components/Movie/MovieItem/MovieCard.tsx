@@ -2,7 +2,7 @@ import { memo } from "react";
 import clsx from "clsx";
 
 import styles from "./MovieItem.module.scss";
-import { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 import { Badge, Button, Image, Tooltip } from "@/components";
 interface MovieCardProps {
 	movie: MovieProps;

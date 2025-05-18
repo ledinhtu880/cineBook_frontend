@@ -8,7 +8,12 @@ import { useAuth } from "@/hooks";
 import { cinemaService, cityService } from "@/services";
 
 import { formatDate, isToday } from "@/utils/datetime";
-import { CinemaProps, CityProps, MovieProps, ShowtimeProps } from "@/types";
+import type {
+	CinemaProps,
+	CityProps,
+	MovieProps,
+	ShowtimeProps,
+} from "@/types";
 import {
 	Container,
 	Image,

@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import styles from "./Cinema.module.scss";
 import config from "@/config";
-import { CityProps } from "@/types/";
+import type { CityProps } from "@/types";
 import { useSnackbar } from "@/context";
 import { cityService } from "@/services";
 import * as Form from "@/utils/validation";

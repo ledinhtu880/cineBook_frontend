@@ -1,4 +1,4 @@
-import { RegisterFormProps } from "@/types/";
+import type { RegisterFormProps } from "@/types";
 
 interface ValidationResult {
 	isValid: boolean;

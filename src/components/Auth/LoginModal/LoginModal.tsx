@@ -4,8 +4,8 @@ import clsx from "clsx";
 
 import styles from "../Auth.module.scss";
 import config from "@/config";
-import { authService } from "@/services/";
-import { ApiError, ValidationErrors } from "@/types";
+import { authService } from "@/services";
+import type { ApiError, ValidationErrors } from "@/types";
 import { validateLoginForm } from "@/utils/authValidation";
 import { Button, Input, Image, Modal } from "@/components";
 

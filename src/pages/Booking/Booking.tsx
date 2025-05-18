@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Booking.module.scss";
 import config from "@/config";
-import {
+import type {
 	SeatProps,
 	ShowtimeProps as ShowtimeProps,
 	MovieProps as Movie,
@@ -79,7 +79,6 @@ const Booking = () => {
 	const extractBookingId = (orderCode: string | null): number | null => {
 		if (!orderCode) return null;
 
-		// Loại bỏ 6 số đầu và chuyển thành số
 		return parseInt(orderCode.slice(6));
 	};
 
@@ -161,101 +160,70 @@ const Booking = () => {
 		})();
 	}, []);
 
-	const handleReturnFromPayment = async (
-		bookingId: number,
-		isSuccess: boolean
-	) => {
-		try {
-			const savedBookingData = localStorage.getItem("booking_data");
+	const getTotal = useCallback(() => {
+		const seatTotal = selectedSeats.reduce(
+			(total, seat) => total + Number(seat.price),
+			0
+		);
+		const foodTotal = selectedCombos.reduce(
+			(total, product) => total + product.price * product.quantity,
+			0
+		);
+		return seatTotal + foodTotal;
+	}, [selectedSeats, selectedCombos]);
 
-			if (!savedBookingData) {
-				navigate("/", {
-					state: {
-						message: "Không tìm thấy thông tin đặt vé. Vui lòng thử lại.",
-						severity: "error",
-					},
-				});
-				return;
-			}
-
-			const parsedData = JSON.parse(savedBookingData);
-
-			// Khôi phục dữ liệu từ localStorage
-			setMovie(parsedData.movieInfo);
-			setSelectedShowtime(parsedData.selectedShowtime);
-			setSelectedSeats(parsedData.selectedSeats);
-			setselectedCombos(parsedData.selectedCombos);
-			setPaymentMethod(parsedData.paymentMethod);
-			setCinemaName(parsedData.cinemaName);
-
-			if (isSuccess) {
-				setCurrentStep(3);
-				document.title = `Đặt vé thành công - ${parsedData.movieInfo.title}`;
-				await bookingService.update(bookingId);
-			}
-		} catch (error) {
-			console.error("Lỗi khi khôi phục dữ liệu đặt vé:", error);
-		} finally {
-			if (isSuccess) {
-				localStorage.removeItem("booking_data");
-			}
-			setLoading(false);
+	const canProceed = useCallback(() => {
+		switch (currentStep) {
+			case 0:
+				return selectedSeats.length > 0;
+			case 1:
+				return true;
+			case 2:
+				return !!paymentMethod && termsAccepted;
+			default:
+				return false;
 		}
-	};
+	}, [currentStep, selectedSeats.length, paymentMethod, termsAccepted]);
 
-	const handleClickSeat = (seat: SeatProps) => {
-		if (seat.status == "booked") return;
-		if (seat.is_sweetbox) {
-			const seatNumber = parseInt(seat.seat_code.slice(1));
-			const partnerSeatNumber =
-				seatNumber % 2 === 0 ? seatNumber - 1 : seatNumber + 1;
-			const partnerSeatCode = `${seat.seat_code.charAt(0)}${partnerSeatNumber}`;
+	const steps = [
+		{
+			id: 0,
+			name: "Chọn ghế",
+			status:
+				currentStep > 0
+					? "completed"
+					: currentStep === 0
+					? "current"
+					: "pending",
+		},
+		{
+			id: 1,
+			name: "Chọn thức ăn",
+			status:
+				currentStep > 1
+					? "completed"
+					: currentStep === 1
+					? "current"
+					: "pending",
+		},
+		{
+			id: 2,
+			name: "Thanh toán",
+			status:
+				currentStep > 2
+					? "completed"
+					: currentStep === 2
+					? "current"
+					: "pending",
+		},
+		{
+			id: 3,
+			name: "Xác nhận",
+			status: currentStep === 3 ? "current" : "pending",
+		},
+	];
 
-			const partnerSeat = selectedShowtime.room.seats.find(
-				(s: SeatProps) => s.seat_code === partnerSeatCode
-			);
-
-			if (partnerSeat) {
-				const seatSelected = selectedSeats.some((s) => s.id === seat.id);
-				const partnerSelected = selectedSeats.some(
-					(s) => s.id === partnerSeat.id
-				);
-
-				if (seatSelected || partnerSelected) {
-					setSelectedSeats(
-						selectedSeats.filter(
-							(s) => s.id !== seat.id && s.id !== partnerSeat.id
-						)
-					);
-				} else {
-					setSelectedSeats([...selectedSeats, seat, partnerSeat]);
-				}
-			}
-		} else {
-			if (selectedSeats.some((s) => s.id === seat.id)) {
-				setSelectedSeats(selectedSeats.filter((s) => s.id !== seat.id));
-			} else {
-				setSelectedSeats([...selectedSeats, seat]);
-			}
-		}
-	};
-
-	const handleShowtimeSelect = (showtime: ShowtimeProps) => {
-		setSelectedShowtime(showtime);
-		setSelectedSeats([]);
-	};
-
-	const handleNext = () => {
-		if (canProceed() && currentStep < steps.length - 1) {
-			if (currentStep === 2) {
-				handleBookingSubmission();
-			} else {
-				setCurrentStep(currentStep + 1);
-			}
-		}
-	};
-
-	const handleBookingSubmission = async () => {
+	const handleBookingSubmission = useCallback(async () => {
 		setIsProcessing(true);
 
 		try {
@@ -311,16 +279,125 @@ const Booking = () => {
 			console.error("Lỗi khi đặt vé:", error);
 			alert("Đã xảy ra lỗi khi đặt vé. Vui lòng thử lại sau.");
 		}
-	};
+	}, [
+		navigate,
+		location.pathname,
+		selectedShowtime,
+		selectedSeats,
+		selectedCombos,
+		paymentMethod,
+		movie,
+		cinemaName,
+		getTotal,
+	]);
 
-	const handleBack = () => {
-		if (currentStep > 0) {
-			if (currentStep == 1) setselectedCombos([]);
-			setCurrentStep(currentStep - 1);
+	const handleReturnFromPayment = async (
+		bookingId: number,
+		isSuccess: boolean
+	) => {
+		try {
+			const savedBookingData = localStorage.getItem("booking_data");
+
+			if (!savedBookingData) {
+				navigate("/", {
+					state: {
+						message: "Không tìm thấy thông tin đặt vé. Vui lòng thử lại.",
+						severity: "error",
+					},
+				});
+				return;
+			}
+
+			const parsedData = JSON.parse(savedBookingData);
+
+			// Khôi phục dữ liệu từ localStorage
+			setMovie(parsedData.movieInfo);
+			setSelectedShowtime(parsedData.selectedShowtime);
+			setSelectedSeats(parsedData.selectedSeats);
+			setselectedCombos(parsedData.selectedCombos);
+			setPaymentMethod(parsedData.paymentMethod);
+			setCinemaName(parsedData.cinemaName);
+
+			if (isSuccess) {
+				setCurrentStep(3);
+				document.title = `Đặt vé thành công - ${parsedData.movieInfo.title}`;
+				await bookingService.update(bookingId);
+			}
+		} catch (error) {
+			console.error("Lỗi khi khôi phục dữ liệu đặt vé:", error);
+		} finally {
+			if (isSuccess) {
+				localStorage.removeItem("booking_data");
+			}
+			setLoading(false);
 		}
 	};
 
-	const handleIncreaseQuantity = (product: ComboProps) => {
+	const handleClickSeat = useCallback(
+		(seat: SeatProps) => {
+			if (seat.status == "booked") return;
+			if (seat.is_sweetbox) {
+				const seatNumber = parseInt(seat.seat_code.slice(1));
+				const partnerSeatNumber =
+					seatNumber % 2 === 0 ? seatNumber - 1 : seatNumber + 1;
+				const partnerSeatCode = `${seat.seat_code.charAt(
+					0
+				)}${partnerSeatNumber}`;
+
+				const partnerSeat = selectedShowtime.room.seats.find(
+					(s: SeatProps) => s.seat_code === partnerSeatCode
+				);
+
+				if (partnerSeat) {
+					const seatSelected = selectedSeats.some((s) => s.id === seat.id);
+					const partnerSelected = selectedSeats.some(
+						(s) => s.id === partnerSeat.id
+					);
+
+					if (seatSelected || partnerSelected) {
+						setSelectedSeats(
+							selectedSeats.filter(
+								(s) => s.id !== seat.id && s.id !== partnerSeat.id
+							)
+						);
+					} else {
+						setSelectedSeats([...selectedSeats, seat, partnerSeat]);
+					}
+				}
+			} else {
+				if (selectedSeats.some((s) => s.id === seat.id)) {
+					setSelectedSeats(selectedSeats.filter((s) => s.id !== seat.id));
+				} else {
+					setSelectedSeats([...selectedSeats, seat]);
+				}
+			}
+		},
+		[selectedSeats, selectedShowtime.room.seats]
+	);
+
+	const handleShowtimeSelect = useCallback((showtime: ShowtimeProps) => {
+		setSelectedShowtime(showtime);
+		setSelectedSeats([]);
+	}, []);
+
+	const handleNext = useCallback(() => {
+		if (canProceed() && currentStep < steps.length - 1) {
+			if (currentStep === 2) {
+				handleBookingSubmission();
+			} else {
+				setCurrentStep((prevStep) => prevStep + 1);
+			}
+		}
+	}, [canProceed, currentStep, steps.length, handleBookingSubmission]);
+
+	const handleBack = useCallback(() => {
+		if (currentStep > 0) {
+			if (currentStep == 1) setselectedCombos([]);
+			setCurrentStep((prevStep) => prevStep - 1);
+		}
+	}, [currentStep]);
+
+	const handleIncreaseQuantity = useCallback((product: ComboProps) => {
 		setselectedCombos((prev) => {
 			const existingProductIndex = prev.findIndex(
 				(item) => item.id === product.id
@@ -338,9 +415,9 @@ const Booking = () => {
 				return [...prev, { ...product, quantity: 1 }];
 			}
 		});
-	};
+	}, []);
 
-	const handleDecreaseQuantity = (product: ComboProps) => {
+	const handleDecreaseQuantity = useCallback((product: ComboProps) => {
 		setselectedCombos((prev) => {
 			const existingProductIndex = prev.findIndex(
 				(item) => item.id === product.id
@@ -363,75 +440,12 @@ const Booking = () => {
 
 			return prev;
 		});
-	};
+	}, []);
 
 	const getProductQuantity = (productId: number) => {
 		const product = selectedCombos.find((item) => item.id === productId);
 		return product ? product.quantity : 0;
 	};
-
-	const getTotal = () => {
-		const seatTotal = selectedSeats.reduce(
-			(total, seat) => total + Number(seat.price),
-			0
-		);
-		const foodTotal = selectedCombos.reduce(
-			(total, product) => total + product.price * product.quantity,
-			0
-		);
-		return seatTotal + foodTotal;
-	};
-
-	const canProceed = () => {
-		switch (currentStep) {
-			case 0:
-				return selectedSeats.length > 0;
-			case 1:
-				return true;
-			case 2:
-				return !!paymentMethod && termsAccepted;
-			default:
-				return false;
-		}
-	};
-
-	const steps = [
-		{
-			id: 0,
-			name: "Chọn ghế",
-			status:
-				currentStep > 0
-					? "completed"
-					: currentStep === 0
-					? "current"
-					: "pending",
-		},
-		{
-			id: 1,
-			name: "Chọn thức ăn",
-			status:
-				currentStep > 1
-					? "completed"
-					: currentStep === 1
-					? "current"
-					: "pending",
-		},
-		{
-			id: 2,
-			name: "Thanh toán",
-			status:
-				currentStep > 2
-					? "completed"
-					: currentStep === 2
-					? "current"
-					: "pending",
-		},
-		{
-			id: 3,
-			name: "Xác nhận",
-			status: currentStep === 3 ? "current" : "pending",
-		},
-	];
 
 	const timeTabs = showtimes.map?.((showtime: ShowtimeProps) => {
 		const showTime = {

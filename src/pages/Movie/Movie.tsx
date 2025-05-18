@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
 	PlayArrow,
@@ -14,7 +14,7 @@ import config from "@/config";
 import MovieItem from "./MovieItem";
 import { getYoutubeEmbedUrl } from "@/utils";
 import { formatDate, isToday } from "@/utils/datetime";
-import {
+import type {
 	MovieProps,
 	CityProps,
 	CinemaProps,
@@ -30,6 +30,7 @@ import {
 	Loading,
 	Image,
 	Modal,
+	MovieBadge,
 	Select,
 	Showtime,
 	Tabs,
@@ -170,45 +171,58 @@ const Movie = () => {
 		})();
 	}, [movie, showtimes, selectedCinema, selectedDate]);
 
-	const handleOpenTrailer = () => setShowTrailer(true);
-	const handleCloseTrailer = () => setShowTrailer(false);
+	const handleOpenTrailer = useCallback(() => {
+		setShowTrailer(true);
+	}, []);
+	const handleCloseTrailer = useCallback(() => {
+		setShowTrailer(false);
+	}, []);
 
-	const handleOpenBookingModal = () => {
+	const handleOpenBookingModal = useCallback(() => {
 		checkAuthAndExecute(() => setShowBookingModal(true));
-	};
-	const handleCloseBookingModal = () => setShowBookingModal(false);
+	}, [checkAuthAndExecute]);
 
-	const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const cityId = Number(event.target.value);
-		const city = cities.find((city) => city.id === cityId);
-		if (city) setSelectedCity(city);
-	};
+	const handleCloseBookingModal = useCallback(() => {
+		setShowBookingModal(false);
+	}, []);
+
+	const handleSelectCity = useCallback(
+		(event: React.ChangeEvent<HTMLSelectElement>) => {
+			const cityId = Number(event.target.value);
+			const city = cities.find((city) => city.id === cityId);
+			if (city) setSelectedCity(city);
+		},
+		[cities]
+	);
 
 	const handleClickCinema = (cinema: CinemaProps) => {
 		setSelectedCinema(cinema);
 	};
 
-	const handleClickGenre = (genre: GenreProps) => {
-		navigate(`${config.routes.search}?g=${genre.slug}`);
-	};
+	const handleClickGenre = useCallback(
+		(genre: GenreProps) => {
+			navigate(`${config.routes.search}?g=${genre.slug}`);
+		},
+		[navigate]
+	);
 
-	const handleClickShowtime = (
-		movie: MovieProps,
-		selectedShowtime: ShowtimeDefaultProps
-	) => {
-		if (!selectedCinema) return;
+	const handleClickShowtime = useCallback(
+		(movie: MovieProps, selectedShowtime: ShowtimeDefaultProps) => {
+			if (!selectedCinema) return;
 
-		const _showtimeId = selectedShowtime.id;
-		const movieInfo = movie;
-		const cinemaName = selectedCinema.name;
-		const listShowtimes = filteredShowtimes;
+			const _showtimeId = selectedShowtime.id;
+			const movieInfo = movie;
+			const cinemaName = selectedCinema.name;
+			const listShowtimes = filteredShowtimes;
 
-		checkAuthAndExecute(() => {
-			navigate(config.routes.booking.replace(":slug", movie.slug), {
-				state: { movieInfo, _showtimeId, listShowtimes, cinemaName },
+			checkAuthAndExecute(() => {
+				navigate(config.routes.booking.replace(":slug", movie.slug), {
+					state: { movieInfo, _showtimeId, listShowtimes, cinemaName },
+				});
 			});
-		});
-	};
+		},
+		[navigate, selectedCinema, filteredShowtimes, checkAuthAndExecute]
+	);
 
 	const dateTabs = dates.map((date) => {
 		const { weekday, formattedDate } = formatDate(date);
@@ -297,17 +311,7 @@ const Movie = () => {
 									<span className={clsx(styles["meta-label"])}>
 										Thể loại:&nbsp;
 									</span>
-									<ul className={clsx(styles["genre-list"])}>
-										{movie.genres.map((genre) => (
-											<li
-												key={genre.id}
-												className={clsx(styles["genre-item"])}
-												onClick={() => handleClickGenre(genre)}
-											>
-												{genre.name}
-											</li>
-										))}
-									</ul>
+									<MovieBadge movie={movie} handleClick={handleClickGenre} />
 								</div>
 							</div>
 							<div>

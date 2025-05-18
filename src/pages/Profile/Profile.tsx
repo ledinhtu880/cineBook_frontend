@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
 import {
 	Edit,
@@ -13,15 +13,15 @@ import {
 	EventSeat,
 	AccessTime,
 	Receipt,
-	ArrowForward,
 } from "@mui/icons-material";
 
 import styles from "./Profile.module.scss";
 import { useAuth } from "@/hooks";
-import type { UserProps } from "@/types";
 import { getFirstLetter } from "@/utils";
+import { Container, Card, Button, Input, Badge, Loading } from "@/components";
+import { PasswordChangeModal } from "./pasword";
+import type { UserProps } from "@/types";
 import { bookingService } from "@/services";
-import { Container, Card, Button, Input, Badge } from "@/components";
 
 interface BookingProps {
 	code: string;
@@ -45,6 +45,7 @@ export default function Profile() {
 	} = useAuth();
 
 	const [isEditing, setIsEditing] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [userData, setUserData] = useState<UserProps>({
 		id: user?.id || -1,
 		first_name: user?.first_name || "",
@@ -59,7 +60,8 @@ export default function Profile() {
 	const [bookingHistory, setBookingHistory] = useState<BookingProps[]>([]);
 	const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-	useEffect(() => {
+	// Tách logic fetch thành các hàm riêng
+	const fetchUserData = useCallback(() => {
 		if (user) {
 			setUserData({
 				id: user.id,
@@ -73,34 +75,70 @@ export default function Profile() {
 				city: user.city,
 			});
 		}
-		(async () => {
-			try {
-				const response = await bookingService.get();
-				setBookingHistory(response.data);
-			} catch (error) {
-				console.error("Xảy ra lỗi khi lấy lịch sử đặt vé:", error);
-			}
-		})();
 	}, [user]);
 
-	const handleEditToggle = () => {
+	const fetchBookingHistory = useCallback(async () => {
+		try {
+			const response = await bookingService.get();
+			setBookingHistory(response.data);
+		} catch (error) {
+			console.error("Xảy ra lỗi khi lấy lịch sử đặt vé:", error);
+		} finally {
+			setLoading(false);
+		}
+	}, []);
+
+	useEffect(() => {
+		fetchUserData();
+
+		if (isLoggedIn && user) {
+			fetchBookingHistory();
+		}
+	}, [user, isLoggedIn, fetchUserData, fetchBookingHistory]);
+
+	const handleEditToggle = useCallback(() => {
 		if (isEditing) {
 			console.log("Saving user data:", userData);
+			// Ở đây bạn có thể gọi API để cập nhật thông tin user
 		}
 		setIsEditing(!isEditing);
-	};
+	}, [isEditing, userData]);
 
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setUserData((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
+	const handleInputChange = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			const { name, value } = e.target;
+			setUserData((prev) => ({
+				...prev,
+				[name]: value,
+			}));
+		},
+		[]
+	);
+
+	const handlePasswordChange = useCallback(
+		async (data: { currentPassword: string; newPassword: string }) => {
+			try {
+				// Implement your password change API call here
+				console.log("Changing password:", data);
+				// Example:
+				// await userService.changePassword(data.currentPassword, data.newPassword);
+				alert("Đổi mật khẩu thành công!");
+				setIsPasswordModalOpen(false);
+			} catch (error) {
+				console.error("Lỗi khi đổi mật khẩu:", error);
+				alert("Đổi mật khẩu thất bại. Vui lòng thử lại.");
+			}
+		},
+		[]
+	);
 
 	if (!isLoggedIn) {
 		setIsLoginOpen(true);
 		return <LoginModalComponent />;
+	}
+
+	if (loading) {
+		return <Loading full />;
 	}
 
 	return (
@@ -305,13 +343,6 @@ export default function Profile() {
 														<span className="font-medium">{booking.time}</span>
 													</div>
 												</div>
-
-												<div className="mt-4 text-right">
-													<Button outline className="text-sm px-4 py-1.5">
-														Xem chi tiết{" "}
-														<ArrowForward className="w-3 h-3 ml-1" />
-													</Button>
-												</div>
 											</div>
 										</div>
 									</div>
@@ -333,8 +364,12 @@ export default function Profile() {
 				</div>
 			</div>
 
-			{/* Password Modal */}
-			{isPasswordModalOpen && <h1>Hello</h1>}
+			{/* Password Change Modal */}
+			<PasswordChangeModal
+				isOpen={isPasswordModalOpen}
+				onClose={() => setIsPasswordModalOpen(false)}
+				onSubmit={handlePasswordChange}
+			/>
 		</Container>
 	);
 }

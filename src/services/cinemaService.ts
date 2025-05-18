@@ -1,7 +1,7 @@
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
-import { CinemaProps, ShowtimeProps as Showtime } from "@/types";
+import type { CinemaProps, ShowtimeProps as Showtime } from "@/types";
 
 interface ShowtimeProps {
 	slug: string;
