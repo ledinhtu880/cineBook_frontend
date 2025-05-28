@@ -66,8 +66,8 @@ export const useAuth = () => {
 		}
 	}, [pendingCallback]);
 
-	const handleLogout = useCallback(() => {
-		authService.logout();
+	const handleLogout = useCallback(async () => {
+		await authService.logout();
 		setIsLoggedIn(false);
 		setUser(null);
 		navigate("/", {
@@ -76,8 +76,6 @@ export const useAuth = () => {
 				severity: "info",
 			},
 		});
-
-		window.location.reload();
 	}, [navigate]);
 
 	// Chuyển từ form đăng nhập sang đăng ký

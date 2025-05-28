@@ -58,7 +58,7 @@ export function PasswordChangeModal({
 			setConfirmPassword("");
 			onClose();
 		} catch (error) {
-			console.log("Đã xảy ra lỗi khi đổi mật khẩu:", error);
+			console.error("Đã xảy ra lỗi khi đổi mật khẩu:", error);
 			setError("Đã xảy ra lỗi khi đổi mật khẩu");
 		} finally {
 			setIsLoading(false);

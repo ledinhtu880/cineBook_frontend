@@ -51,7 +51,12 @@ const Header = ({ onCollapse }: HeaderProps) => {
 	const handleLogout = async () => {
 		try {
 			await authService.logout();
-			navigate("");
+			navigate("/", {
+				state: {
+					message: "Bạn đã đăng xuất khỏi hệ thống",
+					severity: "info",
+				},
+			});
 		} catch (error) {
 			console.error("Lỗi đăng xuất:", error);
 		}

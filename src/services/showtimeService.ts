@@ -37,7 +37,7 @@ const showtimeService = {
 	},
 
 	show: async (id: number) => {
-		const response = await axios.get(`${API_URL}/admin/showtimes/${id}`);
+		const response = await axios.get(`${API_URL}/showtimes/${id}`);
 		return response.data;
 	},
 };

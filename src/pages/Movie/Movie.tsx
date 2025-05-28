@@ -179,8 +179,8 @@ const Movie = () => {
 	}, []);
 
 	const handleOpenBookingModal = useCallback(() => {
-		checkAuthAndExecute(() => setShowBookingModal(true));
-	}, [checkAuthAndExecute]);
+		setShowBookingModal(true);
+	}, []);
 
 	const handleCloseBookingModal = useCallback(() => {
 		setShowBookingModal(false);

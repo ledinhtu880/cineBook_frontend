@@ -10,8 +10,6 @@ interface MovieCardProps {
 }
 
 const MovieCard = ({ movie, onClick }: MovieCardProps) => {
-	console.log(movie.genres_list);
-
 	return (
 		<div className={clsx(styles.card)} onClick={onClick}>
 			<div className={clsx(styles.poster)}>

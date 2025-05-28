@@ -94,7 +94,6 @@ const Booking = () => {
 		const paymentSuccess = status === "PAID";
 
 		if (orderCode && (paymentSuccess || status === "FAILED")) {
-			// Lấy bookingId bằng cách loại bỏ 6 số đầu của orderCode
 			const bookingId = extractBookingId(orderCode);
 
 			if (bookingId !== null) {
@@ -372,7 +371,8 @@ const Booking = () => {
 				}
 			}
 		},
-		[selectedSeats, selectedShowtime.room.seats]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[selectedSeats]
 	);
 
 	const handleShowtimeSelect = useCallback((showtime: ShowtimeProps) => {

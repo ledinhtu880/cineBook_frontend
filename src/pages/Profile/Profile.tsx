@@ -92,12 +92,8 @@ export default function Profile() {
 	}, [user, isLoggedIn, fetchUserData, fetchBookingHistory]);
 
 	const handleEditToggle = useCallback(() => {
-		if (isEditing) {
-			console.log("Saving user data:", userData);
-			// Ở đây bạn có thể gọi API để cập nhật thông tin user
-		}
 		setIsEditing(!isEditing);
-	}, [isEditing, userData]);
+	}, [isEditing]);
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,8 +111,10 @@ export default function Profile() {
 			try {
 				// Implement your password change API call here
 				console.log("Changing password:", data);
-				// Example:
-				// await userService.changePassword(data.currentPassword, data.newPassword);
+				/* await userService.changePassword(
+					data.currentPassword,
+					data.newPassword
+				); */
 				alert("Đổi mật khẩu thành công!");
 				setIsPasswordModalOpen(false);
 			} catch (error) {

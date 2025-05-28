@@ -1,5 +1,5 @@
 .header {
-	@apply sticky top-0 z-30 w-full border-b bg-white shadow-sm py-2;
+	@apply sticky top-0 z-50 w-full border-b bg-white shadow-sm py-2;
 }
 .nav {
 	@apply flex justify-between items-center py-1;
@@ -12,7 +12,6 @@
 }
 
 .logo {
-	// @apply object-cover w-[250px] h-[50px];
 	@apply text-xl font-bold;
 }
 
@@ -41,7 +40,6 @@
 .btn-group {
 	@apply flex space-x-4 ms-0;
 }
-// ...existing code...
 
 .user-dropdown {
 	@apply relative;

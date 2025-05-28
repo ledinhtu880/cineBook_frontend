@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import styles from "./Carousel.module.scss";
 import config from "@/config";
-import type  { MovieProps } from "@/types";
+import type { MovieProps } from "@/types";
 import { getYoutubeEmbedUrl } from "@/utils";
 import { Badge, Box, Button, Image, Modal, Tooltip } from "@/components";
 

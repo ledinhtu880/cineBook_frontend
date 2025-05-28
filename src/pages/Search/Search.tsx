@@ -32,8 +32,10 @@ const Search = () => {
 		searchParams.get("q") || searchParams.get("q") || ""
 	);
 
-	const [loading, setLoading] = useState(true);
 	const [showTrailer, setShowTrailer] = useState(false);
+	const [selectedMovie, setSelectedMovie] = useState<MovieProps | null>(null);
+
+	const [loading, setLoading] = useState(true);
 	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [genres, setGenres] = useState<GenreProps[]>([]);
 	const [selectedGenres, setSelectedGenres] = useState<GenreProps[]>([]);
@@ -117,12 +119,19 @@ const Search = () => {
 		});
 	}, []);
 
-	const handleOpenTrailer = useCallback((e: React.MouseEvent) => {
-		e.stopPropagation();
-		setShowTrailer(true);
-	}, []);
+	const handleOpenTrailer = useCallback(
+		(e: React.MouseEvent, movie: MovieProps) => {
+			e.stopPropagation();
+			setSelectedMovie(movie);
+			setShowTrailer(true);
+		},
+		[]
+	);
 
-	const handleCloseTrailer = useCallback(() => setShowTrailer(false), []);
+	const handleCloseTrailer = useCallback(() => {
+		setShowTrailer(false);
+		setSelectedMovie(null);
+	}, []);
 
 	const applyGenreFilters = useCallback(() => {
 		updateSearchParams();
@@ -255,7 +264,7 @@ const Search = () => {
 													outline
 													leftIcon={<PlayArrow />}
 													size="small"
-													onClick={handleOpenTrailer}
+													onClick={(e) => handleOpenTrailer(e, movie)}
 												>
 													<span>Xem Trailer</span>
 												</Button>
@@ -270,7 +279,7 @@ const Search = () => {
 														: "Xem thông tin phim"}
 												</Button>
 
-												{showTrailer && (
+												{showTrailer && selectedMovie && (
 													<Modal
 														isOpen={showTrailer}
 														onClose={handleCloseTrailer}
@@ -280,8 +289,10 @@ const Search = () => {
 													>
 														<Box>
 															<iframe
-																src={getYoutubeEmbedUrl(movie.trailer_url)}
-																title={`${movie.title} Trailer`}
+																src={getYoutubeEmbedUrl(
+																	selectedMovie.trailer_url
+																)}
+																title={`${selectedMovie.title} Trailer`}
 																width="100%"
 																height="100%"
 																allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

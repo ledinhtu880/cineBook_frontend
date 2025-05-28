@@ -58,7 +58,12 @@ const authService = {
 		try {
 			const token = localStorage.getItem("token");
 			if (token) {
-				await axios.post(`${API_URL}/auth/logout`);
+				await axios.post(`${API_URL}/auth/logout`, {
+					headers: {
+						Authorization: `Bearer ${getTokenFromStorage()}`,
+						"Cache-Control": "no-cache",
+					},
+				});
 			}
 		} finally {
 			localStorage.removeItem("token");
