@@ -60,6 +60,7 @@ export interface MovieProps {
 	id: number;
 	title: string;
 	duration_label: string;
+	release_date: string;
 	release_date_label: string;
 	country: string;
 	rating: string;

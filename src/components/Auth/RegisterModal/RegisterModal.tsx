@@ -44,7 +44,6 @@ const RegisterModal = ({
 				const data = await cityService.get();
 				setCities(data);
 				if (data.length > 0) {
-					// Cập nhật formData với city_id của thành phố đầu tiên
 					setFormData((prev) => ({
 						...prev,
 						city_id: data[0].id,

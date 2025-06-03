@@ -14,10 +14,6 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 		}
 	}, [loading, isLoggedIn, setIsLoginOpen]);
 
-	useEffect(() => {
-		console.log("Auth state:", { isLoggedIn, loading, user });
-	}, [isLoggedIn, loading, user]);
-
 	if (loading) {
 		return <Loading absolute />;
 	}
@@ -28,13 +24,11 @@ const ProtectedAdminRoute = ({ children }: { children: ReactElement }) => {
 
 	// Check if user data is still being loaded even though isLoggedIn is true
 	if (isLoggedIn && !user) {
-		console.log("User is logged in but user data is not available yet");
 		return <Loading absolute />;
 	}
 
 	// Specific check for admin role
 	if (!user?.role) {
-		console.log("User role check failed:", user);
 		return (
 			<Navigate
 				to="/"

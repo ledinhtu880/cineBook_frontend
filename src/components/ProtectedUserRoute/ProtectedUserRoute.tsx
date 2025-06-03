@@ -3,11 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks";
 
 const ProtectedUserRoute = ({ children }: { children: ReactElement }) => {
-	const { isLoggedIn, setIsLoginOpen } = useAuth();
+	const { isLoggedIn } = useAuth();
 
 	if (!isLoggedIn) {
-		setIsLoginOpen(true);
-
 		return (
 			<Navigate
 				to="/"

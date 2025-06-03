@@ -49,7 +49,7 @@ const privateRoutes = [
 	{
 		path: config.routes.profile,
 		component: Profile,
-		title: "Đặt vé",
+		title: "Xem thông tin tài khoản",
 	},
 ];
 

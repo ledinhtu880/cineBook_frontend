@@ -342,7 +342,7 @@ export default function Profile() {
 								))}
 							</div>
 						) : (
-							<div className="text-center py-12 bg-gray-50 rounded-lg mx-6 my-4">
+							<div className="text-center bg-gray-50 rounded-lg mx-6 my-4">
 								<MovieFilter
 									className="mx-auto text-gray-400 mb-3"
 									style={{ fontSize: "48px" }}

@@ -891,7 +891,7 @@ const Booking = () => {
 				<h3 className={clsx(styles["summary-title"])}>
 					Thông tin đặt vé
 					<CountdownTimer
-						initialTime={30}
+						initialTime={420}
 						onTimeEnd={() => {
 							navigate("/", {
 								state: {

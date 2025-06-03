@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { Menu, ExpandLess, ExpandMore, Logout } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 
 import styles from "./Header.module.scss";
-import { authService } from "@/services";
+import { useAuth } from "@/hooks";
 import type { UserProps } from "@/types";
 import { Button, Image } from "@/components";
 
@@ -13,26 +12,18 @@ interface HeaderProps {
 }
 
 const Header = ({ onCollapse }: HeaderProps) => {
+	const dropdownRef = useRef<HTMLDivElement>(null);
 	const [isCollapse, setIsCollapse] = useState(false);
 	const [userData, setUserData] = useState<UserProps | null>(null);
-	const dropdownRef = useRef<HTMLDivElement>(null);
-	const navigate = useNavigate();
+	const { user, handleLogout } = useAuth();
 
 	useEffect(() => {
-		const fetchUserData = async () => {
-			try {
-				const user = await authService.getCurrentUser();
-				setUserData(user);
-			} catch (error) {
-				console.error("Có lỗi xảy ra trong quá trình tải người dùng:", error);
-			}
-		};
-
-		fetchUserData();
-	}, []);
+		if (user) {
+			setUserData(user);
+		}
+	}, [user]);
 
 	useEffect(() => {
-		// Xử lý click outside để đóng dropdown
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				dropdownRef.current &&
@@ -47,20 +38,6 @@ const Header = ({ onCollapse }: HeaderProps) => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
-
-	const handleLogout = async () => {
-		try {
-			await authService.logout();
-			navigate("/", {
-				state: {
-					message: "Bạn đã đăng xuất khỏi hệ thống",
-					severity: "info",
-				},
-			});
-		} catch (error) {
-			console.error("Lỗi đăng xuất:", error);
-		}
-	};
 
 	return (
 		<header className={clsx(styles["header"])}>

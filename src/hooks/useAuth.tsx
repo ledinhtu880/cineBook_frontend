@@ -127,17 +127,21 @@ export const useAuth = () => {
 							onLoginSuccess={handleLoginSuccess}
 							onOpenRegister={switchToRegister}
 						/>
-						<RegisterModal
-							isOpen={isRegisterOpen}
-							onClose={() => setIsRegisterOpen(false)}
-							onOpenLogin={switchToLogin}
-							onRegisterSuccess={handleRegisterSuccess}
-						/>
-						<RegisterSuccessModal
-							isOpen={isRegisterSuccessOpen}
-							onClose={() => setIsRegisterSuccessOpen(false)}
-							onRegisterSuccess={handleRegisterSuccessClose}
-						/>
+						{isRegisterOpen && (
+							<RegisterModal
+								isOpen={true}
+								onClose={() => setIsRegisterOpen(false)}
+								onOpenLogin={switchToLogin}
+								onRegisterSuccess={handleRegisterSuccess}
+							/>
+						)}
+						{isRegisterSuccessOpen && (
+							<RegisterSuccessModal
+								isOpen={true}
+								onClose={() => setIsRegisterSuccessOpen(false)}
+								onRegisterSuccess={handleRegisterSuccessClose}
+							/>
+						)}
 					</>
 				) : (
 					<LoginModal

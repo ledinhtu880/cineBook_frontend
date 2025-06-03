@@ -28,7 +28,7 @@ import {
 	Box,
 	Button,
 	Loading,
-	Image,
+	Image as UiImage,
 	Modal,
 	MovieGenre,
 	Select,
@@ -51,7 +51,11 @@ const Movie = () => {
 	const { slug } = useParams();
 	const navigate = useNavigate();
 
-	const [loading, setLoading] = useState(true);
+	// Chỉ cần 1 trạng thái loading chính
+	const [pageLoading, setPageLoading] = useState(true);
+	const [showtimesLoading, setShowtimesLoading] = useState(true);
+	const [imagesLoaded, setImagesLoaded] = useState(false);
+
 	const { checkAuthAndExecute, renderLoginModals } = useAuth();
 
 	const [dates, setDates] = useState<Date[]>([]);
@@ -73,6 +77,96 @@ const Movie = () => {
 	const [showTrailer, setShowTrailer] = useState(false);
 	const [showBookingModal, setShowBookingModal] = useState(false);
 
+	// Load tất cả dữ liệu cần thiết cùng lúc
+	useEffect(() => {
+		const loadInitialData = async () => {
+			try {
+				if (!slug) return;
+
+				// Thực hiện tất cả các API calls song song
+				const [movieResponse, ratedMoviesResponse, citiesResponse] =
+					await Promise.all([
+						movieService.getMovieBySlug(slug),
+						movieService.getTopRatedNowShowingMovies({
+							limit: 3,
+							sort: "rating",
+							order: "desc",
+						}),
+						cityService.getWithCinemas(),
+					]);
+
+				// Set dữ liệu
+				setMovie(movieResponse);
+				document.title = movieResponse.title;
+
+				setRatedMovies(ratedMoviesResponse);
+
+				setCities(citiesResponse);
+				if (citiesResponse && citiesResponse.length > 0) {
+					setSelectedCity(citiesResponse[0]);
+					setSelectedCinema(citiesResponse[0].cinemas[0]);
+				}
+
+				// Preload các ảnh quan trọng
+				await preloadImages([
+					movieResponse.banner_url,
+					movieResponse.poster_url,
+					...ratedMoviesResponse.map((movie: MovieProps) => movie.poster_url),
+				]);
+
+				setImagesLoaded(true);
+			} catch (error) {
+				console.error("Lỗi khi tải dữ liệu:", error);
+				setImagesLoaded(true); // Vẫn ẩn loading nếu có lỗi
+			} finally {
+				setPageLoading(false);
+			}
+		};
+
+		loadInitialData();
+	}, [slug]);
+
+	// Hàm preload ảnh
+	const preloadImages = (imageUrls: string[]) => {
+		return Promise.all(
+			imageUrls.map((url) => {
+				return new Promise((resolve) => {
+					const img = new Image() as HTMLImageElement;
+					img.onload = () => resolve(true);
+					img.onerror = () => {
+						console.warn(`Failed to preload image: ${url}`);
+						resolve(false);
+					};
+					// Đặt timeout 3 giây
+					setTimeout(() => resolve(false), 3000);
+					img.src = url;
+				});
+			})
+		);
+	};
+
+	// Load showtimes riêng biệt khi có movie
+	useEffect(() => {
+		const fetchShowtimes = async () => {
+			if (!movie) return;
+
+			try {
+				setShowtimesLoading(true);
+				const data = await movieService.getShowtimese(movie.id);
+				setShowtimes(data);
+			} catch (error) {
+				console.error(
+					"Có lỗi xảy ra trong quá trình tải danh sách suất chiếu:",
+					error
+				);
+			} finally {
+				setShowtimesLoading(false);
+			}
+		};
+
+		fetchShowtimes();
+	}, [movie]);
+
 	useEffect(() => {
 		(() => {
 			const today = new Date();
@@ -87,71 +181,6 @@ const Movie = () => {
 			setSelectedDate(today);
 		})();
 	}, []);
-
-	useEffect(() => {
-		(async () => {
-			try {
-				if (!slug) return;
-				const response = await movieService.getMovieBySlug(slug);
-				setMovie(response);
-
-				document.title = response.title;
-			} catch (error) {
-				console.error("Lỗi khi tải dữ liệu phim:", error);
-			} finally {
-				setLoading(false);
-			}
-		})();
-	}, [slug]);
-
-	useEffect(() => {
-		(async () => {
-			try {
-				const response = await movieService.getTopRatedNowShowingMovies({
-					limit: 3,
-					sort: "rating",
-					order: "desc",
-				});
-				setRatedMovies(response);
-			} catch (error) {
-				console.error("Error fetching movies:", error);
-			}
-		})();
-	}, []);
-
-	useEffect(() => {
-		(async () => {
-			try {
-				const data = await cityService.getWithCinemas();
-				setCities(data);
-
-				if (data && data.length > 0) {
-					setSelectedCity(data[0]);
-					setSelectedCinema(data[0].cinemas[0]);
-				}
-			} catch (error) {
-				console.error(
-					"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
-					error
-				);
-			}
-		})();
-	}, []);
-
-	useEffect(() => {
-		try {
-			(async () => {
-				if (!movie) return;
-				const data = await movieService.getShowtimese(movie.id);
-				setShowtimes(data);
-			})();
-		} catch (error) {
-			console.error(
-				"Có lỗi xảy ra trong quá trình tải danh sách thành phố:",
-				error
-			);
-		}
-	}, [movie]);
 
 	useEffect(() => {
 		(async () => {
@@ -234,8 +263,9 @@ const Movie = () => {
 		};
 	});
 
-	if (loading) {
-		return <Loading absolute />;
+	// Hiển thị loading khi đang tải dữ liệu chính hoặc ảnh chưa load xong
+	if (pageLoading || !imagesLoaded) {
+		return <Loading full />;
 	}
 
 	if (!movie) {
@@ -246,7 +276,7 @@ const Movie = () => {
 		<div className={clsx(styles["wrapper"])}>
 			<div className={clsx(styles["banner-wrapper"])}>
 				<div className="relative h-[500px]">
-					<Image
+					<UiImage
 						className={clsx(styles["image"])}
 						src={movie.banner_url}
 						alt={movie.title}
@@ -266,7 +296,7 @@ const Movie = () => {
 				<div className={clsx(styles["content"])}>
 					<div className={clsx(styles["main-info"])}>
 						<div className={clsx(styles["poster-wrapper"])}>
-							<Image
+							<UiImage
 								src={movie.poster_url}
 								alt={movie.title}
 								className={clsx(styles["poster"])}
@@ -315,7 +345,16 @@ const Movie = () => {
 								</div>
 							</div>
 							<div>
-								{movie.is_now_showing ? (
+								{showtimesLoading ? (
+									<Button
+										primary
+										className={clsx(styles["action-btn"])}
+										disabled
+									>
+										<span className="inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></span>
+										Đang tải...
+									</Button>
+								) : showtimes && showtimes.length > 0 ? (
 									<Button
 										primary
 										className={clsx(styles["action-btn"])}
@@ -323,13 +362,22 @@ const Movie = () => {
 									>
 										Đặt vé ngay
 									</Button>
-								) : (
+								) : movie.release_date &&
+								  new Date(movie.release_date) > new Date() ? (
 									<Button
 										primary
 										className={clsx(styles["action-btn"])}
 										disabled
 									>
 										Sắp chiếu
+									</Button>
+								) : (
+									<Button
+										primary
+										className={clsx(styles["action-btn"])}
+										disabled
+									>
+										Hết suất chiếu
 									</Button>
 								)}
 							</div>
@@ -339,7 +387,7 @@ const Movie = () => {
 					<div className={clsx(styles["description"])}>
 						<h2 className={clsx("border-left-accent")}>Nội dung phim</h2>
 						{movie.description?.split("\n").map((text, index) => (
-							<p key={index}>{text}</p>
+							<p key={index}>{text.trim()}</p>
 						))}
 					</div>
 				</div>
@@ -385,7 +433,7 @@ const Movie = () => {
 				>
 					<div className={clsx(styles["modal-content"])}>
 						<div className={clsx(styles["modal-header"])}>
-							<Image
+							<UiImage
 								src={movie.poster_url}
 								alt={movie.title}
 								className={clsx(styles["modal-image"])}
@@ -443,7 +491,7 @@ const Movie = () => {
 													})}
 													onClick={() => handleClickCinema(cinema)}
 												>
-													<Image
+													<UiImage
 														className={clsx(styles["cinema-image"])}
 														src={cinema.image}
 														alt={cinema.name}
@@ -479,12 +527,21 @@ const Movie = () => {
 									/>
 								</div>
 								<div className="flex-1">
-									<Showtime
-										movie={movie}
-										showtimes={filteredShowtimes}
-										handleClick={handleClickShowtime}
-										relative
-									/>
+									{showtimesLoading ? (
+										<div className="p-6 text-center">
+											<div className="inline-block w-8 h-8 border-4 border-t-transparent border-primary rounded-full animate-spin"></div>
+											<p className="mt-2 text-gray-600">
+												Đang tải lịch chiếu...
+											</p>
+										</div>
+									) : (
+										<Showtime
+											movie={movie}
+											showtimes={filteredShowtimes}
+											handleClick={handleClickShowtime}
+											relative
+										/>
+									)}
 								</div>
 							</div>
 						</div>
