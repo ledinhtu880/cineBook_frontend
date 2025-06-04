@@ -144,7 +144,7 @@ export function PasswordChangeModal({
 								className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
 								disabled={isLoading}
 							>
-								{isLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
+								{isLoading ? "Đang xử lý..." : "Lưu"}
 							</button>
 						</div>
 					</form>

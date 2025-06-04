@@ -17,17 +17,11 @@ const showtimeService = {
 	},
 
 	update: async (id: number, data: FormData) => {
-		data.append("_method", "PUT");
-
-		const response = await axios.post(
-			`${API_URL}/admin/showtimes/${id}`,
-			data,
-			{
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			}
-		);
+		const response = await axios.put(`${API_URL}/admin/showtimes/${id}`, data, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		});
 		return response.data.data;
 	},
 

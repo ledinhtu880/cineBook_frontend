@@ -183,6 +183,5 @@ export const useAuth = () => {
 		renderLoginModals,
 		user,
 		loading,
-		fetchCurrentUser,
 	};
 };

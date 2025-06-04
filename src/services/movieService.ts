@@ -67,10 +67,7 @@ const movieService = {
 	},
 
 	update: async (id: number, data: FormData) => {
-		// Thêm _method field để Laravel hiểu đây là PUT request
-		data.append("_method", "PUT");
-
-		const response = await axios.post(`${API_URL}/admin/movies/${id}`, data, {
+		const response = await axios.put(`${API_URL}/admin/movies/${id}`, data, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},

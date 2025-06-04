@@ -74,47 +74,21 @@ const authService = {
 		}
 	},
 
-	getCurrentUser: async (forceRefresh = false) => {
+	getCurrentUser: async () => {
 		try {
-			if (forceRefresh || !userCache) {
-				const response = await axios.get(`${API_URL}/auth/me`, {
-					headers: {
-						Authorization: `Bearer ${getTokenFromStorage()}`,
-						"Cache-Control": "no-cache",
-					},
-				});
+			if (userCache) return userCache;
 
-				// Lưu vào cache
-				userCache = response.data.data;
-				return response.data.data;
-			}
-
-			return userCache;
-		} catch (error) {
-			console.error("Error getting current user:", error);
-			return null;
-		}
-	},
-
-	refreshUserData: async () => {
-		const token = getTokenFromStorage();
-		if (!token) return null;
-
-		userCache = null;
-
-		try {
 			const response = await axios.get(`${API_URL}/auth/me`, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					Authorization: `Bearer ${getTokenFromStorage()}`,
+					"Cache-Control": "no-cache",
 				},
 			});
 
 			userCache = response.data.data;
-			return userCache;
+			return response.data.data;
 		} catch (error) {
-			if (axios.isAxiosError(error) && error.response?.status === 401) {
-				authService.logout();
-			}
+			console.error("Error getting current user:", error);
 			return null;
 		}
 	},

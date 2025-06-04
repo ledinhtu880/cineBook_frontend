@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 
 import styles from "./Profile.module.scss";
+import config from "@/config";
 import { useAuth } from "@/hooks";
 import { getFirstLetter } from "@/utils";
 import { Container, Card, Button, Input, Badge, Loading } from "@/components";
@@ -75,7 +76,7 @@ export default function Profile() {
 	const fetchBookingHistory = useCallback(async () => {
 		try {
 			const response = await bookingService.get();
-			setBookingHistory(response.data);
+			setBookingHistory(response);
 		} catch (error) {
 			console.error("Xảy ra lỗi khi lấy lịch sử đặt vé:", error);
 		} finally {
@@ -350,7 +351,9 @@ export default function Profile() {
 								<p className="text-gray-500 text-lg mb-4">
 									Bạn chưa đặt vé nào
 								</p>
-								<Button primary>Đặt vé ngay</Button>
+								<Button primary to={config.routes.now_showing}>
+									Đặt vé ngay
+								</Button>
 							</div>
 						)}
 					</Card>

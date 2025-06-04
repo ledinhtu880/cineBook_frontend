@@ -41,7 +41,6 @@ const Header = () => {
 		setIsDropdownOpen(!isDropdownOpen);
 	};
 
-	// Close dropdown when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (

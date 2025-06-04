@@ -27,9 +27,7 @@ const cinemaService = {
 	},
 
 	update: async (id: number, data: FormData) => {
-		data.append("_method", "PUT");
-
-		const response = await axios.post(`${API_URL}/admin/cinemas/${id}`, data, {
+		const response = await axios.put(`${API_URL}/admin/cinemas/${id}`, data, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},

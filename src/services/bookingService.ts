@@ -13,8 +13,12 @@ interface BookingData {
 	cancelUrl: string;
 }
 
+let bookingCache: BookingData | null = null;
+
 const bookingService = {
 	get: async () => {
+		if (bookingCache) return bookingCache;
+
 		const token = localStorage.getItem("token");
 
 		const response = await axios.get(`${API_URL}/bookings`, {
@@ -24,7 +28,10 @@ const bookingService = {
 			},
 		});
 
-		return response.data;
+		const data = response.data.data;
+		bookingCache = data;
+
+		return data;
 	},
 
 	create: async (data: BookingData) => {
@@ -43,7 +50,7 @@ const bookingService = {
 	update: async (orderCode: number) => {
 		const token = localStorage.getItem("token");
 
-		const response = await axios.post(`${API_URL}/bookings/${orderCode}`, {
+		const response = await axios.put(`${API_URL}/bookings/${orderCode}`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,

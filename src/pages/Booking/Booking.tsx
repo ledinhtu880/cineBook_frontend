@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import styles from "./Booking.module.scss";
 import config from "@/config";
+import { useAuth } from "@/hooks";
 import type {
 	SeatProps,
 	ShowtimeProps as ShowtimeProps,
@@ -11,7 +12,6 @@ import type {
 } from "@/types";
 import {
 	productComboService,
-	authService,
 	bookingService,
 	showtimeService,
 } from "@/services";
@@ -55,6 +55,7 @@ const Booking = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+	const { user } = useAuth();
 
 	const [loading, setLoading] = useState(true);
 	const [isProcessing, setIsProcessing] = useState(false);
@@ -226,61 +227,49 @@ const Booking = () => {
 		setIsProcessing(true);
 
 		try {
-			const currentUser = await authService.getCurrentUser();
+			if (user) {
+				const bookingData = {
+					user_id: user?.id,
+					showtime_id: selectedShowtime.id,
+					seats: selectedSeats.map((seat) => ({
+						id: seat.id,
+						price: seat.price,
+					})),
+					combos: selectedCombos.map((combo) => ({
+						id: combo.id,
+						quantity: combo.quantity,
+						price: combo.price,
+					})),
+					payment_method: paymentMethod,
+					total_amount: getTotal(),
+					booking_time: new Date().toISOString(),
+					returnUrl: window.location.href,
+					cancelUrl: config.routes.home,
+				};
 
-			if (!currentUser) {
-				navigate("/login", {
-					state: {
-						message: "Vui lòng đăng nhập để đặt vé",
-						severity: "error",
-						returnUrl: location.pathname,
-					},
-				});
-				return;
-			}
+				localStorage.setItem(
+					"booking_data",
+					JSON.stringify({
+						movieInfo: movie,
+						selectedShowtime,
+						selectedSeats,
+						selectedCombos,
+						paymentMethod,
+						cinemaName,
+					})
+				);
 
-			const bookingData = {
-				user_id: currentUser.id,
-				showtime_id: selectedShowtime.id,
-				seats: selectedSeats.map((seat) => ({
-					id: seat.id,
-					price: seat.price,
-				})),
-				combos: selectedCombos.map((combo) => ({
-					id: combo.id,
-					quantity: combo.quantity,
-					price: combo.price,
-				})),
-				payment_method: paymentMethod,
-				total_amount: getTotal(),
-				booking_time: new Date().toISOString(),
-				returnUrl: window.location.href,
-				cancelUrl: config.routes.home,
-			};
-
-			localStorage.setItem(
-				"booking_data",
-				JSON.stringify({
-					movieInfo: movie,
-					selectedShowtime,
-					selectedSeats,
-					selectedCombos,
-					paymentMethod,
-					cinemaName,
-				})
-			);
-
-			const response = await bookingService.create(bookingData);
-			if (response.status == "success") {
-				window.open(response.checkoutUrl, "_blank");
+				const response = await bookingService.create(bookingData);
+				if (response.status == "success") {
+					window.open(response.checkoutUrl, "_blank");
+				}
 			}
 		} catch (error) {
 			console.error("Lỗi khi đặt vé:", error);
 			alert("Đã xảy ra lỗi khi đặt vé. Vui lòng thử lại sau.");
 		}
 	}, [
-		navigate,
-		location.pathname,
+		user,
 		selectedShowtime,
 		selectedSeats,
 		selectedCombos,
@@ -1114,7 +1103,7 @@ const Booking = () => {
 		);
 	};
 
-	if (loading) return <Loading absolute />;
+	if (loading) return <Loading full />;
 
 	return (
 		<Container className={clsx(styles["heading"])}>
