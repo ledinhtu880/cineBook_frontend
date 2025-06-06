@@ -73,3 +73,27 @@
 		@apply border border-gray-200 text-gray-700 py-3 w-full rounded-md font-medium hover:bg-gray-100;
 	}
 }
+
+.no-data-cell {
+	@apply text-center py-8 px-4 border-0;
+}
+
+.no-data-wrapper {
+	@apply flex flex-col items-center gap-4 text-secondary;
+}
+
+.no-data-icon {
+	svg {
+		@apply text-5xl opacity-50;
+	}
+}
+
+.no-data-text {
+	h4 {
+		@apply mb-2 text-lg font-bold text-primary;
+	}
+
+	p {
+		@apply m-0 text-sm font-medium text-secondary;
+	}
+}

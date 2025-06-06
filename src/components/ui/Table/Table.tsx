@@ -6,6 +6,7 @@ import {
 	Warning,
 	KeyboardArrowLeft,
 	KeyboardArrowRight,
+	SearchOff,
 } from "@mui/icons-material";
 import clsx from "clsx";
 
@@ -20,6 +21,11 @@ interface TableProps<T extends { id: number; name?: string; title?: string }> {
 	showPath?: string;
 	onDelete?: (record: T) => void;
 	pageSize?: number;
+	emptyMessage?: {
+		title?: string;
+		description?: string;
+		icon?: React.ReactNode;
+	};
 }
 
 const Table = <T extends { id: number; name?: string; title?: string }>({
@@ -29,6 +35,11 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 	showPath,
 	onDelete,
 	pageSize = 5,
+	emptyMessage = {
+		title: "Không có dữ liệu",
+		description: "Hiện tại chưa có dữ liệu nào để hiển thị",
+		icon: <SearchOff />,
+	},
 }: TableProps<T>) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,17 +50,11 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 	const endIndex = startIndex + pageSize;
 	const currentData = data.slice(startIndex, endIndex);
 
-	// Thêm hàm tính toán nút phân trang
 	const getPaginationButtons = () => {
-		// Số trang hiển thị xung quanh trang hiện tại (trước và sau)
 		const siblingCount = 1;
-		// Tổng số trang hiển thị chưa tính ellipsis, trang đầu và trang cuối
-		// (siblingCount ở cả hai bên + trang hiện tại)
 		const visiblePages = siblingCount * 2 + 1;
 
-		// Trường hợp số trang ít, hiển thị tất cả
 		if (totalPages <= visiblePages + 2) {
-			// +2 cho trang đầu và trang cuối
 			const pages = [];
 			for (let i = 1; i <= totalPages; i++) {
 				pages.push(i);
@@ -59,11 +64,9 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 
 		const pageNumbers: (string | number)[] = [];
 
-		// Tính toán phạm vi trang hiển thị
 		const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
 		const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
 
-		// Xác định xem có nên hiển thị ellipsis bên trái và bên phải
 		const shouldShowLeftDots = leftSiblingIndex > 2;
 		const shouldShowRightDots = rightSiblingIndex < totalPages - 1;
 
@@ -95,19 +98,21 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 			<table className={clsx(styles["table"])}>
 				<thead className={clsx(styles["table-header"])}>
 					<tr>
-						{columns.map((column) => (
-							<th
-								key={String(column.key)}
-								className={clsx(styles["table-heading"], {
-									"text-left": column.align === "left" || !column.align,
-									"text-center": column.align === "center",
-									"text-right": column.align === "right",
-								})}
-							>
-								{column.title}
-							</th>
-						))}
-						{(editPath || showPath || onDelete) && (
+						{currentData.length > 0 &&
+							columns.map((column) => (
+								<th
+									key={String(column.key)}
+									className={clsx(styles["table-heading"], {
+										"text-left": column.align === "left" || !column.align,
+										"text-center": column.align === "center",
+										"text-right": column.align === "right",
+									})}
+								>
+									{column.title}
+								</th>
+							))}
+
+						{currentData.length > 0 && (editPath || showPath || onDelete) && (
 							<th className={clsx(styles["table-heading"], "text-center")}>
 								Thao tác
 							</th>
@@ -115,85 +120,106 @@ const Table = <T extends { id: number; name?: string; title?: string }>({
 					</tr>
 				</thead>
 				<tbody className={clsx(styles["table-body"])}>
-					{currentData.map((record, index) => {
-						return (
-							<tr key={index}>
-								{columns.map((column) => (
-									<td
-										key={String(column.key)}
-										className={clsx(styles["table-data"], {
-											"text-left": column.align === "left" || !column.align,
-											"text-center": column.align === "center",
-											"text-right": column.align === "right",
-										})}
-										style={{
-											width: column.width,
-											maxWidth: column.width,
-										}}
-									>
-										{column.tooltip ? (
-											<Tooltip
-												title={String(record[column.key])}
-												placement="bottom-start"
-											>
-												<div className="truncate">
+					{currentData.length > 0 ? (
+						currentData.map((record, index) => {
+							return (
+								<tr key={index}>
+									{columns.map((column) => (
+										<td
+											key={String(column.key)}
+											className={clsx(styles["table-data"], {
+												"text-left": column.align === "left" || !column.align,
+												"text-center": column.align === "center",
+												"text-right": column.align === "right",
+											})}
+											style={{
+												width: column.width,
+												maxWidth: column.width,
+											}}
+										>
+											{column.tooltip ? (
+												<Tooltip
+													title={String(record[column.key])}
+													placement="bottom-start"
+												>
+													<div className="truncate">
+														{column.render
+															? column.render(record[column.key], record)
+															: String(record[column.key])}
+													</div>
+												</Tooltip>
+											) : (
+												<>
 													{column.render
 														? column.render(record[column.key], record)
 														: String(record[column.key])}
-												</div>
-											</Tooltip>
-										) : (
-											<>
-												{column.render
-													? column.render(record[column.key], record)
-													: String(record[column.key])}
-											</>
-										)}
-									</td>
-								))}
-								{(editPath || showPath || onDelete) && (
-									<td className={clsx(styles["actions-wrapper"])}>
-										{showPath && (
-											<Tooltip title="Xem chi tiết" placement="bottom" arrow>
-												<Button
-													to={`${showPath}/${record.id}`}
-													size="no-padding"
-													className={clsx(styles["actions-btn-show"])}
-												>
-													<Visibility fontSize="small" />
-												</Button>
-											</Tooltip>
-										)}
-										{editPath && (
-											<Tooltip title="Sửa dữ liệu" placement="bottom" arrow>
-												<Button
-													to={`${editPath}/${record.id}/edit`}
-													size="no-padding"
-													className={clsx(styles["actions-btn-edit"])}
-												>
-													<Edit fontSize="small" />
-												</Button>
-											</Tooltip>
-										)}
-										{onDelete && (
-											<Tooltip title="Xóa dữ liệu" placement="bottom" arrow>
-												<Button
-													onClick={() => {
-														setSelectedRecord(record);
-														setIsModalOpen(true);
-													}}
-													size="no-padding"
-													className={clsx(styles["actions-btn-delete"])}
-												>
-													<Delete fontSize="small" />
-												</Button>
-											</Tooltip>
-										)}
-									</td>
-								)}
-							</tr>
-						);
-					})}
+												</>
+											)}
+										</td>
+									))}
+									{(editPath || showPath || onDelete) && (
+										<td className={clsx(styles["actions-wrapper"])}>
+											{showPath && (
+												<Tooltip title="Xem chi tiết" placement="bottom" arrow>
+													<Button
+														to={`${showPath}/${record.id}`}
+														size="no-padding"
+														className={clsx(styles["actions-btn-show"])}
+													>
+														<Visibility fontSize="small" />
+													</Button>
+												</Tooltip>
+											)}
+											{editPath && (
+												<Tooltip title="Sửa dữ liệu" placement="bottom" arrow>
+													<Button
+														to={`${editPath}/${record.id}/edit`}
+														size="no-padding"
+														className={clsx(styles["actions-btn-edit"])}
+													>
+														<Edit fontSize="small" />
+													</Button>
+												</Tooltip>
+											)}
+											{onDelete && (
+												<Tooltip title="Xóa dữ liệu" placement="bottom" arrow>
+													<Button
+														onClick={() => {
+															setSelectedRecord(record);
+															setIsModalOpen(true);
+														}}
+														size="no-padding"
+														className={clsx(styles["actions-btn-delete"])}
+													>
+														<Delete fontSize="small" />
+													</Button>
+												</Tooltip>
+											)}
+										</td>
+									)}
+								</tr>
+							);
+						})
+					) : (
+						<tr>
+							<td
+								colSpan={
+									columns.length + (editPath || showPath || onDelete ? 1 : 0)
+								}
+								className={clsx(styles["no-data-cell"])}
+							>
+								<div className={clsx(styles["no-data-wrapper"])}>
+									<div className={clsx(styles["no-data-icon"])}>
+										{emptyMessage.icon}
+									</div>
+									<div className={clsx(styles["no-data-text"])}>
+										<h4>{emptyMessage.title}</h4>
+										<p>{emptyMessage.description}</p>
+									</div>
+								</div>
+							</td>
+						</tr>
+					)}
 				</tbody>
 			</table>
 
