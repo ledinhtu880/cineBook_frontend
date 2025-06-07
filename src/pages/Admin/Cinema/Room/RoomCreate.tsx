@@ -92,26 +92,6 @@ const PreviewModal = ({
 			<DialogTitle>
 				<div className="flex justify-between items-center">
 					<span>Xem trước sơ đồ phòng chiếu</span>
-					<div className={clsx(styles.legend)}>
-						<div className={clsx(styles["legend-item"])}>
-							<div
-								className={clsx(styles["legend-color"], styles.normal)}
-							></div>
-							<span>Ghế thường</span>
-						</div>
-						<div className={clsx(styles["legend-item"])}>
-							<div className={clsx(styles["legend-color"], styles.vip)}></div>
-							<span>Ghế VIP</span>
-						</div>
-						{sweetboxRows > 0 && (
-							<div className={clsx(styles["legend-item"])}>
-								<div
-									className={clsx(styles["legend-color"], styles.sweetbox)}
-								></div>
-								<span>Ghế đôi</span>
-							</div>
-						)}
-					</div>
 				</div>
 			</DialogTitle>
 			<DialogContent>
@@ -325,7 +305,13 @@ const RoomCreate = () => {
 						</div>
 					</div>
 					<div className={clsx(styles["actions-wrapper"])}>
-						<Button outline to={config.routes.admin_cinemas}>
+						<Button
+							outline
+							to={config.routes.admin_cinemas_detail.replace(
+								":id",
+								cinema.id.toString()
+							)}
+						>
 							Hủy
 						</Button>
 						<Button primary onClick={handlePreview} type="button">

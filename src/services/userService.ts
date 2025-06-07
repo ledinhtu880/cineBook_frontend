@@ -1,10 +1,14 @@
+import { UserProps } from "@/types";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
+let usersCache: UserProps | null = null;
+
 const userService = {
-	// Get all users
 	getUsers: async () => {
 		try {
+			if (usersCache) return usersCache;
+
 			const token = localStorage.getItem("token");
 			const response = await axios.get(`${API_URL}/admin/users`, {
 				headers: {
@@ -13,7 +17,8 @@ const userService = {
 			});
 
 			if (response.data.status === "success") {
-				return response.data.data;
+				usersCache = response.data.data;
+				return usersCache;
 			}
 
 			throw new Error(response.data.message);

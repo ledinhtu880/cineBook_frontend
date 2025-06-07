@@ -294,10 +294,10 @@ const Showtime = () => {
 							<span className={clsx(styles["highlight"])}>
 								{filteredShowtimes.length}
 							</span>
-							&nbsp; suất chiếu
+							&nbsp;suất chiếu&nbsp;
 							{searchKeyword.trim() && (
 								<span>
-									với từ khóa
+									với từ khóa&nbsp;
 									<span className={clsx(styles["highlight"])}>
 										"{searchKeyword.trim()}"
 									</span>
@@ -306,7 +306,7 @@ const Showtime = () => {
 							{selectedMovie &&
 								uniqueMovies.find((m) => m.id.toString() === selectedMovie) && (
 									<span>
-										cho phim
+										&nbsp;cho phim&nbsp;
 										<span className={clsx(styles["highlight"])}>
 											{
 												uniqueMovies.find(
@@ -318,7 +318,7 @@ const Showtime = () => {
 								)}
 							{selectedCinema && (
 								<span>
-									tại
+									&nbsp;tại&nbsp;
 									<span className={clsx(styles["highlight"])}>
 										{selectedCinema}
 									</span>
@@ -326,7 +326,7 @@ const Showtime = () => {
 							)}
 							{selectedDate && (
 								<span>
-									vào ngày
+									&nbsp;vào ngày&nbsp;
 									<span className={clsx(styles["highlight"])}>
 										{selectedDate}
 									</span>

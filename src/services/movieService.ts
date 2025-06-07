@@ -10,14 +10,18 @@ interface MovieQueryParams {
 	g?: string[];
 }
 
+let moviesCache: MovieProps | null = null;
 let nowShowingCache: MovieProps | null = null;
 let comingSoonCache: MovieProps | null = null;
 let movieBySlugCache: MovieProps | null = null;
 
 const movieService = {
 	getMovies: async () => {
+		if (moviesCache) return moviesCache;
+
 		const response = await axios.get(`${API_URL}/admin/movies`);
-		return response.data.data;
+		moviesCache = response.data.data;
+		return moviesCache;
 	},
 
 	getNowShowingMovies: async () => {
