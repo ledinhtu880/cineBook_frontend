@@ -8,3 +8,4 @@ export { default as cinemaService } from "./cinemaService";
 export { default as roomService } from "./roomService";
 export { default as showtimeService } from "./showtimeService";
 export { default as productComboService } from "./productComboService";
+export { default as dashboardService } from "./dashboardService";
