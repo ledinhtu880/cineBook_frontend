@@ -117,7 +117,7 @@ const adminRoutes = [
 	{
 		path: config.routes.admin_cinemas_rooms_create,
 		component: Admin.Cinema.RoomCreate,
-		title: "Tạo phòng chiếu",
+		title: "Thêm phòng chiếu",
 	},
 	// #endregion
 

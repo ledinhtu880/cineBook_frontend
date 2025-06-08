@@ -126,7 +126,7 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 
 			await onSubmit(formDataToSend);
 			showSnackbar(
-				`${mode === "create" ? "Tạo" : "Cập nhật"} phim thành công`,
+				`${mode === "create" ? "Thêm" : "Cập nhật"} phim thành công`,
 				"success"
 			);
 			navigate(config.routes.admin_movies);
@@ -287,7 +287,7 @@ const MovieForm = ({ initialData, mode, onSubmit }: MovieFormProps) => {
 						{isSubmitting
 							? "Đang xử lý..."
 							: mode === "create"
-							? "Tạo phim"
+							? "Thêm phim"
 							: "Cập nhật phim"}
 					</Button>
 				</div>

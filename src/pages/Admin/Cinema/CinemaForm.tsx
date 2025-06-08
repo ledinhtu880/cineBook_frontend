@@ -124,7 +124,7 @@ const CinemaForm: React.FC<CinemaFormProps> = ({
 
 			await onSubmit(formDataToSend);
 			showSnackbar(
-				`${mode === "create" ? "Tạo" : "Cập nhật"} rạp chiếu phim thành công`,
+				`${mode === "create" ? "Thêm" : "Cập nhật"} rạp chiếu phim thành công`,
 				"success"
 			);
 			navigate(config.routes.admin_cinemas);

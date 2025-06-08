@@ -26,19 +26,18 @@ const Badge: React.FC<BadgeProps> = ({
 		const ageValue = String(children).toUpperCase();
 
 		if (ageValue === "P") {
-			ageRatingClass = styles.ageP; // Mọi tuổi
+			ageRatingClass = styles.ageP;
 		} else if (ageValue === "K") {
-			ageRatingClass = styles.ageK; // Dưới 13 tuổi với điều kiện có bố mẹ xem cùng
+			ageRatingClass = styles.ageK;
 		} else if (ageValue === "T13") {
-			ageRatingClass = styles.ageC13; //  Phim dành cho người từ 13 tuổi trở lên
+			ageRatingClass = styles.ageC13;
 		} else if (ageValue === "T16") {
-			ageRatingClass = styles.ageC16; // Phim dành cho người từ 16 tuổi trở lên
+			ageRatingClass = styles.ageC16;
 		} else if (ageValue === "T18") {
-			ageRatingClass = styles.ageC18; // Phim dành cho người từ 18 tuổi trở lên
+			ageRatingClass = styles.ageC18;
 		}
 	}
 
-	// Sửa lại cách tạo classes
 	const badgeClasses = clsx(styles.badge, ageRatingClass, className);
 
 	return (
