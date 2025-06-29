@@ -129,3 +129,28 @@ export function validateRegisterForm(
 
 	return errors;
 }
+
+export function validateChangePasswordForm(
+	currentPassword: string,
+	newPassword: string,
+	confirmPassword: string
+): Record<string, string> {
+	const errors: Record<string, string> = {};
+
+	if (!currentPassword) {
+		errors.currentPassword = "Mật khẩu hiện tại không được để trống";
+	}
+
+	const newPasswordValidation = validatePassword(newPassword);
+	if (!newPasswordValidation.isValid) {
+		errors.newPassword = newPasswordValidation.errors[0]; // Chỉ lấy lỗi đầu tiên
+	}
+
+	if (!confirmPassword) {
+		errors.confirmPassword = "Mật khẩu xác nhận không được để trống";
+	} else if (newPassword !== confirmPassword) {
+		errors.confirmPassword = "Mật khẩu xác nhận không khớp";
+	}
+
+	return errors;
+}

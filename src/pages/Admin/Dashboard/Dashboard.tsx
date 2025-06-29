@@ -24,13 +24,13 @@ interface ChartData {
 
 const mockChartData: ChartData = {
 	revenueChart: [
-		{ date: "T2", revenue: 18500000 }, // 185 vé x 100k trung bình
-		{ date: "T3", revenue: 23200000 }, // 232 vé x 100k
-		{ date: "T4", revenue: 15600000 }, // 156 vé x 100k
-		{ date: "T5", revenue: 26800000 }, // 268 vé x 100k
-		{ date: "T6", revenue: 31200000 }, // 312 vé x 100k
-		{ date: "T7", revenue: 35400000 }, // 354 vé x 100k
-		{ date: "CN", revenue: 33100000 }, // 331 vé x 100k
+		{ date: "T2", revenue: 18500000 },
+		{ date: "T3", revenue: 23200000 },
+		{ date: "T4", revenue: 15600000 },
+		{ date: "T5", revenue: 26800000 },
+		{ date: "T6", revenue: 31200000 },
+		{ date: "T7", revenue: 35400000 },
+		{ date: "CN", revenue: 33100000 },
 	],
 	weeklyBookings: [
 		{ day: "T2", bookings: 185 },
@@ -73,7 +73,6 @@ const Skeleton = ({ className }: { className: string }) => (
 	<div className={`animate-pulse bg-slate-200 rounded ${className}`} />
 );
 
-// Card Components
 const CardContent = ({
 	children,
 	className,
@@ -149,33 +148,41 @@ export default function Dashboard() {
 
 		return (
 			<div className="space-y-4">
-				<div className="flex justify-between items-end h-32 gap-2">
-					{data.map((item, index) => (
-						<div key={index} className="flex flex-col items-center flex-1">
+				<div className="flex justify-between items-end h-48 gap-3 px-2">
+					{data.map((item, index) => {
+						const height = Math.max((item.revenue / maxRevenue) * 100, 8);
+						return (
 							<div
-								className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-md transition-all duration-500 hover:from-blue-600 hover:to-blue-500 relative group"
-								style={{
-									height: `${(item.revenue / maxRevenue) * 100}%`,
-									minHeight: "12px",
-								}}
+								key={index}
+								className="flex flex-col items-center flex-1 h-full justify-end"
 							>
-								{/* Tooltip hiển thị giá trị */}
-								<div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-									{formatCurrency(item.revenue)}
+								<div
+									className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-500 hover:from-blue-600 hover:to-blue-500 relative group cursor-pointer min-w-0 flex items-end justify-center"
+									style={{
+										height: `${height}%`,
+									}}
+								>
+									{/* Tooltip hiển thị giá trị */}
+									<div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none shadow-lg">
+										{formatCurrency(item.revenue)}
+										<div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+									</div>
 								</div>
+								<span className="text-sm text-slate-600 mt-3 font-medium">
+									{item.date}
+								</span>
 							</div>
-							<span className="text-xs text-slate-600 mt-2 font-medium">
-								{item.date}
-							</span>
-						</div>
-					))}
+						);
+					})}
 				</div>
-				<div className="text-center text-xs text-slate-500">
-					Doanh thu theo tuần
-				</div>
-				<div className="text-center text-xs text-slate-400">
-					Tổng tuần này:{" "}
-					{formatCurrency(data.reduce((sum, item) => sum + item.revenue, 0))}
+				<div className="border-t pt-4">
+					<div className="text-center text-sm text-slate-600 font-medium mb-1">
+						Doanh thu theo tuần
+					</div>
+					<div className="text-center text-sm text-emerald-600 font-bold">
+						Tổng tuần này:
+						{formatCurrency(data.reduce((sum, item) => sum + item.revenue, 0))}
+					</div>
 				</div>
 			</div>
 		);

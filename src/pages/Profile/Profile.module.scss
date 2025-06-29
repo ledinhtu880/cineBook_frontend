@@ -9,3 +9,115 @@
 .header-title {
 	@apply text-2xl font-medium ps-4;
 }
+
+.content {
+	@apply flex flex-col md:flex-row gap-8;
+}
+
+.content-left {
+	@apply w-full md:w-1/4;
+
+	.avatar-card {
+		@apply flex flex-col justify-center items-center gap-6;
+
+		.avatar {
+			@apply bg-primary w-28 h-28 rounded-full relative flex items-center justify-center shadow-md mt-6;
+		}
+
+		.avatar-title {
+			@apply text-white text-3xl font-bold;
+		}
+
+		.avatar-info-wrapper {
+			@apply text-center w-full px-8;
+
+			h1 {
+				@apply text-2xl font-semibold mb-1;
+			}
+
+			h2 {
+				@apply text-gray-500 text-sm mb-6;
+			}
+		}
+
+		.avatar-button-wrapper {
+			@apply space-y-3 w-full;
+		}
+	}
+}
+
+.content-right {
+	@apply flex-1 flex flex-col gap-8;
+
+	.info-card {
+		@apply grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 px-6 py-2;
+
+		.info-note {
+			@apply text-xs text-gray-500 mt-1.5;
+		}
+	}
+
+	.booking-card {
+		@apply space-y-6 px-6 py-2;
+
+		.booking-item-wrapper {
+			@apply border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200;
+		}
+
+		.booking-item {
+			@apply flex flex-col md:flex-row gap-6;
+		}
+
+		.booking-poster {
+			@apply w-40 h-auto flex-shrink-0 mx-auto md:mx-0;
+		}
+
+		.booking-info-wrapper {
+			@apply flex-grow;
+		}
+
+		.booking-info {
+			@apply flex justify-between items-start mb-3;
+		}
+
+		.booking-title {
+			@apply font-semibold text-lg;
+		}
+
+		.booking-badge {
+			@apply text-xs px-3 py-1;
+		}
+
+		.booking-details-wrapper {
+			@apply grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-sm;
+		}
+
+		.booking-detail {
+			@apply flex items-center;
+		}
+
+		.booking-meta-key {
+			@apply text-gray-500 mr-2 flex items-center;
+		}
+
+		.booking-meta-value {
+			@apply font-medium;
+		}
+
+		.booking-meta-icon {
+			@apply w-4 h-4 mr-1;
+		}
+	}
+
+	.booking-empty {
+		@apply text-center bg-gray-50 rounded-lg mx-6 my-4;
+
+		.booking-icon {
+			@apply mx-auto text-gray-400 mb-3;
+		}
+
+		.booking-title {
+			@apply text-gray-500 text-lg mb-4;
+		}
+	}
+}

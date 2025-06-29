@@ -93,6 +93,17 @@ const authService = {
 		}
 	},
 
+	update: async (data: UserProps) => {
+		const token = localStorage.getItem("token");
+		const response = await axios.put(`${API_URL}/auth/update-profile`, data, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data.data;
+	},
+
 	isLoggedIn: () => {
 		return !!localStorage.getItem("token");
 	},
@@ -102,6 +113,29 @@ const authService = {
 		if (token) {
 			axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 		}
+	},
+	changePassword: async (
+		currentPassword: string,
+		newPassword: string,
+		confirmPassword: string
+	) => {
+		const token = localStorage.getItem("token");
+		const response = await axios.put(
+			`${API_URL}/auth/change-password`,
+			{
+				currentPassword,
+				newPassword,
+				confirmPassword,
+			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+
+		return response.data;
 	},
 };
 

@@ -14,15 +14,24 @@ import {
 	AccessTime,
 	Receipt,
 } from "@mui/icons-material";
+import { useSnackbar } from "@/context";
 
 import styles from "./Profile.module.scss";
 import config from "@/config";
 import { useAuth } from "@/hooks";
 import { getFirstLetter } from "@/utils";
-import { Container, Card, Button, Input, Badge, Loading } from "@/components";
-import { PasswordChangeModal } from "./pasword";
-import type { UserProps } from "@/types";
-import { bookingService } from "@/services";
+import {
+	Container,
+	Card,
+	Button,
+	Input,
+	Image,
+	Badge,
+	Loading,
+} from "@/components";
+import { PasswordChangeModal } from "./PasswordChangeModal";
+import type { ValidationErrors, ApiError, UserProps } from "@/types";
+import { authService, bookingService } from "@/services";
 
 interface BookingProps {
 	code: string;
@@ -55,8 +64,9 @@ export default function Profile() {
 	});
 	const [bookingHistory, setBookingHistory] = useState<BookingProps[]>([]);
 	const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+	const [modalErrors, setModalErrors] = useState<ValidationErrors>({});
+	const { showSnackbar } = useSnackbar();
 
-	// Tách logic fetch thành các hàm riêng
 	const fetchUserData = useCallback(() => {
 		if (user) {
 			setUserData({
@@ -94,7 +104,11 @@ export default function Profile() {
 
 	const handleEditToggle = useCallback(() => {
 		setIsEditing(!isEditing);
-	}, [isEditing]);
+
+		if (isEditing) {
+			authService.update(userData);
+		}
+	}, [isEditing, userData]);
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,22 +122,46 @@ export default function Profile() {
 	);
 
 	const handlePasswordChange = useCallback(
-		async (data: { currentPassword: string; newPassword: string }) => {
+		async (data: {
+			currentPassword: string;
+			newPassword: string;
+			confirmPassword: string;
+		}) => {
 			try {
-				// Implement your password change API call here
-				console.log("Changing password:", data);
-				/* await userService.changePassword(
+				setModalErrors({});
+
+				const response = await authService.changePassword(
 					data.currentPassword,
-					data.newPassword
-				); */
-				alert("Đổi mật khẩu thành công!");
-				setIsPasswordModalOpen(false);
+					data.newPassword,
+					data.confirmPassword
+				);
+
+				if (response.status === "success") {
+					setIsPasswordModalOpen(false);
+					showSnackbar(response.message, "success");
+					setModalErrors({});
+				} else {
+					setModalErrors({ general: response.message });
+				}
 			} catch (error) {
 				console.error("Lỗi khi đổi mật khẩu:", error);
-				alert("Đổi mật khẩu thất bại. Vui lòng thử lại.");
+				const apiError = error as ApiError;
+				if (apiError.response?.data?.errors) {
+					const validationErrors = Object.entries(
+						apiError.response.data.errors
+					).reduce((acc, [key, messages]) => {
+						return {
+							...acc,
+							[key]: Array.isArray(messages) ? messages[0] : messages,
+						};
+					}, {} as ValidationErrors);
+					setModalErrors(validationErrors);
+				} else {
+					setModalErrors({ general: "Đã có lỗi xảy ra. Vui lòng thử lại." });
+				}
 			}
 		},
-		[]
+		[showSnackbar]
 	);
 
 	if (!isLoggedIn) {
@@ -148,21 +186,20 @@ export default function Profile() {
 					Thông tin tài khoản
 				</h4>
 			</div>
-			<div className="flex flex-col md:flex-row gap-8">
-				{/* Sidebar - Left Column */}
-				<div className="w-full md:w-1/4">
-					<Card className="pb-6">
-						<div className="flex flex-col justify-center items-center gap-6">
-							<div className="bg-primary text-primary-foreground w-28 h-28 rounded-full relative flex items-center justify-center shadow-md mt-6">
-								<span className="text-white text-3xl font-bold">
+			<div className={clsx(styles.content)}>
+				<div className={clsx(styles["content-left"])}>
+					<Card>
+						<div className={clsx(styles["avatar-card"])}>
+							<div className={clsx(styles["avatar"])}>
+								<span className={clsx(styles["avatar-title"])}>
 									{getFirstLetter(user?.name)}
 								</span>
 							</div>
-							<div className="text-center w-full px-8">
-								<h1 className="text-2xl font-semibold mb-1">{user?.name}</h1>
-								<h2 className="text-gray-500 text-sm mb-6">{userData.email}</h2>
+							<div className={clsx(styles["avatar-info-wrapper"])}>
+								<h1>{user?.name}</h1>
+								<h2>{userData.email}</h2>
 
-								<div className="space-y-3 w-full">
+								<div className={clsx(styles["avatar-button-wrapper"])}>
 									<Button
 										primary
 										className="w-full py-2.5"
@@ -183,9 +220,7 @@ export default function Profile() {
 					</Card>
 				</div>
 
-				{/* Main Content - Right Column */}
-				<div className="flex-1 flex flex-col gap-8">
-					{/* User Information Card */}
+				<div className={clsx(styles["content-right"])}>
 					<Card
 						title="Thông tin cá nhân"
 						actionButton={
@@ -194,98 +229,72 @@ export default function Profile() {
 								leftIcon={isEditing ? <Save /> : <Edit />}
 								primary={isEditing}
 								outline={!isEditing}
-								className="px-4"
 							>
 								{isEditing ? "Lưu thông tin" : "Chỉnh sửa"}
 							</Button>
 						}
 					>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 px-6 py-2">
+						<div className={clsx(styles["info-card"])}>
+							<Input
+								id="last_name"
+								value={userData.last_name}
+								onChange={handleInputChange}
+								label="Họ"
+							/>
+							<Input
+								id="first_name"
+								value={userData.first_name}
+								onChange={handleInputChange}
+								label="Tên"
+							/>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									Họ và tên
-								</label>
 								<Input
-									name="name"
-									value={userData.name}
-									onChange={handleInputChange}
-									className="w-full py-2.5"
-									readOnly={!isEditing}
-								/>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									Thành phố
-								</label>
-								<Input
-									name="address"
-									value={userData.city?.name}
-									onChange={handleInputChange}
-									className="w-full py-2.5"
-									readOnly
-								/>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									Email
-								</label>
-								<Input
-									name="email"
+									id="email"
+									label="Email"
 									value={userData.email}
 									onChange={handleInputChange}
-									className="w-full py-2.5"
 									readOnly
 								/>
-								<p className="text-xs text-gray-500 mt-1.5">
+								<p className={clsx(styles["info-note"])}>
 									Email không thể thay đổi
 								</p>
 							</div>
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									Số điện thoại
-								</label>
 								<Input
-									name="phone"
+									id="phone"
+									label="Số điện thoại"
 									value={userData.phone}
 									onChange={handleInputChange}
-									className="w-full py-2.5"
 									readOnly
 								/>
-								<p className="text-xs text-gray-500 mt-1.5">
+								<p className={clsx(styles["info-note"])}>
 									Số điện thoại không thể thay đổi
 								</p>
 							</div>
 						</div>
 					</Card>
 
-					{/* Booking History Card */}
 					<Card title="Lịch sử đặt vé">
 						{bookingHistory.length > 0 ? (
-							<div className="space-y-6 px-6 py-2">
+							<div className={clsx(styles["booking-card"])}>
 								{bookingHistory.map((booking) => (
 									<div
 										key={booking.code}
-										className="border rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200"
+										className={clsx(styles["booking-item-wrapper"])}
 									>
-										<div className="flex flex-col md:flex-row gap-6">
-											{/* Poster Image */}
-											<div className="w-40 h-auto flex-shrink-0 mx-auto md:mx-0">
-												<img
-													src={booking.posterUrl || "/placeholder.svg"}
-													alt={booking.movie}
-													className="w-full h-full object-cover rounded-md shadow-sm"
-												/>
+										<div className={clsx(styles["booking-item"])}>
+											<div className={clsx(styles["booking-poster"])}>
+												<Image src={booking.posterUrl} alt={booking.movie} />
 											</div>
 
-											{/* Booking Details */}
-											<div className="flex-grow">
-												<div className="flex justify-between items-start mb-3">
-													<h3 className="font-semibold text-lg">
+											<div className={clsx(styles["booking-info-wrapper"])}>
+												<div className={clsx(styles["booking-info"])}>
+													<h3 className={clsx(styles["booking-title"])}>
 														{booking.movie}
 													</h3>
 													<Badge
 														className={clsx(
-															"text-xs px-3 py-1",
+															"booking-badge",
 															booking.status === "Hoàn thành"
 																? "bg-green-500"
 																: "bg-amber-500"
@@ -294,47 +303,84 @@ export default function Profile() {
 														{booking.status}
 													</Badge>
 												</div>
-
-												<div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-													<div className="flex items-center">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<Receipt className="w-4 h-4 mr-1" /> Mã đặt vé:
-														</span>{" "}
-														<span className="font-medium">{booking.code}</span>
+												<div
+													className={clsx(styles["booking-details-wrapper"])}
+												>
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<Receipt
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Mã đặt vé:
+														</span>
+														<span
+															className={clsx(styles["booking-meta-value"])}
+														>
+															{booking.code}
+														</span>
 													</div>
-													<div className="flex items-center">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<EventSeat className="w-4 h-4 mr-1" /> Ghế:
-														</span>{" "}
-														<span className="font-medium">{booking.seats}</span>
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<EventSeat
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Ghế:
+														</span>
+														<span
+															className={clsx(styles["booking-meta-value"])}
+														>
+															{booking.seats}
+														</span>
 													</div>
-													<div className="flex items-center">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<LocationOn className="w-4 h-4 mr-1" /> Rạp:
-														</span>{" "}
-														<span className="font-medium">
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<LocationOn
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Rạp:
+														</span>
+														<span
+															className={clsx(styles["booking-meta-value"])}
+														>
 															{booking.cinema}
 														</span>
 													</div>
-													<div className="flex items-center font-medium text-primary">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<Receipt className="w-4 h-4 mr-1" /> Tổng tiền:
-														</span>{" "}
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<Receipt
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Tổng tiền:
+														</span>
 														<span className="font-semibold">
 															{booking.total}
 														</span>
 													</div>
-													<div className="flex items-center">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<CalendarMonth className="w-4 h-4 mr-1" /> Ngày:
-														</span>{" "}
-														<span className="font-medium">{booking.date}</span>
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<CalendarMonth
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Ngày:
+														</span>
+														<span
+															className={clsx(styles["booking-meta-value"])}
+														>
+															{booking.date}
+														</span>
 													</div>
-													<div className="flex items-center">
-														<span className="text-gray-500 mr-2 flex items-center">
-															<AccessTime className="w-4 h-4 mr-1" /> Giờ:
-														</span>{" "}
-														<span className="font-medium">{booking.time}</span>
+													<div className={clsx(styles["booking-detail"])}>
+														<span className={clsx(styles["booking-meta-key"])}>
+															<AccessTime
+																className={clsx(styles["booking-meta-icon"])}
+															/>{" "}
+															Giờ:
+														</span>
+														<span
+															className={clsx(styles["booking-meta-value"])}
+														>
+															{booking.time}
+														</span>
 													</div>
 												</div>
 											</div>
@@ -343,12 +389,12 @@ export default function Profile() {
 								))}
 							</div>
 						) : (
-							<div className="text-center bg-gray-50 rounded-lg mx-6 my-4">
+							<div className={clsx(styles["booking-empty"])}>
 								<MovieFilter
-									className="mx-auto text-gray-400 mb-3"
+									className={clsx(styles["booking-icon"])}
 									style={{ fontSize: "48px" }}
 								/>
-								<p className="text-gray-500 text-lg mb-4">
+								<p className={clsx(styles["booking-title"])}>
 									Bạn chưa đặt vé nào
 								</p>
 								<Button primary to={config.routes.now_showing}>
@@ -360,11 +406,12 @@ export default function Profile() {
 				</div>
 			</div>
 
-			{/* Password Change Modal */}
 			<PasswordChangeModal
 				isOpen={isPasswordModalOpen}
 				onClose={() => setIsPasswordModalOpen(false)}
 				onSubmit={handlePasswordChange}
+				errors={modalErrors}
+				clearErrors={() => setModalErrors({})}
 			/>
 		</Container>
 	);
