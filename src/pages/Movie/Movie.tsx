@@ -126,7 +126,6 @@ const Movie = () => {
 		loadInitialData();
 	}, [slug]);
 
-	// Hàm preload ảnh
 	const preloadImages = (imageUrls: string[]) => {
 		return Promise.all(
 			imageUrls.map((url) => {
@@ -137,7 +136,6 @@ const Movie = () => {
 						console.warn(`Failed to preload image: ${url}`);
 						resolve(false);
 					};
-					// Đặt timeout 3 giây
 					setTimeout(() => resolve(false), 3000);
 					img.src = url;
 				});
@@ -145,7 +143,6 @@ const Movie = () => {
 		);
 	};
 
-	// Load showtimes riêng biệt khi có movie
 	useEffect(() => {
 		const fetchShowtimes = async () => {
 			if (!movie) return;
@@ -263,14 +260,9 @@ const Movie = () => {
 		};
 	});
 
-	// Hiển thị loading khi đang tải dữ liệu chính hoặc ảnh chưa load xong
-	if (pageLoading || !imagesLoaded) {
-		return <Loading full />;
-	}
+	if (pageLoading || !imagesLoaded) return <Loading full />;
 
-	if (!movie) {
-		return <div>Không tìm thấy phim</div>;
-	}
+	if (!movie) return <div>Không tìm thấy phim</div>;
 
 	return (
 		<div className={clsx(styles["wrapper"])}>
@@ -312,15 +304,15 @@ const Movie = () => {
 								</h1>
 								<div className={clsx(styles["meta-wrapper"])}>
 									<div className={clsx(styles["meta-item"])}>
-										<AccessTime className="text-primary" />
+										<AccessTime className={clsx(styles["meta-icon"])} />
 										<span>{movie.duration} phút</span>
 									</div>
 									<div className={clsx(styles["meta-item"])}>
-										<CalendarToday className="text-primary" />
+										<CalendarToday className={clsx(styles["meta-icon"])} />
 										<span>{movie.release_date_label}</span>
 									</div>
 									<div className={clsx(styles["meta-item"])}>
-										<Star className="text-primary" />
+										<Star className={clsx(styles["meta-icon"])} />
 										<span>{movie.rating}</span>
 									</div>
 								</div>
@@ -337,7 +329,7 @@ const Movie = () => {
 									<span>Phụ đề</span>
 								</div>
 
-								<div className={clsx(styles["meta-item"])}>
+								<div className={clsx(styles["meta-genre"])}>
 									<span className={clsx(styles["meta-label"])}>
 										Thể loại:&nbsp;
 									</span>
@@ -383,7 +375,6 @@ const Movie = () => {
 							</div>
 						</div>
 					</div>
-
 					<div className={clsx(styles["description"])}>
 						<h2 className={clsx("border-left-accent")}>Nội dung phim</h2>
 						{movie.description?.split("\n").map((text, index) => (

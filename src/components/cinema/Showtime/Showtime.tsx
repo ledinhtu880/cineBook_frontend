@@ -34,7 +34,7 @@ const Input: React.FC<Props> = ({
 					Suất chiếu
 				</span>
 				{showtimes.length > 0 ? (
-					<div className="flex gap-3">
+					<div className={clsx(styles["showtime-list"])}>
 						{showtimes.map((showtime) => (
 							<Button
 								key={showtime.id}

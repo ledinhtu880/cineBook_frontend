@@ -1,3 +1,71 @@
+.footer {
+	@apply bg-white border-t border-gray-200;
+}
+
+.wrapper {
+	@apply container mx-auto px-4 py-8;
+}
+
+.wrapper-grid {
+	@apply grid grid-cols-1 md:grid-cols-4 gap-8;
+}
+
+.section {
+	@apply col-span-1 flex flex-col gap-4;
+}
+
 .logo {
 	@apply text-xl font-bold;
+}
+
+.description {
+	@apply text-gray-600 text-sm mb-4;
+}
+
+.social-list {
+	@apply flex space-x-4;
+}
+
+.social-link {
+	@apply text-gray-500 hover:text-primary;
+
+	span {
+		@apply sr-only;
+	}
+}
+
+.heading {
+	@apply font-bold text-primary;
+}
+
+.list {
+	@apply space-y-2;
+
+	.list-item {
+		@apply text-gray-600 hover:text-primary text-sm;
+	}
+}
+
+.contact {
+	@apply space-y-3;
+
+	li {
+		@apply flex items-center;
+
+		.icon {
+			@apply h-5 w-5 text-primary mr-2;
+		}
+
+		span {
+			@apply text-gray-600 text-sm;
+		}
+	}
+}
+
+.copyright {
+	@apply mt-8 pt-6 border-t border-gray-200 text-center;
+
+	p {
+		@apply text-gray-500 text-sm;
+	}
 }

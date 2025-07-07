@@ -53,7 +53,7 @@ const Card = ({
 							{/* Search */}
 							{onSearch && (
 								<div className={clsx(styles["card-header-search"])}>
-									<Search className="text-gray-500" />
+									<Search className={clsx(styles["search-icon"])} />
 									<Input
 										placeholder={searchLabel || "Tìm kiếm..."}
 										className={clsx(styles["card-header-input"])}

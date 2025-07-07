@@ -9,6 +9,10 @@
 		@apply gap-3 flex-col flex p-4;
 	}
 
+	.showtime-list {
+		@apply flex gap-3;
+	}
+
 	.showtime-label {
 		@apply ps-4;
 	}
